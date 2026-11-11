@@ -1,677 +1,1071 @@
-/* =========================================
+/* =========================================================
+   GOVERNMENT POLYTECHNIC MASAB TANK
    ABOUT PAGE
-========================================= */
+========================================================= */
 
-.about-page {
+.gptm-about-page {
   width: 100%;
-  background: #f5f8fa;
-  color: #334155;
+  min-height: 100vh;
+
+  background: #f6f8fb;
+
+  color: #172033;
 }
 
-.about-container {
-  width: min(1160px, calc(100% - 40px));
-  margin: auto;
-}
 
+/* =========================================================
+   PAGE HEADER
+========================================================= */
 
-/* =========================================
-   HERO
-========================================= */
-
-.about-hero {
+.gptm-page-header {
   position: relative;
-  min-height: 430px;
+
+  min-height: 155px;
 
   display: flex;
   align-items: center;
 
   overflow: hidden;
 
-  background: linear-gradient(
-    135deg,
-    #123b6d 0%,
-    #155a82 55%,
-    #168a8a 100%
-  );
+  background:
+    linear-gradient(
+      100deg,
+      #082f63 0%,
+      #0b478d 55%,
+      #123f75 100%
+    );
 }
 
-.about-hero::before,
-.about-hero::after {
+
+/* subtle academic pattern */
+
+.gptm-page-header::after {
   content: "";
+
   position: absolute;
+
+  width: 450px;
+  height: 450px;
+
+  right: -150px;
+  top: -230px;
 
   border-radius: 50%;
 
-  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255, 255, 255, 0.05);
 
   pointer-events: none;
 }
 
-.about-hero::before {
-  width: 600px;
-  height: 600px;
 
-  right: -200px;
-  top: -200px;
-}
-
-.about-hero::after {
-  width: 400px;
-  height: 400px;
-
-  right: -80px;
-  top: -90px;
-}
-
-.about-hero-overlay {
+.gptm-header-overlay {
   position: absolute;
   inset: 0;
 
-  background: linear-gradient(
-    90deg,
-    rgba(7,31,55,.4),
-    transparent
-  );
+  background:
+    linear-gradient(
+      90deg,
+      rgba(3, 28, 60, 0.45),
+      transparent
+    );
 }
 
-.about-hero-content {
+
+.gptm-header-container {
   position: relative;
+
   z-index: 2;
-}
 
-.about-eyebrow {
-  display: inline-block;
+  width: min(1380px, calc(100% - 64px));
 
-  margin-bottom: 18px;
+  margin: 0 auto;
 
-  color: #8de1dc;
-
-  font-size: 12px;
-  font-weight: 800;
-
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-}
-
-.about-hero h1 {
-  max-width: 850px;
-  margin: 0;
-
-  color: #fff;
-
-  font-size: clamp(45px, 6vw, 72px);
-
-  line-height: 1.04;
-  letter-spacing: -2px;
-}
-
-.about-hero h1 span {
-  display: block;
-  color: #8de1dc;
-}
-
-.about-hero p {
-  max-width: 680px;
-
-  margin: 24px 0 0;
-
-  color: #dceff2;
-
-  font-size: 17px;
-  line-height: 1.8;
-}
-
-
-/* =========================================
-   OVERVIEW
-========================================= */
-
-.about-overview {
-  padding: 100px 0;
-  background: #fff;
-}
-
-.about-overview-grid {
-  display: grid;
-
-  grid-template-columns: 1.3fr .7fr;
-
-  gap: 70px;
+  display: flex;
 
   align-items: center;
+
+  justify-content: space-between;
+
+  gap: 30px;
 }
 
-.about-section-label {
-  display: inline-block;
 
-  margin-bottom: 12px;
+/* =========================================================
+   HEADER TITLE
+========================================================= */
 
-  color: #168a8a;
-
-  font-size: 12px;
-  font-weight: 800;
-
-  letter-spacing: 2px;
-
-  text-transform: uppercase;
+.gptm-header-left {
+  color: #ffffff;
 }
 
-.about-overview-content h2 {
-  max-width: 680px;
 
+.gptm-header-title {
+  display: flex;
+
+  align-items: center;
+
+  gap: 13px;
+}
+
+
+.gptm-header-title > svg {
+  flex-shrink: 0;
+
+  color: #dbeafe;
+}
+
+
+.gptm-header-title h1 {
   margin: 0;
 
-  color: #123b6d;
+  font-size: 30px;
 
-  font-size: 42px;
   line-height: 1.15;
+
+  font-weight: 800;
+
+  letter-spacing: -0.5px;
+
+  color: #ffffff;
 }
 
-.about-overview-content h2 span {
-  color: #168a8a;
+
+.gptm-header-title h2 {
+  margin: 3px 0 0;
+
+  font-size: 28px;
+
+  line-height: 1.1;
+
+  font-weight: 800;
+
+  color: #b9dcff;
 }
 
-.about-gold-line {
-  width: 65px;
-  height: 3px;
 
-  margin: 22px 0;
-
-  background: #168a8a;
-}
-
-.about-overview-content p {
-  max-width: 700px;
-
-  margin: 0 0 16px;
-
-  color: #64748b;
+.gptm-header-left > p {
+  margin: 8px 0 0 47px;
 
   font-size: 15px;
-  line-height: 1.8;
+
+  color: #e4effb;
+
+  line-height: 1.5;
 }
 
 
-/* =========================================
-   OVERVIEW CARD
-========================================= */
+/* =========================================================
+   BREADCRUMB
+========================================================= */
 
-.about-overview-card {
-  padding: 38px;
-
-  border-radius: 20px;
-
-  background: linear-gradient(
-    145deg,
-    #123b6d,
-    #155a82
-  );
-
-  box-shadow:
-    0 20px 45px rgba(18,59,109,.18);
-}
-
-.overview-card-icon {
-  width: 58px;
-  height: 58px;
-
-  margin-bottom: 25px;
-
-  border-radius: 15px;
-
-  background: rgba(255,255,255,.1);
-
-  color: #8de1dc;
-
+.gptm-breadcrumb {
   display: flex;
+
   align-items: center;
-  justify-content: center;
-}
 
-.about-overview-card > span {
-  color: #8de1dc;
+  flex-wrap: wrap;
 
-  font-size: 11px;
-  font-weight: 800;
+  justify-content: flex-end;
 
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
-.about-overview-card h3 {
-  margin: 10px 0 12px;
-
-  color: #fff;
-
-  font-size: 25px;
-  line-height: 1.25;
-}
-
-.about-overview-card > p {
-  margin: 0;
-
-  color: #d8e9ed;
-
-  font-size: 14px;
-  line-height: 1.7;
-}
-
-.overview-card-line {
-  height: 1px;
-
-  margin: 25px 0;
-
-  background: rgba(255,255,255,.15);
-}
-
-.overview-card-items {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.overview-card-items div {
-  display: flex;
-  align-items: center;
   gap: 10px;
 
-  color: #fff;
-
-  font-size: 13px;
-}
-
-.overview-card-items svg {
-  color: #8de1dc;
-  flex-shrink: 0;
-}
-
-
-/* =========================================
-   VISION & MISSION
-========================================= */
-
-.about-vision-mission {
-  padding: 100px 0;
-
-  background: #f5f8fa;
-}
-
-.about-section-heading {
-  max-width: 760px;
-  margin-bottom: 50px;
-}
-
-.about-section-heading.centered {
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
-}
-
-.about-section-heading h2 {
-  margin: 0 0 14px;
-
-  color: #123b6d;
-
-  font-size: 42px;
-  line-height: 1.15;
-}
-
-.about-section-heading p {
-  margin: 0;
-
-  color: #64748b;
-
-  font-size: 15px;
-  line-height: 1.8;
-}
-
-.vision-mission-grid {
-  display: grid;
-
-  grid-template-columns: repeat(2,1fr);
-
-  gap: 22px;
-}
-
-.vision-card,
-.mission-card {
-  padding: 38px;
-
-  border-radius: 18px;
-
-  background: #fff;
-
-  border: 1px solid #dce7ed;
-}
-
-.mission-card {
-  background: linear-gradient(
-    135deg,
-    #123b6d,
-    #155a82
-  );
-
-  border-color: #123b6d;
-}
-
-.vm-icon {
-  width: 55px;
-  height: 55px;
-
-  margin-bottom: 25px;
-
-  border-radius: 14px;
-
-  background: #e8f4f5;
-
-  color: #168a8a;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.mission-card .vm-icon {
-  background: rgba(255,255,255,.1);
-  color: #8de1dc;
-}
-
-.vm-label {
-  display: block;
-
-  margin-bottom: 10px;
-
-  color: #168a8a;
-
-  font-size: 11px;
-  font-weight: 800;
-
-  letter-spacing: 2px;
-
-  text-transform: uppercase;
-}
-
-.mission-card .vm-label {
-  color: #8de1dc;
-}
-
-.vision-card h3,
-.mission-card h3 {
-  margin: 0 0 15px;
-
-  font-size: 25px;
-  line-height: 1.3;
-}
-
-.vision-card h3 {
-  color: #123b6d;
-}
-
-.mission-card h3 {
-  color: #fff;
-}
-
-.vision-card p,
-.mission-card p {
-  margin: 0;
-
   font-size: 14px;
-  line-height: 1.8;
-}
 
-.vision-card p {
-  color: #64748b;
-}
-
-.mission-card p {
-  color: #d8e9ed;
+  white-space: nowrap;
 }
 
 
-/* =========================================
-   OBJECTIVES
-========================================= */
+.gptm-breadcrumb a {
+  color: #ffffff;
 
-.about-objectives {
-  padding: 100px 0;
+  text-decoration: none;
 
-  background: #fff;
-}
-
-.objectives-grid {
-  display: grid;
-
-  grid-template-columns: repeat(4,1fr);
-
-  gap: 18px;
-}
-
-.objective-card {
-  padding: 28px;
-
-  border: 1px solid #dce7ed;
-
-  border-radius: 17px;
-
-  background: #f8fbfc;
-
-  transition: .25s ease;
-}
-
-.objective-card:hover {
-  transform: translateY(-5px);
-
-  border-color: #a9d6d7;
-
-  box-shadow:
-    0 15px 35px rgba(18,59,109,.08);
-}
-
-.objective-icon {
-  width: 50px;
-  height: 50px;
-
-  margin-bottom: 20px;
-
-  border-radius: 13px;
-
-  background: #168a8a;
-
-  color: #fff;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.objective-card h3 {
-  margin: 0 0 10px;
-
-  color: #123b6d;
-
-  font-size: 18px;
-}
-
-.objective-card p {
-  margin: 0;
-
-  color: #718096;
-
-  font-size: 13px;
-  line-height: 1.7;
+  transition: color 0.2s ease;
 }
 
 
-/* =========================================
-   WHY CHOOSE US
-========================================= */
-
-.about-why {
-  padding: 80px 0;
-
-  background: #f5f8fa;
+.gptm-breadcrumb a:hover {
+  color: #a9d3ff;
 }
 
-.about-why-box {
-  padding: 55px;
+
+.gptm-breadcrumb span {
+  color: #9ec0e3;
+}
+
+
+.gptm-breadcrumb strong {
+  color: #d8eaff;
+
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   STATISTICS STRIP
+========================================================= */
+
+.gptm-stat-strip {
+  width: 100%;
 
   display: grid;
 
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(6, 1fr);
 
-  gap: 70px;
+  background: #ffffff;
 
-  border-radius: 22px;
-
-  background: linear-gradient(
-    135deg,
-    #123b6d,
-    #168a8a
-  );
+  border-bottom: 1px solid #e0e6ee;
 
   box-shadow:
-    0 15px 40px rgba(18,59,109,.15);
+    0 2px 12px rgba(15, 35, 65, 0.04);
 }
 
-.about-why-content h2 {
-  margin: 0 0 15px;
 
-  color: #fff;
+.gptm-stat-item {
+  min-height: 178px;
 
-  font-size: 40px;
-  line-height: 1.15;
-}
+  padding: 20px 14px;
 
-.about-why-content h2 span {
-  color: #8de1dc;
-}
-
-.about-why-content p {
-  max-width: 550px;
-
-  margin: 0;
-
-  color: #dceff2;
-
-  font-size: 15px;
-  line-height: 1.8;
-}
-
-.why-list {
   display: flex;
 
   flex-direction: column;
 
+  align-items: center;
+
   justify-content: center;
 
-  gap: 18px;
+  text-align: center;
+
+  border-right: 1px solid #e1e6ed;
 }
 
-.why-item {
+
+.gptm-stat-item:last-child {
+  border-right: none;
+}
+
+
+.gptm-stat-icon {
+  width: 47px;
+
+  height: 47px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  margin-bottom: 9px;
+
+  border-radius: 50%;
+
+  color: #155db5;
+
+  background: #eaf3ff;
+}
+
+
+.gptm-stat-item strong {
+  display: block;
+
+  font-size: 31px;
+
+  line-height: 1.05;
+
+  font-weight: 800;
+
+  color: #0c4388;
+}
+
+
+.gptm-stat-item span {
+  display: block;
+
+  margin-top: 7px;
+
+  font-size: 12px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.65px;
+
+  color: #425c7b;
+}
+
+
+.gptm-stat-item small {
+  display: block;
+
+  margin-top: 5px;
+
+  font-size: 11px;
+
+  color: #7a899c;
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
+
+.gptm-main-content {
+  width: min(1320px, calc(100% - 60px));
+
+  margin: 0 auto;
+
+  padding: 35px 0 80px;
+}
+
+
+/* =========================================================
+   ABOUT SECTION
+========================================================= */
+
+.gptm-about-section {
+  display: grid;
+
+  grid-template-columns: minmax(0, 1fr) 410px;
+
+  gap: 55px;
+
+  align-items: center;
+
+  padding: 5px 0 35px;
+}
+
+
+.gptm-about-text p {
+  margin: 0 0 19px;
+
+  font-size: 17px;
+
+  line-height: 1.78;
+
+  color: #344054;
+}
+
+
+.gptm-about-text p:last-child {
+  margin-bottom: 0;
+}
+
+
+.gptm-about-text strong {
+  color: #172033;
+
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   COLLEGE IMAGE
+========================================================= */
+
+.gptm-about-image {
+  position: relative;
+
+  overflow: hidden;
+
+  height: 275px;
+
+  border-radius: 10px;
+
+  background: #e8eef5;
+
+  box-shadow:
+    0 7px 20px rgba(20, 43, 75, 0.13);
+}
+
+
+.gptm-about-image img {
+  display: block;
+
+  width: 100%;
+
+  height: 100%;
+
+  object-fit: cover;
+}
+
+
+.gptm-image-label {
+  position: absolute;
+
+  left: 13px;
+  right: 13px;
+  bottom: 13px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 11px 13px;
+
+  border-radius: 8px;
+
+  background: rgba(7, 38, 78, 0.91);
+
+  color: #ffffff;
+}
+
+
+.gptm-image-label svg {
+  flex-shrink: 0;
+
+  color: #acd3ff;
+}
+
+
+.gptm-image-label strong,
+.gptm-image-label span {
+  display: block;
+}
+
+
+.gptm-image-label strong {
+  font-size: 13px;
+}
+
+
+.gptm-image-label span {
+  margin-top: 2px;
+
+  font-size: 11px;
+
+  color: #c7d9ed;
+}
+
+
+/* =========================================================
+   INFORMATION CARDS
+========================================================= */
+
+.gptm-info-cards {
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 22px;
+
+  padding: 8px 0 55px;
+}
+
+
+.gptm-info-card {
+  min-height: 126px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 20px;
+
+  text-align: center;
+
+  background: #ffffff;
+
+  border: 1px solid #dce3eb;
+
+  border-radius: 8px;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+
+.gptm-info-card:hover {
+  transform: translateY(-3px);
+
+  border-color: #b8d0eb;
+
+  box-shadow:
+    0 9px 24px rgba(18, 55, 96, 0.08);
+}
+
+
+.gptm-info-card strong {
+  font-size: 29px;
+
+  line-height: 1;
+
+  color: #0b438a;
+}
+
+
+.gptm-info-card span {
+  margin-top: 9px;
+
+  font-size: 13px;
+
+  color: #667085;
+}
+
+
+/* =========================================================
+   CONTENT SECTIONS
+========================================================= */
+
+.gptm-content-section,
+.gptm-departments-section {
+  padding: 32px 0;
+
+  border-top: 1px solid #d8a7a7;
+}
+
+
+.gptm-section-title {
   display: flex;
 
   align-items: center;
 
   gap: 13px;
 
-  color: #fff;
-
-  font-size: 14px;
+  margin-bottom: 22px;
 }
 
-.why-item svg {
-  color: #8de1dc;
+
+.gptm-section-title > span {
+  width: 5px;
+
+  height: 36px;
 
   flex-shrink: 0;
+
+  background: #155db5;
+
+  border-radius: 1px;
 }
 
 
-/* =========================================
+.gptm-section-title h2 {
+  margin: 0;
+
+  font-size: 21px;
+
+  font-weight: 800;
+
+  color: #172033;
+}
+
+
+/* =========================================================
+   OBJECTIVES
+========================================================= */
+
+.gptm-objectives {
+  margin: 0;
+
+  padding-left: 27px;
+
+  color: #475467;
+}
+
+
+.gptm-objectives li {
+  padding-left: 6px;
+
+  margin-bottom: 12px;
+
+  font-size: 16px;
+
+  line-height: 1.7;
+}
+
+
+.gptm-objectives li:last-child {
+  margin-bottom: 0;
+}
+
+
+/* =========================================================
+   LOCATION
+========================================================= */
+
+.gptm-location-text {
+  margin: 0 0 17px;
+
+  font-size: 16px;
+
+  line-height: 1.8;
+
+  color: #475467;
+}
+
+
+.gptm-location-text:last-child {
+  margin-bottom: 0;
+}
+
+
+.gptm-location-text strong {
+  color: #172033;
+}
+
+
+/* =========================================================
+   DEPARTMENTS
+========================================================= */
+
+.gptm-departments-section {
+  padding-bottom: 5px;
+}
+
+
+.gptm-department-grid {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 13px;
+}
+
+
+.gptm-department-card {
+  min-height: 72px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding: 11px 17px 11px 13px;
+
+  text-decoration: none;
+
+  background: #ffffff;
+
+  border: 1px solid #e0e5eb;
+
+  border-radius: 8px;
+
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+
+
+.gptm-department-card:hover {
+  transform: translateY(-2px);
+
+  background: #f8fbff;
+
+  border-color: #7eaddb;
+
+  box-shadow:
+    0 6px 16px rgba(16, 55, 96, 0.08);
+}
+
+
+.gptm-department-left {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  min-width: 0;
+}
+
+
+.gptm-department-icon {
+  width: 42px;
+
+  height: 42px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  color: #155db5;
+
+  background: #edf5ff;
+
+  border-radius: 8px;
+}
+
+
+.gptm-department-left h3 {
+  margin: 0;
+
+  font-size: 15px;
+
+  line-height: 1.35;
+
+  font-weight: 600;
+
+  color: #24476f;
+}
+
+
+.gptm-department-left span {
+  display: block;
+
+  margin-top: 3px;
+
+  font-size: 11px;
+
+  color: #8a98aa;
+}
+
+
+.gptm-department-right {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  flex-shrink: 0;
+
+  color: #7890aa;
+}
+
+
+.gptm-department-right small {
+  min-width: 28px;
+
+  text-align: center;
+
+  padding: 4px 6px;
+
+  border-radius: 5px;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  color: #155db5;
+
+  background: #edf5ff;
+}
+
+
+/* =========================================================
    TABLET
-========================================= */
+========================================================= */
 
-@media (max-width: 950px) {
+@media (max-width: 1100px) {
 
-  .about-overview-grid {
-    grid-template-columns: 1fr;
-    gap: 45px;
+  .gptm-stat-strip {
+    grid-template-columns: repeat(3, 1fr);
   }
 
-  .objectives-grid {
-    grid-template-columns: repeat(2,1fr);
+
+  .gptm-stat-item:nth-child(3) {
+    border-right: none;
   }
 
-  .about-why-box {
-    grid-template-columns: 1fr;
-    gap: 40px;
+
+  .gptm-stat-item:nth-child(n + 4) {
+    border-top: 1px solid #e1e6ed;
   }
+
+
+  .gptm-about-section {
+    grid-template-columns: 1fr 360px;
+
+    gap: 35px;
+  }
+
+
+  .gptm-department-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
 }
 
 
-/* =========================================
+/* =========================================================
+   TABLET / SMALL LAPTOP
+========================================================= */
+
+@media (max-width: 850px) {
+
+  .gptm-header-container {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    padding: 28px 0;
+  }
+
+
+  .gptm-breadcrumb {
+    justify-content: flex-start;
+  }
+
+
+  .gptm-about-section {
+    grid-template-columns: 1fr;
+  }
+
+
+  .gptm-about-image {
+    height: 310px;
+  }
+
+
+  .gptm-info-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+}
+
+
+/* =========================================================
    MOBILE
-========================================= */
+========================================================= */
 
-@media (max-width: 700px) {
+@media (max-width: 600px) {
 
-  .about-container {
+  .gptm-page-header {
+    min-height: auto;
+  }
+
+
+  .gptm-header-container {
+    width: calc(100% - 32px);
+
+    padding: 25px 0;
+  }
+
+
+  .gptm-header-title {
+    align-items: flex-start;
+
+    gap: 10px;
+  }
+
+
+  .gptm-header-title > svg {
+    width: 27px;
+
+    height: 27px;
+
+    margin-top: 3px;
+  }
+
+
+  .gptm-header-title h1 {
+    font-size: 22px;
+  }
+
+
+  .gptm-header-title h2 {
+    font-size: 21px;
+  }
+
+
+  .gptm-header-left > p {
+    margin-left: 37px;
+
+    font-size: 13px;
+  }
+
+
+  .gptm-breadcrumb {
+    gap: 7px;
+
+    font-size: 12px;
+
+    white-space: normal;
+  }
+
+
+  .gptm-stat-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+
+  .gptm-stat-item {
+    min-height: 140px;
+
+    padding: 15px 8px;
+  }
+
+
+  .gptm-stat-item:nth-child(2),
+  .gptm-stat-item:nth-child(4),
+  .gptm-stat-item:nth-child(6) {
+    border-right: none;
+  }
+
+
+  .gptm-stat-item:nth-child(n + 3) {
+    border-top: 1px solid #e1e6ed;
+  }
+
+
+  .gptm-stat-icon {
+    width: 39px;
+
+    height: 39px;
+  }
+
+
+  .gptm-stat-icon svg {
+    width: 22px;
+
+    height: 22px;
+  }
+
+
+  .gptm-stat-item strong {
+    font-size: 24px;
+  }
+
+
+  .gptm-stat-item span {
+    font-size: 10px;
+  }
+
+
+  .gptm-stat-item small {
+    font-size: 9px;
+  }
+
+
+  .gptm-main-content {
     width: calc(100% - 28px);
+
+    padding-top: 25px;
   }
 
-  .about-hero {
-    min-height: 420px;
-  }
 
-  .about-hero h1 {
-    font-size: 45px;
-  }
-
-  .about-hero p {
+  .gptm-about-text p {
     font-size: 15px;
+
+    line-height: 1.7;
   }
 
-  .about-overview,
-  .about-vision-mission,
-  .about-objectives {
-    padding: 75px 0;
+
+  .gptm-about-image {
+    height: 250px;
   }
 
-  .about-overview-content h2,
-  .about-section-heading h2 {
-    font-size: 32px;
+
+  .gptm-info-cards {
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 10px;
+
+    padding-bottom: 35px;
   }
 
-  .vision-mission-grid {
+
+  .gptm-info-card {
+    min-height: 105px;
+
+    padding: 15px 8px;
+  }
+
+
+  .gptm-info-card strong {
+    font-size: 24px;
+  }
+
+
+  .gptm-info-card span {
+    font-size: 11px;
+  }
+
+
+  .gptm-content-section,
+  .gptm-departments-section {
+    padding: 25px 0;
+  }
+
+
+  .gptm-section-title h2 {
+    font-size: 19px;
+  }
+
+
+  .gptm-objectives {
+    padding-left: 23px;
+  }
+
+
+  .gptm-objectives li {
+    font-size: 14px;
+  }
+
+
+  .gptm-location-text {
+    font-size: 14px;
+  }
+
+
+  .gptm-department-grid {
     grid-template-columns: 1fr;
+
+    gap: 10px;
   }
 
-  .objectives-grid {
-    grid-template-columns: 1fr;
+
+  .gptm-department-card {
+    min-height: 68px;
   }
 
-  .about-why-box {
-    padding: 35px 25px;
+
+  .gptm-department-left h3 {
+    font-size: 14px;
   }
 
-  .about-why-content h2 {
-    font-size: 32px;
-  }
 }
 
 
-/* =========================================
-   SMALL MOBILE
-========================================= */
+/* =========================================================
+   VERY SMALL PHONES
+========================================================= */
 
-@media (max-width: 450px) {
+@media (max-width: 380px) {
 
-  .about-hero h1 {
-    font-size: 39px;
+  .gptm-stat-item {
+    min-height: 130px;
   }
 
-  .about-overview-card,
-  .vision-card,
-  .mission-card {
-    padding: 28px;
+
+  .gptm-stat-item strong {
+    font-size: 21px;
   }
+
+
+  .gptm-stat-item span {
+    font-size: 9px;
+  }
+
+
+  .gptm-stat-item small {
+    display: none;
+  }
+
+
+  .gptm-header-title h1 {
+    font-size: 20px;
+  }
+
+
+  .gptm-header-title h2 {
+    font-size: 19px;
+  }
+
 }

@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 
 import {
@@ -34,9 +33,9 @@ const links = [
     title: "Consolidated Result",
     text: "View your consolidated academic result.",
     icon: ClipboardList,
-    type: "external",
-    url: "https://www.sbtet.telangana.gov.in/index.html#!/index/StudentConsolidated",
-    linkText: "Open Official Portal",
+    type: "internal",
+    url: "/student-portal/consolidated-result",
+    linkText: "View Consolidated Result",
   },
 ];
 

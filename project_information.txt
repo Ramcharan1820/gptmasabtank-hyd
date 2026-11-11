@@ -1,0 +1,2224 @@
+# GOVERNMENT POLYTECHNIC COLLEGE MASAB TANK – COMPLETE PROJECT CONTEXT
+
+## 1. Project Title
+
+**Government Polytechnic College Masab Tank – College Website**
+
+This is a final-year Diploma CSE project for **Government Polytechnic College, Masab Tank, Hyderabad, Telangana**.
+
+The project is a modern, responsive college website with a Student Portal that integrates live Telangana SBTET services.
+
+---
+
+# 2. Main Purpose of the Project
+
+The purpose of the project is to create a professional digital platform for the college where students, faculty, parents and visitors can access college information and student-related academic services.
+
+The website provides:
+
+* College information
+* Departments
+* Faculty information
+* Events and programs
+* Gallery
+* Placements
+* Contact information
+* Quick links
+* Student Portal
+* Live attendance
+* Live examination results
+
+The important feature of the project is that student attendance and results are intended to be fetched from **official SBTET services**, instead of using dummy or hardcoded student data.
+
+---
+
+# 3. Project Architecture
+
+The project follows this architecture:
+
+```text
+                 USER
+                   |
+                   v
+          React Frontend
+                   |
+                   | HTTP Request
+                   v
+          Node.js + Express
+                   |
+                   | API Request
+                   v
+          Telangana SBTET API
+                   |
+                   | JSON Response
+                   v
+          Node.js Backend
+                   |
+                   | Processed JSON
+                   v
+          React Frontend
+                   |
+                   v
+               USER
+```
+
+For example, when a student checks attendance:
+
+```text
+Student enters PIN
+       ↓
+React Attendance Page
+       ↓
+GET /api/attendance?pin=XXXX
+       ↓
+Express Backend
+       ↓
+SBTET Attendance API
+       ↓
+Attendance JSON
+       ↓
+Backend processes JSON
+       ↓
+React displays attendance
+```
+
+---
+
+# 4. Technologies Used
+
+## Frontend
+
+* React.js
+* Vite
+* JavaScript
+* HTML
+* CSS
+* JSX
+* React Router
+* Lucide React
+* Fetch API
+
+## Backend
+
+* Node.js
+* Express.js
+* REST API
+* CORS
+* dotenv
+* Fetch API
+* JSON processing
+
+## Development Tools
+
+* Visual Studio Code
+* PowerShell
+* Command Prompt
+* Node.js
+* npm
+* Git
+* GitHub
+* Browser Developer Tools
+
+MySQL is available in the user's general development environment, but the current SBTET integration does **not require a local database**.
+
+---
+
+# 5. Frontend
+
+The frontend is created using:
+
+**React + Vite**
+
+React is responsible for:
+
+* Page structure
+* User interface
+* Navigation
+* Forms
+* API requests
+* Displaying attendance
+* Displaying results
+* Responsive UI
+
+Vite is used as the frontend development/build tool.
+
+---
+
+# 6. Backend
+
+The backend uses:
+
+**Node.js + Express.js**
+
+The backend is important because the React frontend should not directly handle the SBTET service logic.
+
+The backend:
+
+1. Receives the student's request.
+2. Validates the input.
+3. Calls the SBTET API.
+4. Receives SBTET data.
+5. Parses the response.
+6. Extracts required information.
+7. Sends clean JSON to React.
+
+---
+
+# 7. Why Express.js Is Used
+
+Express.js is a Node.js framework used to create the backend server and API routes.
+
+For example:
+
+```text
+GET /api/attendance
+GET /api/result
+```
+
+The Express server handles these requests and communicates with SBTET.
+
+---
+
+# 8. CORS
+
+CORS means:
+
+**Cross-Origin Resource Sharing**
+
+It allows the React frontend and Node.js backend running on different origins/ports to communicate.
+
+Example:
+
+```text
+Frontend
+http://localhost:5175
+
+Backend
+http://localhost:5000
+```
+
+Because the ports are different, CORS needs to allow the frontend to communicate with the backend.
+
+The backend configuration used during development was:
+
+```js
+app.use(
+  cors({
+    origin: true,
+    credentials: false,
+  })
+);
+```
+
+---
+
+# 9. dotenv and .env
+
+The backend uses `dotenv` to load environment configuration.
+
+Example:
+
+```text
+server/.env
+```
+
+The `.env` file should not be uploaded to GitHub when it contains private configuration.
+
+It should be added to `.gitignore`.
+
+Example:
+
+```text
+.env
+node_modules/
+```
+
+The frontend should not receive private backend configuration or secrets.
+
+---
+
+# 10. Known Project Directory
+
+The project has been worked on in different local copies during development.
+
+Known paths include:
+
+```text
+D:\GPTMASB\PROTOTYPE\government-polytechnic-college
+```
+
+and:
+
+```text
+C:\college-website\server
+```
+
+Earlier backup:
+
+```text
+C:\demo website\government-polytechnic-college-backup
+```
+
+The exact current location can change, so the actual VS Code project folder is the source of truth.
+
+---
+
+# 11. Backend Folder
+
+The backend generally contains:
+
+```text
+server/
+├── server.js
+├── package.json
+├── package-lock.json
+├── .env
+└── node_modules/
+```
+
+The important backend file is:
+
+```text
+server/server.js
+```
+
+---
+
+# 12. Frontend Source Structure
+
+The known/broad structure is:
+
+```text
+src/
+│
+├── components/
+│   ├── Header.jsx
+│   ├── Header.css
+│   ├── Footer.jsx
+│   ├── Footer.css
+│   ├── ScrollToTop.jsx
+│   └── ...
+│
+├── pages/
+│   ├── Home.jsx
+│   ├── Home.css
+│   ├── About.jsx
+│   ├── About.css
+│   ├── Departments.jsx
+│   ├── Departments.css
+│   ├── Faculty.jsx
+│   ├── Faculty.css
+│   ├── Placements.jsx
+│   ├── Placements.css
+│   ├── Events.jsx
+│   ├── Events.css
+│   ├── Gallery.jsx
+│   ├── Gallery.css
+│   ├── Contact.jsx
+│   ├── Contact.css
+│   ├── StudentPortal.jsx
+│   ├── StudentPortal.css
+│   ├── Attendance.jsx
+│   ├── Attendance.css
+│   ├── Result.jsx
+│   ├── Result.css
+│   ├── MidResult.jsx
+│   ├── MidResult.css
+│   ├── SemesterResult.jsx
+│   ├── SemesterResult.css
+│   └── ...
+│
+├── App.jsx
+├── App.css
+├── main.jsx
+└── index.css
+```
+
+**Important:** this is the known project structure, not a guaranteed exact inventory of every current file. The actual current `src` folder should be used if an exact file-by-file inventory is required.
+
+---
+
+# 13. App.jsx
+
+`App.jsx` is responsible for the main application structure and routing.
+
+It connects pages such as:
+
+* Home
+* About
+* Departments
+* Faculty
+* Placements
+* Events
+* Gallery
+* Contact
+* Student Portal
+* Attendance
+* Results
+
+It also uses components such as:
+
+* Header
+* Footer
+* ScrollToTop
+
+---
+
+# 14. main.jsx
+
+`main.jsx` is the React entry point.
+
+It loads the React application into the HTML root element.
+
+Conceptually:
+
+```text
+main.jsx
+   ↓
+App.jsx
+   ↓
+Routes / Components
+   ↓
+Pages
+```
+
+---
+
+# 15. Header
+
+The header contains:
+
+* College logo
+* College name
+* Navigation menu
+* Responsive/mobile navigation
+
+The design direction is:
+
+* Professional
+* Government-college style
+* Clean
+* Responsive
+* Deep blue based
+* Subtle maroon/red accents
+
+---
+
+# 16. Footer
+
+The footer can contain:
+
+* College name
+* Important links
+* Student Portal
+* Contact information
+* Quick links
+* Copyright
+* Social links where officially verified
+
+---
+
+# 17. ScrollToTop
+
+`ScrollToTop.jsx` is used so that when the user navigates between pages, the new page starts from the top instead of retaining the previous scroll position.
+
+---
+
+# 18. Home Page
+
+The Home page can contain:
+
+1. Header
+2. Hero section
+3. College/campus image
+4. Introduction
+5. Announcements
+6. Quick links
+7. About college
+8. Principal's message
+9. Departments
+10. Highlights
+11. Events
+12. Gallery
+13. Placements
+14. Contact
+15. Footer
+
+The design should remain professional rather than overly flashy.
+
+---
+
+# 19. About Page
+
+The About page can contain:
+
+* College introduction
+* History
+* Vision
+* Mission
+* Objectives
+* Principal information
+* Academic environment
+* Infrastructure
+* Departments
+* Student development
+* Achievements
+* Recognition/affiliation information where verified
+
+---
+
+# 20. Principal Information
+
+The project has information for:
+
+**Dr. K. Chandra Sekhar**
+
+Known information supplied for the project:
+
+* 29 years teaching experience
+* PhD, NIT Trichy, 2015
+* M.Tech Mechanical Engineering, Osmania University, 1996
+* B.Tech Mechanical Engineering, Kakatiya University, 1991
+* Lecturer, Mechanical Engineering, DTE Telangana since 1995
+* Principal since 2024
+
+For final public-facing content, official college information should be treated as the authoritative source.
+
+---
+
+# 21. Departments
+
+The website includes/targets these departments:
+
+* Computer Science & Engineering
+* Electronics & Communication Engineering
+* Electrical & Electronics Engineering
+* Mechanical Engineering
+* Civil Engineering
+* Automobile Engineering
+* Pharmacy
+
+CSE intake was updated from:
+
+```text
+120
+```
+
+to:
+
+```text
+132
+```
+
+---
+
+# 22. Faculty Page
+
+Faculty cards/directory can contain:
+
+* Faculty name
+* Photograph
+* Department
+* Designation
+* Qualification
+* Experience
+* Specialization
+
+The page can also support:
+
+* Search
+* Department filtering
+* Faculty categories
+
+---
+
+# 23. Placements Page
+
+The Placement page can contain:
+
+* Training & Placement Cell
+* Placement information
+* Training programs
+* Internship information
+* Placement process
+* Career guidance
+* Recruitment drives
+* Student achievements
+* Placement notices
+* Success stories
+* Contact details
+
+Recruiter names and placement statistics should not be invented.
+
+---
+
+# 24. Programs and Events
+
+The Events page uses an event-card style.
+
+Recommended structure:
+
+```text
+Date
+   ↓
+Event Name
+   ↓
+Category
+   ↓
+Short Description
+   ↓
+View Details
+```
+
+Possible categories:
+
+* Academic
+* Technical
+* Workshop
+* Seminar
+* Cultural
+* Sports
+* Competition
+* Student Activities
+
+---
+
+# 25. Gallery
+
+Gallery categories can include:
+
+* Campus
+* Academics
+* Laboratories
+* Events
+* Workshops
+* Sports
+* Cultural
+* Achievements
+* Infrastructure
+
+Possible filter:
+
+```text
+All | Campus | Academics | Labs | Events | Workshops | Sports
+```
+
+The gallery should use genuine college images where possible.
+
+---
+
+# 26. Contact Page
+
+Possible sections:
+
+* College address
+* Phone
+* Email
+* Office information
+* Working hours
+* Contact form
+* Map
+* Department contacts
+* Admissions contact
+* Student services
+* Placement contact
+
+Only verified official contact information should be published.
+
+---
+
+# 27. Quick Links
+
+The Quick Links section can include:
+
+* Admissions
+* Academics
+* Student Portal
+* Attendance
+* Results
+* Examination
+* Placements
+* Notices
+* Events
+* Downloads
+* College Information
+* Contact
+
+---
+
+# 28. Student Portal
+
+The Student Portal is one of the most important parts of the project.
+
+It provides student-oriented services such as:
+
+* Attendance
+* Results
+* Examination information
+* Consolidated result/service links
+* Other academic services
+
+The portal uses icons such as:
+
+* `CalendarCheck`
+* `FileText`
+* `ClipboardList`
+* `ExternalLink`
+
+from Lucide React.
+
+---
+
+# 29. Student Attendance
+
+The Attendance feature is already successfully integrated with SBTET.
+
+Flow:
+
+```text
+Student enters PIN
+       ↓
+Check Attendance
+       ↓
+React
+       ↓
+/api/attendance
+       ↓
+Express
+       ↓
+SBTET Attendance API
+       ↓
+Attendance JSON
+       ↓
+React
+       ↓
+Student Attendance
+```
+
+---
+
+# 30. Attendance Frontend Endpoint
+
+The frontend calls:
+
+```text
+GET /api/attendance?pin=PIN
+```
+
+Example:
+
+```text
+http://localhost:5000/api/attendance?pin=24001-CS-XXX
+```
+
+The PIN is entered by the student.
+
+---
+
+# 31. SBTET Attendance API
+
+The backend communicates with the SBTET attendance service:
+
+```text
+https://www.sbtet.telangana.gov.in/api/api/PreExamination/getAttendanceReport
+```
+
+The backend sends the student's PIN and receives attendance information.
+
+---
+
+# 32. Attendance Data
+
+SBTET can return information such as:
+
+* Student name
+* PIN
+* Branch
+* Semester
+* Scheme
+* Total working days
+* Actual working days
+* Present
+* Absent
+* Attendance percentage
+* Updated date
+
+It can also return:
+
+```text
+Table
+Table1
+Table2
+```
+
+---
+
+# 33. Attendance Tables
+
+### Table
+
+Contains student/summary attendance information.
+
+### Table1
+
+Contains daily attendance.
+
+Possible fields:
+
+* Date
+* Day
+* Status
+* Month
+* Year
+
+Possible statuses include:
+
+```text
+P
+A
+W
+H
+E
+-
+```
+
+### Table2
+
+Contains monthly attendance information.
+
+The months must be obtained dynamically from SBTET.
+
+---
+
+# 34. Important Attendance Parsing Fix
+
+One major issue occurred because SBTET sometimes returned JSON inside a JSON string.
+
+The correct parsing approach was:
+
+```js
+let data = JSON.parse(rawText);
+
+if (typeof data === "string") {
+  data = JSON.parse(data);
+}
+```
+
+Then:
+
+```js
+data.Table
+data.Table1
+data.Table2
+```
+
+can be accessed.
+
+Without this fix, the application could show:
+
+```text
+NO STUDENT ROW FOUND
+```
+
+even though SBTET returned HTTP 200 and actual data.
+
+---
+
+# 35. Attendance Exam-Purpose Percentage
+
+The website should display the attendance percentage used for examination purposes.
+
+SBTET can provide:
+
+```text
+TotalPercentage
+```
+
+or:
+
+```text
+ExamsPer
+```
+
+while:
+
+```text
+Percentage
+```
+
+can represent normal attendance.
+
+The preferred logic is:
+
+```js
+const value =
+  attendance?.student?.totalPercentage ??
+  attendance?.student?.percentage;
+```
+
+The project should not replace live SBTET data with manually entered attendance.
+
+---
+
+# 36. Attendance UI Requirements
+
+The Attendance page should have:
+
+* Compact white card
+* Centered layout
+* Heading: **Student Attendance**
+* Calendar icon
+* Bright accent
+* Smaller percentage display
+* Examination-purpose attendance
+* Date/day information
+* Responsive design
+
+The user also requested:
+
+```text
+Errors
+```
+
+instead of:
+
+```text
+Exam
+```
+
+in the relevant attendance UI label.
+
+---
+
+# 37. Attendance Test Data
+
+A historical test response contained data such as:
+
+```text
+PIN: 24001-CS-074
+Semester: 5SEM
+TotalWorkingDays: 90
+Present: 51
+Percentage: 57.95
+TotalPercentage: 56.67
+```
+
+These values are **test evidence only**.
+
+They must NOT be hardcoded into the website.
+
+---
+
+# 38. Result Integration
+
+The Result feature is the major ongoing part of the project.
+
+The goal is to fetch actual SBTET results dynamically.
+
+The user wants:
+
+```text
+PIN
+Scheme
+Semester
+Exam Type
+Get Result
+```
+
+---
+
+# 39. Result Scheme Options
+
+Required schemes:
+
+```text
+C24
+C26
+C18
+C16
+```
+
+The user specifically wants:
+
+```text
+C26
+```
+
+because it was previously missing.
+
+---
+
+# 40. Result Semester Options
+
+The result system must support:
+
+```text
+1SEM
+2SEM
+3SEM
+4SEM
+5SEM
+6SEM
+```
+
+The selected semester must be passed dynamically to the backend.
+
+The result system must NOT permanently use:
+
+```text
+4SEM
+```
+
+---
+
+# 41. Result Exam Types
+
+The user wants exactly:
+
+```text
+Mid-1
+Mid-2
+Semester
+```
+
+Not:
+
+```text
+Mid
+Semester
+```
+
+---
+
+# 42. Result Architecture
+
+```text
+PIN
+Scheme
+Semester
+Exam Type
+      ↓
+React Result Page
+      ↓
+/api/result
+      ↓
+Node + Express
+      ↓
+SBTET Results API
+      ↓
+JSON
+      ↓
+Backend processing
+      ↓
+React
+      ↓
+STUDENT RESULT
+```
+
+---
+
+# 43. Mid Result API
+
+The SBTET Mid result service used is:
+
+```text
+GetC18MidStudentWiseReport
+```
+
+Known endpoint:
+
+```text
+https://www.sbtet.telangana.gov.in/api/api/Results/GetC18MidStudentWiseReport
+```
+
+Parameters include:
+
+```text
+ExamTypeId
+Pin
+SchemeId
+SemYearId
+```
+
+---
+
+# 44. Known Mid Example
+
+One verified example used:
+
+```text
+ExamTypeId = 2
+SchemeId = 11
+SemYearId = 4
+```
+
+This corresponded to a Mid-2 result for a 4SEM example.
+
+This mapping should not automatically be assumed for every scheme or semester unless confirmed from SBTET configuration.
+
+---
+
+# 45. Semester Result API
+
+Semester results use:
+
+```text
+GetStudentWiseReport
+```
+
+Known endpoint:
+
+```text
+https://www.sbtet.telangana.gov.in/api/api/Results/GetStudentWiseReport
+```
+
+Parameters include:
+
+```text
+ExamMonthYearId
+ExamTypeId
+Pin
+SchemeId
+SemYearId
+StudentTypeId
+```
+
+---
+
+# 46. Important ExamMonthYearId Issue
+
+Semester results require:
+
+```text
+ExamMonthYearId
+```
+
+This value can vary according to examination/semester.
+
+A historical 4SEM request used:
+
+```text
+ExamMonthYearId = 99
+ExamTypeId = 5
+SchemeId = 11
+SemYearId = 4
+StudentTypeId = 1
+```
+
+The value:
+
+```text
+99
+```
+
+must NOT be hardcoded for every semester.
+
+---
+
+# 47. SBTET Exam Configuration
+
+The project investigated:
+
+```text
+GetExamTypeForResults?SchemeId=11
+```
+
+The SBTET configuration showed semester IDs corresponding to:
+
+```text
+1SEM
+2SEM
+3SEM
+4SEM
+5SEM
+6SEM
+```
+
+This is important because the result backend needs to use the correct selected semester.
+
+---
+
+# 48. Actual Semester Result Data
+
+The user supplied real SBTET semester responses for at least:
+
+```text
+1SEM
+2SEM
+```
+
+The 1SEM response contained information such as:
+
+```text
+Sem: 1SEM
+ExamType: Semester
+Scheme/Academic Year: C24-DEC-2024
+SGPA: 9.56
+CGPA: 9.72
+```
+
+along with subject-wise result information.
+
+The 2SEM response was also provided.
+
+These values are examples from actual SBTET responses and must not be hardcoded.
+
+---
+
+# 49. Mid-2 Example
+
+A historical 4SEM Mid-2 response contained subjects such as:
+
+```text
+SC-401 AEM
+CS-402 Java
+CS-403 Python
+CS-404 RDBMS
+CS-405 CNS
+CS-406 OS
+```
+
+with marks such as:
+
+```text
+20
+20
+19
+17
+14.5
+16
+```
+
+and laboratory marks.
+
+Again, these are API response examples and must not be hardcoded.
+
+---
+
+# 50. Required Result UI
+
+The result should display:
+
+# STUDENT RESULT
+
+Then:
+
+```text
+Student Name
+PIN
+Branch
+Semester
+Examination
+```
+
+Then the subject table:
+
+| Subject Code | Subject Name | Marks |
+| ------------ | ------------ | ----- |
+
+At the bottom:
+
+```text
+TOTAL MARKS
+```
+
+---
+
+# 51. Result UI Requirements
+
+The user specifically does NOT want:
+
+* Result Summary
+* Performance Summary
+* Percentage Summary
+* Separate summary cards
+* Unnecessary SGPA/CGPA summary
+* Separate pass/fail summary
+
+unless a particular result format genuinely requires relevant information.
+
+The main display should focus on:
+
+```text
+Student Information
++
+Subject Marks
++
+Total Marks
+```
+
+---
+
+# 52. Total Marks
+
+Total marks must be calculated from the actual fetched result data where appropriate.
+
+It must not use hardcoded marks.
+
+The total should appear at the bottom of the result table.
+
+Example structure:
+
+```text
+-------------------------------------------------
+Subject Code | Subject Name | Marks
+-------------------------------------------------
+CS-401       | AEM          | 20
+CS-402       | Java         | 20
+CS-403       | Python       | 19
+-------------------------------------------------
+                         TOTAL MARKS: XX
+```
+
+The actual values must come from SBTET.
+
+---
+
+# 53. Dynamic Semester Requirement
+
+This is very important.
+
+Incorrect:
+
+```js
+const semYearId = 4;
+```
+
+Correct concept:
+
+```js
+const semYearId = semesterMap[selectedSemester];
+```
+
+or dynamically derive it from the selected semester.
+
+The user must be able to select:
+
+```text
+1SEM
+2SEM
+3SEM
+4SEM
+5SEM
+6SEM
+```
+
+and receive the corresponding result.
+
+---
+
+# 54. Result Components
+
+Known result-related files include:
+
+```text
+Result.jsx
+Result.css
+
+MidResult.jsx
+MidResult.css
+
+SemesterResult.jsx
+SemesterResult.css
+```
+
+These may be organized differently in the actual project. The actual current source folder is the final authority.
+
+---
+
+# 55. Result Error Handling
+
+The result system should show useful errors such as:
+
+```text
+Result not found.
+```
+
+or:
+
+```text
+No result available for the selected semester/examination.
+```
+
+It should not show misleading errors when SBTET actually returns valid data.
+
+Loading state should also be displayed while fetching.
+
+---
+
+# 56. Backend Error Handling
+
+The backend should handle:
+
+* Invalid PIN
+* Missing parameters
+* SBTET API failure
+* Empty result
+* Invalid JSON
+* Unexpected response format
+* Network errors
+
+The backend should return appropriate JSON to React.
+
+---
+
+# 57. Attendance Must Not Be Broken
+
+Any future Result changes must preserve the working Attendance API.
+
+Do not:
+
+* Remove `/api/attendance`
+* Replace it with mock data
+* Change its SBTET endpoint unnecessarily
+* Hardcode attendance
+* Break the existing parsing logic
+
+Attendance is already a working major feature.
+
+---
+
+# 58. No Dummy Data
+
+The project requirement is:
+
+**NO DUMMY DATA**
+
+Especially for:
+
+* Attendance
+* Results
+* Student information
+* Marks
+* Attendance percentage
+
+The application should fetch real data from SBTET.
+
+---
+
+# 59. No Hardcoded Marks
+
+Never write:
+
+```js
+marks: 20
+```
+
+for actual student results.
+
+Marks must come from the API response.
+
+---
+
+# 60. No Hardcoded Student
+
+Never permanently use one student's PIN or name.
+
+The PIN should be entered by the student.
+
+---
+
+# 61. CORS Problem Previously Solved
+
+Earlier:
+
+```text
+Frontend: localhost:5173
+Backend: localhost:5000
+```
+
+Later Vite used:
+
+```text
+localhost:5175
+```
+
+The backend CORS configuration did not initially allow the new port.
+
+This caused CORS errors.
+
+The development configuration was changed to:
+
+```js
+cors({
+  origin: true,
+  credentials: false
+})
+```
+
+---
+
+# 62. app is not defined Error
+
+One backend error encountered was:
+
+```text
+app is not defined
+```
+
+The Express app must be initialized before middleware/routes:
+
+```js
+const express = require("express");
+const cors = require("cors");
+
+const app = express();
+```
+
+Then:
+
+```js
+app.use(...)
+```
+
+can be used.
+
+---
+
+# 63. npm PowerShell Issue
+
+A development issue occurred where PowerShell blocked:
+
+```text
+npm.ps1
+```
+
+because of execution policy.
+
+This is a Windows PowerShell configuration issue, not a React or Express coding error.
+
+CMD can also be used for npm commands.
+
+---
+
+# 64. Node.js
+
+The project uses Node.js.
+
+A previously checked version was:
+
+```text
+Node.js v24.18.0
+```
+
+The exact installed version may change.
+
+---
+
+# 65. Vite
+
+Vite is responsible for:
+
+* Development server
+* React project setup
+* Fast development
+* Production build
+
+The development server has used ports such as:
+
+```text
+5173
+5175
+```
+
+depending on availability/configuration.
+
+---
+
+# 66. Backend Port
+
+The Express backend has been running on:
+
+```text
+5000
+```
+
+Therefore:
+
+```text
+Frontend → localhost:5175
+Backend  → localhost:5000
+```
+
+is a typical current development setup.
+
+---
+
+# 67. REST API
+
+The project uses REST-style backend routes.
+
+Examples:
+
+```text
+GET /api/attendance
+GET /api/result
+```
+
+The React frontend sends HTTP requests and receives JSON.
+
+---
+
+# 68. Fetch API
+
+React uses the browser's `fetch()` function to call the backend.
+
+Concept:
+
+```text
+fetch()
+   ↓
+Backend
+   ↓
+JSON response
+   ↓
+setState()
+   ↓
+UI
+```
+
+---
+
+# 69. JSON
+
+The project uses JSON for communication between:
+
+```text
+SBTET
+↓
+Node.js
+↓
+React
+```
+
+JSON makes it easier for the frontend and backend to exchange structured data.
+
+---
+
+# 70. Database
+
+A local database is not currently required for the live SBTET Attendance/Result functionality.
+
+The flow is:
+
+```text
+Student
+↓
+Backend
+↓
+SBTET
+↓
+Backend
+↓
+Student
+```
+
+rather than:
+
+```text
+Student
+↓
+Local MySQL database
+```
+
+for live attendance/results.
+
+---
+
+# 71. Design Theme
+
+The website design should be:
+
+* Professional
+* Academic
+* Government-college style
+* Modern
+* Clean
+* Trustworthy
+* Human-made
+* Responsive
+
+Preferred visual direction:
+
+```text
+White / Light Background
+        +
+Deep Blue
+        +
+Subtle Maroon/Red Accent
+```
+
+---
+
+# 72. Typography
+
+The preferred typography direction is:
+
+**Poppins-style modern typography**
+
+It should be:
+
+* Clean
+* Readable
+* Professional
+* Consistent
+
+---
+
+# 73. UI Style
+
+The website should use:
+
+* Clean cards
+* Consistent spacing
+* Professional buttons
+* Rounded corners where appropriate
+* Subtle shadows
+* Clear hierarchy
+* Responsive grids
+* Professional icons
+* Subtle animations
+
+It should not look like a basic HTML college assignment.
+
+---
+
+# 74. Responsive Design
+
+The website should work on:
+
+* Desktop
+* Laptop
+* Tablet
+* Mobile
+
+The navigation should become mobile-friendly on smaller screens.
+
+---
+
+# 75. College Branding
+
+The design can use:
+
+* College logo
+* College name
+* Campus photographs
+* Academic imagery
+* Professional government-college styling
+
+The presentation/project materials can use the college image with controlled opacity when appropriate.
+
+---
+
+# 76. Important Rule for Images
+
+Use genuine college images wherever possible.
+
+Do not claim an image is an official college photograph unless it has been verified.
+
+---
+
+# 77. Project Differentiator
+
+The major differentiating feature is the Student Portal's live integration with SBTET services.
+
+A simple college website only displays static information.
+
+This project additionally provides:
+
+```text
+College Website
+       +
+Student Portal
+       +
+Live Attendance
+       +
+Live Results
+```
+
+This makes the project more technically meaningful.
+
+---
+
+# 78. Complete System Flow
+
+```text
+                    COLLEGE WEBSITE
+                           |
+        -----------------------------------------
+        |           |          |                |
+       Home       About     Departments      Faculty
+        |           |          |                |
+        -----------------------------------------
+                           |
+                    Student Portal
+                           |
+             -----------------------------
+             |             |               |
+         Attendance      Results       Other Services
+             |             |
+             v             v
+        Node/Express   Node/Express
+             |             |
+             v             v
+          SBTET API     SBTET API
+             |             |
+             v             v
+        Attendance       Results
+             |             |
+             ----------------
+                    |
+                    v
+                 React UI
+```
+
+---
+
+# 79. Current Working Status
+
+## Working
+
+* React frontend
+* Vite
+* JavaScript
+* HTML
+* CSS
+* React Router
+* Header
+* Footer
+* Main website pages
+* Student Portal
+* Node.js
+* Express
+* CORS
+* dotenv
+* Backend API
+* Live Attendance integration
+* Attendance parsing
+* Exam-purpose attendance
+* Daily attendance data
+* Monthly attendance data
+
+## In Development
+
+* Complete Result integration
+* Mid-1
+* Mid-2 full dynamic support
+* Semester results
+* 1SEM–6SEM dynamic support
+* C26 support
+* Dynamic ExamMonthYearId handling
+* Total Marks
+* Final result UI
+
+## Not Finalized
+
+* Production deployment
+* Final hosting
+* Final domain
+* Final database requirement
+* Complete production security configuration
+
+---
+
+# 80. Main Result Problem Being Solved
+
+The major Result issue is:
+
+```text
+Only 4SEM data is being returned/displayed.
+```
+
+The requirement is:
+
+```text
+1SEM
+2SEM
+3SEM
+4SEM
+5SEM
+6SEM
+```
+
+The selected semester must control the SBTET request.
+
+---
+
+# 81. Required Final Result Flow
+
+The final Result page should work like:
+
+```text
+PIN
+[________________]
+
+Scheme
+[C24 ▼]
+
+Semester
+[1SEM ▼]
+
+Exam Type
+[Mid-1 ▼]
+
+[ Get Result ]
+```
+
+Then:
+
+```text
+STUDENT RESULT
+
+Student Name: XXXXX
+PIN: XXXXX
+Branch: COMPUTER SCIENCE AND ENGINEERING
+Semester: 1SEM
+Examination: Mid-1
+```
+
+Then:
+
+```text
+--------------------------------------------------
+Subject Code | Subject Name | Marks
+--------------------------------------------------
+...
+--------------------------------------------------
+TOTAL MARKS: XXXXX
+```
+
+All information must come from the selected SBTET result.
+
+---
+
+# 82. Future Code-Change Rules
+
+Whenever code is modified:
+
+1. Preserve working Attendance.
+2. Preserve SBTET integration.
+3. Do not introduce dummy data.
+4. Do not hardcode student marks.
+5. Do not hardcode 4SEM.
+6. Do not remove C26.
+7. Keep Mid-1, Mid-2 and Semester.
+8. Keep all six semesters.
+9. Use actual SBTET configuration.
+10. Handle API errors.
+11. Keep frontend/backend separation.
+12. Keep the UI responsive.
+13. Avoid unnecessary rewrites of working files.
+14. When requested, provide the complete relevant file rather than fragments.
+
+---
+
+# 83. Important SBTET Rule
+
+SBTET response structures can vary.
+
+Therefore, the backend should inspect the actual response rather than assuming every response has exactly the same fields.
+
+For example:
+
+```text
+Table
+Table1
+Table2
+```
+
+for Attendance and different structures for Results.
+
+The parser should be flexible enough to handle the actual response structure.
+
+---
+
+# 84. Security Considerations
+
+The backend acts as an intermediary between React and SBTET.
+
+Important practices:
+
+* Keep private configuration in `.env`
+* Do not expose secrets to React
+* Validate PIN input
+* Handle API failures
+* Do not trust client input blindly
+* Do not log unnecessary sensitive student information
+* Do not commit `.env`
+* Do not store student data unnecessarily
+
+---
+
+# 85. GitHub
+
+The project can be maintained using Git/GitHub.
+
+Typical files to avoid committing:
+
+```text
+node_modules/
+.env
+```
+
+A typical `.gitignore` includes:
+
+```text
+node_modules/
+.env
+dist/
+```
+
+depending on project requirements.
+
+---
+
+# 86. Project Presentation
+
+The final-year presentation should explain:
+
+1. Project title
+2. Introduction
+3. Purpose
+4. Technologies used
+5. Tools used
+6. Website pages
+7. Student Portal
+8. Attendance integration
+9. Result integration
+10. Architecture
+11. Demonstration
+12. Conclusion / Thank You
+
+The presentation should be:
+
+* Formal
+* Academic
+* Professional
+* Concise
+* Suitable for HOD/faculty evaluation
+
+---
+
+# 87. Viva Explanation – Project in One Sentence
+
+**“This project is a responsive college website developed using React and Node.js with a Student Portal that integrates live Telangana SBTET services for student attendance and examination results.”**
+
+---
+
+# 88. Viva – What Is React?
+
+React is a JavaScript library used to build the frontend user interface using reusable components.
+
+---
+
+# 89. Viva – What Is Node.js?
+
+Node.js is a JavaScript runtime that allows JavaScript to run on the server side.
+
+---
+
+# 90. Viva – What Is Express.js?
+
+Express.js is a lightweight Node.js framework used to create the backend server and API routes.
+
+---
+
+# 91. Viva – What Is CORS?
+
+CORS stands for Cross-Origin Resource Sharing.
+
+It allows a frontend running on one origin/port to communicate with a backend running on another origin/port when the server permits it.
+
+---
+
+# 92. Viva – What Is dotenv?
+
+`dotenv` loads configuration values from a `.env` file into the Node.js environment.
+
+It helps keep configuration separate from source code.
+
+---
+
+# 93. Viva – What Is REST API?
+
+A REST API allows applications to communicate using HTTP requests.
+
+For example:
+
+```text
+GET /api/attendance
+GET /api/result
+```
+
+---
+
+# 94. Viva – Why Backend Is Used?
+
+The backend is used to:
+
+* Communicate with SBTET
+* Process API responses
+* Validate requests
+* Provide clean API endpoints to React
+* Keep external service logic outside the frontend
+
+---
+
+# 95. Viva – Why Not Directly Call SBTET From React?
+
+Using the backend provides better separation of responsibilities and allows the application to centralize:
+
+* API communication
+* Validation
+* Parsing
+* Error handling
+* Configuration
+
+---
+
+# 96. Viva – How Attendance Works?
+
+Answer:
+
+**“The student enters the PIN in the React frontend. The frontend sends the PIN to our Express backend. The backend requests attendance data from the SBTET service, processes the JSON response and sends the required attendance information back to React for display.”**
+
+---
+
+# 97. Viva – How Result Works?
+
+Answer:
+
+**“The student selects the PIN, scheme, semester and examination type. React sends these values to the Express backend. The backend calls the corresponding SBTET result service, processes the response and returns the subject-wise result to the frontend.”**
+
+---
+
+# 98. Viva – Is Attendance Hardcoded?
+
+Answer:
+
+**“No. Attendance is fetched dynamically from the SBTET service using the student's PIN.”**
+
+---
+
+# 99. Viva – Are Marks Hardcoded?
+
+Answer:
+
+**“No. Examination marks are intended to be fetched dynamically from the SBTET result service.”**
+
+---
+
+# 100. Viva – Why Is the Student Portal Important?
+
+Answer:
+
+**“The Student Portal provides students with academic services such as attendance and examination results in one place, instead of requiring them to navigate separate services.”**
+
+---
+
+# 101. Viva – What Is the Main Technical Feature?
+
+Answer:
+
+**“The main technical feature is the integration of the React frontend and Node.js/Express backend with live SBTET services for student attendance and examination results.”**
+
+---
+
+# 102. Final Project Description
+
+The final project can be described as:
+
+**Government Polytechnic College Masab Tank – College Website is a responsive React-based college website developed with a Node.js and Express backend. It provides information about the college, departments, faculty, placements, events, gallery and contact services. Its Student Portal integrates live Telangana SBTET services to retrieve student attendance and examination results dynamically using the student's PIN and selected academic parameters.**
+
+---
+
+# 103. Keywords for the Project
+
+```text
+React.js
+Vite
+JavaScript
+HTML
+CSS
+JSX
+React Router
+Node.js
+Express.js
+REST API
+CORS
+dotenv
+Fetch API
+JSON
+SBTET
+Student Portal
+Attendance
+Examination Results
+Responsive Web Design
+College Website
+```
+
+---
+
+# 104. Current Main Objective
+
+The immediate development objective is to finish the Result system so that:
+
+```text
+C24
+C26
+C18
+C16
+
++
+
+1SEM
+2SEM
+3SEM
+4SEM
+5SEM
+6SEM
+
++
+
+Mid-1
+Mid-2
+Semester
+
++
+
+Live SBTET data
+
++
+
+Total Marks
+```
+
+all work dynamically without breaking the already working Attendance integration.
+
+---
+
+# 105. Final Principle
+
+The most important project rule is:
+
+```text
+REAL SBTET DATA
+        ↓
+NODE + EXPRESS
+        ↓
+PROCESS RESPONSE
+        ↓
+REACT
+        ↓
+STUDENT
+```
+
+not:
+
+```text
+HARDCODED DATA
+        ↓
+WEBSITE
+```
+
+The website should remain professional, responsive, clean and suitable for a final-year Diploma CSE project.

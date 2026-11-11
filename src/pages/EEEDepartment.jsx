@@ -1,271 +1,846 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import {
+  Info,
+  CalendarDays,
+  Users,
+  UserRound,
+  Eye,
+  Target,
+  Lightbulb,
+  FlaskConical,
+  GraduationCap,
+  Award,
   Zap,
-  Settings,
   CircuitBoard,
   BatteryCharging,
-  Sun,
-  Activity,
-  ArrowLeft,
-  ArrowRight,
+  ChevronRight,
 } from "lucide-react";
 
 import "./EEEDepartment.css";
 
-const areas = [
+
+/* =========================================================
+   FACULTY DATA
+========================================================= */
+
+const faculty = [
   {
-    icon: Zap,
-    title: "Electrical Circuits",
-    text: "Learning electrical circuit concepts, measurements and practical applications.",
+    name: "PASU MALLESHAM",
+    designation: "LECTURER",
+    image: "/images/departments/eee/pasu-malleshm.jpg",
   },
   {
-    icon: Settings,
-    title: "Electrical Machines",
-    text: "Understanding transformers, motors, generators and their applications.",
-  },
-  {
-    icon: Activity,
-    title: "Power Systems",
-    text: "Introduction to electrical power generation, transmission and distribution.",
-  },
-  {
-    icon: CircuitBoard,
-    title: "Control Systems",
-    text: "Learning basic control concepts and automation applications.",
-  },
-  {
-    icon: BatteryCharging,
-    title: "Power Electronics",
-    text: "Studying electronic devices used for power conversion and control.",
-  },
-  {
-    icon: Sun,
-    title: "Renewable Energy",
-    text: "Exploring solar energy and other modern electrical energy technologies.",
+    name: "DESHABOINA SARITHA",
+    designation: "LECTURER",
+    image: "/images/departments/eee/deshaboina-saritha.jpg",
   },
 ];
 
-function EEEDepartment() {
+
+/* =========================================================
+   FACILITIES
+========================================================= */
+
+const facilities = [
+  {
+    icon: Zap,
+    title: "Electrical Machines Laboratory",
+    description:
+      "Practical training in electrical machines, their operation, characteristics, control and applications.",
+  },
+  {
+    icon: BatteryCharging,
+    title: "Power Systems Laboratory",
+    description:
+      "Practical exposure to electrical power generation, transmission, distribution and power system concepts.",
+  },
+  {
+    icon: CircuitBoard,
+    title: "Electrical Measurements Laboratory",
+    description:
+      "Hands-on learning in electrical measurements, measuring instruments, testing and measurement techniques.",
+  },
+  {
+    icon: FlaskConical,
+    title: "Power Electronics Laboratory",
+    description:
+      "Practical study of power electronic devices, converters, control techniques and modern electrical applications.",
+  },
+];
+
+
+/* =========================================================
+   SECTION TITLE
+========================================================= */
+
+function SectionTitle({ icon: Icon, children }) {
+  return (
+    <div className="eee-section-title">
+      <span className="eee-title-line"></span>
+
+      <Icon
+        size={21}
+        strokeWidth={2.2}
+      />
+
+      <h2>{children}</h2>
+    </div>
+  );
+}
+
+
+/* =========================================================
+   EEE DEPARTMENT PAGE
+========================================================= */
+
+export default function EEEDepartment() {
   return (
     <main className="eee-page">
 
-      {/* HERO */}
+      {/* =====================================================
+          HERO
+      ===================================================== */}
+
       <section className="eee-hero">
-        <div className="container">
 
-          <Link to="/departments" className="eee-back">
-            <ArrowLeft size={16} />
-            Back to Departments
-          </Link>
-
-          <span>ACADEMIC DEPARTMENT</span>
-
-          <h1>
-            Electrical & Electronics
-            <strong>Engineering</strong>
-          </h1>
-
-          <p>
-            Developing technical knowledge and practical skills
-            in electrical systems, electronics, power systems,
-            machines and modern energy technologies.
-          </p>
-
-        </div>
-      </section>
-
-
-      {/* ABOUT */}
-      <section className="eee-section">
-        <div className="container eee-about">
+        <div className="eee-hero-inner">
 
           <div>
-            <span>ABOUT THE DEPARTMENT</span>
 
-            <h2>
-              Electrical systems, energy and technology.
-            </h2>
-          </div>
+            <span className="eee-hero-label">
+              GOVERNMENT POLYTECHNIC COLLEGE
+            </span>
 
-          <div>
-            <p>
-              The Electrical & Electronics Engineering department
-              provides students with fundamental knowledge of
-              electrical circuits, machines, power systems,
-              electronics and control systems.
-            </p>
+            <h1>
+              Electrical & Electronics
+              <br />
+              Engineering
+            </h1>
 
             <p>
-              Practical laboratory work and project-based learning
-              help students develop technical and problem-solving
-              skills for modern electrical applications.
+              Government Polytechnic College, Masab Tank, Hyderabad
             </p>
+
           </div>
 
-        </div>
-      </section>
 
+          <div className="eee-breadcrumb">
 
-      {/* VISION & MISSION */}
-      <section className="eee-light-section">
-        <div className="container">
+            <a href="/">Home</a>
 
-          <div className="eee-heading">
-            <span>OUR DIRECTION</span>
-            <h2>Vision & Mission</h2>
-          </div>
+            <ChevronRight size={15} />
 
-          <div className="eee-two-column">
+            <a href="/departments">Departments</a>
 
-            <article>
-              <Zap size={25} />
+            <ChevronRight size={15} />
 
-              <h3>Vision</h3>
-
-              <p>
-                To develop technically skilled students with
-                strong electrical engineering knowledge,
-                practical abilities and professional skills.
-              </p>
-            </article>
-
-            <article>
-              <CircuitBoard size={25} />
-
-              <h3>Mission</h3>
-
-              <ul>
-                <li>Develop strong electrical fundamentals.</li>
-                <li>Provide practical laboratory experience.</li>
-                <li>Encourage technical projects and innovation.</li>
-                <li>Prepare students for industry and higher education.</li>
-              </ul>
-            </article>
+            <span>EEE</span>
 
           </div>
 
         </div>
+
       </section>
 
 
-      {/* CORE AREAS */}
+      {/* =====================================================
+          STATISTICS
+      ===================================================== */}
+
+      <section className="eee-stats">
+
+        <div className="eee-stat">
+
+          <div className="eee-stat-icon">
+            <Users size={24} />
+          </div>
+
+          <strong>{faculty.length}</strong>
+
+          <span>Faculty Members</span>
+
+        </div>
+
+
+        <div className="eee-stat">
+
+          <div className="eee-stat-icon">
+            <Zap size={24} />
+          </div>
+
+          <strong>EEE</strong>
+
+          <span>Electrical & Electronics</span>
+
+        </div>
+
+
+        <div className="eee-stat">
+
+          <div className="eee-stat-icon">
+            <BatteryCharging size={24} />
+          </div>
+
+          <strong>Practical</strong>
+
+          <span>Technical Training</span>
+
+        </div>
+
+
+        <div className="eee-stat">
+
+          <div className="eee-stat-icon">
+            <Award size={24} />
+          </div>
+
+          <strong>Diploma</strong>
+
+          <span>Engineering Programme</span>
+
+        </div>
+
+      </section>
+
+
+      {/* =====================================================
+          ABOUT DEPARTMENT
+      ===================================================== */}
+
       <section className="eee-section">
-        <div className="container">
 
-          <div className="eee-heading">
-            <span>ACADEMIC FOCUS</span>
-            <h2>Core Areas</h2>
-          </div>
-
-          <div className="eee-grid">
-
-            {areas.map((area, index) => {
-              const Icon = area.icon;
-
-              return (
-                <article className="eee-card" key={index}>
-
-                  <div className="eee-icon">
-                    <Icon size={23} />
-                  </div>
-
-                  <h3>{area.title}</h3>
-
-                  <p>{area.text}</p>
-
-                </article>
-              );
-            })}
-
-          </div>
-
-        </div>
-      </section>
+        <SectionTitle icon={Info}>
+          About the Department
+        </SectionTitle>
 
 
-      {/* LABORATORIES */}
-      <section className="eee-light-section">
-        <div className="container">
+        <div className="eee-about-grid">
 
-          <div className="eee-heading">
-            <span>PRACTICAL LEARNING</span>
-            <h2>Laboratories</h2>
-          </div>
+          <div className="eee-about-content">
 
-          <div className="eee-labs">
+            <div className="eee-established">
 
-            <div>Electrical Machines Laboratory</div>
-            <div>Electrical Measurements Laboratory</div>
-            <div>Power Systems Laboratory</div>
-            <div>Power Electronics Laboratory</div>
-            <div>Control Systems Laboratory</div>
-            <div>Electrical Workshop</div>
+              <CalendarDays size={18} />
 
-          </div>
+              <span>
+                Department of Electrical & Electronics Engineering
+              </span>
 
-        </div>
-      </section>
-
-
-      {/* DEPARTMENT DETAILS */}
-      <section className="eee-section">
-        <div className="container">
-
-          <div className="eee-details">
-
-            <div>
-              <span>DEPARTMENT</span>
-
-              <h2>
-                Electrical & Electronics Engineering
-              </h2>
-
-              <p>
-                Government Polytechnic College,
-                Masab Tank, Hyderabad.
-              </p>
             </div>
 
-            <div>
-              <span>STUDENT DEVELOPMENT</span>
 
-              <ul>
-                <li>Electrical Engineering Skills</li>
-                <li>Practical Laboratory Skills</li>
-                <li>Project Development</li>
-                <li>Industry-Oriented Knowledge</li>
-              </ul>
+            <p>
+              The Electrical and Electronics Engineering (EEE)
+              Department focuses on the generation, transmission,
+              distribution, and utilization of electrical power along
+              with the study of electrical machines and electronic
+              systems.
+            </p>
+
+
+            <p>
+              The department provides comprehensive knowledge of
+              electrical circuits, power systems, control systems,
+              and power electronics.
+            </p>
+
+
+            <p>
+              Practical training in electrical machines, measurement
+              techniques, and electrical maintenance enables students
+              to develop the skills required to work in power plants,
+              electrical industries, and maintenance sectors.
+            </p>
+
+          </div>
+
+
+          <div className="eee-about-card">
+
+            <div className="eee-about-icon">
+              <Zap size={30} />
+            </div>
+
+            <h3>
+              Electrical & Electronics Engineering
+            </h3>
+
+            <p>
+              Developing technical knowledge and practical skills in
+              electrical power systems, electrical machines,
+              measurements, control systems and power electronics.
+            </p>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      {/* =====================================================
+          HOD
+      ===================================================== */}
+
+      <section className="eee-section">
+
+        <SectionTitle icon={UserRound}>
+          Head of the Department
+        </SectionTitle>
+
+
+        <div className="eee-hod">
+
+          <div className="eee-hod-photo">
+
+            <img
+              src="/images/departments/eee/hod.jpg"
+              alt="Sri N. Srinivasa Rao"
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+
+                e.currentTarget.parentElement.classList.add(
+                  "eee-image-placeholder"
+                );
+              }}
+            />
+
+            <div className="eee-hod-placeholder">
+
+              <UserRound size={48} />
+
+              <span>HOD</span>
+
+            </div>
+
+          </div>
+
+
+          <div className="eee-hod-details">
+
+            <span className="eee-small-label">
+              HEAD OF DEPARTMENT
+            </span>
+
+
+            <h3>
+              Sri N. Srinivasa Rao
+            </h3>
+
+
+            <p className="eee-hod-role">
+              Head of Department — Electrical & Electronics Engineering
+            </p>
+
+
+            <div className="eee-hod-info">
+
+              <p>
+                He was appointed as{" "}
+                <strong>
+                  Lecturer in the Department of Electrical and
+                  Electronics Engineering (EEE)
+                </strong>{" "}
+                in the{" "}
+                <strong>
+                  Department of Technical Education
+                </strong>{" "}
+                on{" "}
+                <strong>
+                  12th July 1995
+                </strong>.
+              </p>
+
+
+              <p>
+                Since his appointment, he has been actively involved
+                in teaching and academic activities in the field of
+                Electrical and Electronics Engineering.
+              </p>
+
+
+              <p>
+                He has been serving in Government Polytechnic
+                institutions under the Department of Technical
+                Education and has gained extensive experience in
+                technical teaching and student guidance.
+              </p>
+
+
+              <p>
+                Over the years, he has contributed to the development
+                of students by imparting technical knowledge and
+                supporting various academic programs in Electrical
+                Engineering.
+              </p>
+
             </div>
 
           </div>
 
         </div>
+
       </section>
 
 
-      {/* CTA */}
-      <section className="eee-cta">
-        <div className="container">
+      {/* =====================================================
+          EDUCATIONAL QUALIFICATIONS
+      ===================================================== */}
+
+      <section className="eee-section">
+
+        <SectionTitle icon={GraduationCap}>
+          Educational Qualifications
+        </SectionTitle>
+
+
+        <div className="eee-qualification-grid">
+
+          <div className="eee-qualification-card">
+
+            <div className="eee-qualification-icon">
+
+              <GraduationCap size={25} />
+
+            </div>
+
+
+            <div>
+
+              <span>
+                Bachelor of Technology
+              </span>
+
+              <h3>
+                B.Tech – Electrical & Electronics Engineering
+              </h3>
+
+              <p>
+                Jawaharlal Nehru Technological University Kakinada,
+                Kakinada
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div className="eee-qualification-card">
+
+            <div className="eee-qualification-icon">
+
+              <GraduationCap size={25} />
+
+            </div>
+
+
+            <div>
+
+              <span>
+                Master of Technology
+              </span>
+
+              <h3>
+                M.Tech – Power Systems
+              </h3>
+
+              <p>
+                Jawaharlal Nehru Technological University Kakinada,
+                Kakinada
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      {/* =====================================================
+          PROFESSIONAL EXPERIENCE
+      ===================================================== */}
+
+      <section className="eee-section">
+
+        <SectionTitle icon={Award}>
+          Professional Experience
+        </SectionTitle>
+
+
+        <div className="eee-experience-card">
+
+          <div className="eee-experience-icon">
+
+            <CalendarDays size={28} />
+
+          </div>
+
 
           <div>
-            <span>EXPLORE MORE</span>
 
-            <h2>
-              Explore other academic departments.
-            </h2>
+            <span className="eee-experience-label">
+              DEPARTMENT OF TECHNICAL EDUCATION
+            </span>
+
+
+            <h3>
+              Experience since 12-07-1995
+            </h3>
+
+
+            <p>
+              Sri N. Srinivasa Rao has been working in the{" "}
+              <strong>
+                Department of Technical Education
+              </strong>{" "}
+              since{" "}
+              <strong>
+                12-07-1995
+              </strong>{" "}
+              and has several years of teaching experience in the{" "}
+              <strong>
+                Department of Electrical and Electronics Engineering
+                (EEE)
+              </strong>{" "}
+              in Government Polytechnic colleges.
+            </p>
+
+
+            <p>
+              He has gained extensive experience in technical
+              teaching and student guidance and has contributed to
+              various academic activities and programmes in the
+              field of Electrical Engineering.
+            </p>
+
+
+            <p>
+              He continues to contribute to the academic development
+              and learning of students in the Electrical and
+              Electronics Engineering department.
+            </p>
+
           </div>
 
-          <Link to="/departments">
-            View Departments
-            <ArrowRight size={17} />
-          </Link>
+        </div>
+
+      </section>
+
+
+      {/* =====================================================
+          VISION & MISSION
+      ===================================================== */}
+
+      <section className="eee-section">
+
+        <div className="eee-vision-mission">
+
+          {/* VISION */}
+
+          <div className="eee-vm-card vision">
+
+            <div className="eee-vm-icon">
+
+              <Lightbulb size={26} />
+
+            </div>
+
+
+            <div>
+
+              <span>
+                VISION OF THE DEPARTMENT
+              </span>
+
+
+              <p>
+                To prepare an effective and socially responsible
+                Electrical Engineer to serve the future needs and
+                challenges of the society.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          {/* MISSION */}
+
+          <div className="eee-vm-card mission">
+
+            <div className="eee-vm-icon">
+
+              <Target size={26} />
+
+            </div>
+
+
+            <div>
+
+              <span>
+                MISSION OF THE DEPARTMENT
+              </span>
+
+
+              <div className="eee-mission-list">
+
+                <p>
+                  <strong>M1:</strong>{" "}
+                  To provide adequate knowledge in the field of
+                  Electrical and Electronics Engineering to take the
+                  real time challenges with professional skills.
+                </p>
+
+
+                <p>
+                  <strong>M2:</strong>{" "}
+                  To enhance continuous learning skills to meet
+                  employability objectives.
+                </p>
+
+
+                <p>
+                  <strong>M3:</strong>{" "}
+                  To impart strong ethical qualities among students
+                  for serving the society.
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
 
         </div>
+
+      </section>
+
+
+      {/* =====================================================
+          FACULTY
+      ===================================================== */}
+
+      <section className="eee-section">
+
+        <div className="eee-section-heading-row">
+
+          <SectionTitle icon={Users}>
+            Faculty Details
+          </SectionTitle>
+
+
+          <span className="eee-faculty-count">
+            {faculty.length} Faculty Members
+          </span>
+
+        </div>
+
+
+        <div className="eee-faculty-grid">
+
+          {faculty.map((member) => (
+
+            <article
+              className="eee-faculty-card"
+              key={member.name}
+            >
+
+              <div className="eee-faculty-photo">
+
+                <img
+                  src={member.image}
+                  alt={member.name}
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+
+                    e.currentTarget.parentElement.classList.add(
+                      "eee-faculty-image-placeholder"
+                    );
+                  }}
+                />
+
+
+                <div className="eee-faculty-placeholder">
+
+                  <UserRound size={38} />
+
+                  <span>
+                    Faculty
+                  </span>
+
+                </div>
+
+              </div>
+
+
+              <div className="eee-faculty-details">
+
+                <span className="eee-faculty-designation">
+                  {member.designation}
+                </span>
+
+
+                <h3>
+                  {member.name}
+                </h3>
+
+
+                <div className="eee-faculty-profile">
+
+                  <span>
+                    Electrical & Electronics Engineering
+                  </span>
+
+                </div>
+
+
+                <button
+                  type="button"
+                  className="eee-profile-btn"
+                  onClick={() => {
+                    document
+                      .getElementById("eee-faculty-profile-note")
+                      ?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
+                      });
+                  }}
+                >
+
+                  <Eye size={16} />
+
+                  Faculty Profile
+
+                </button>
+
+              </div>
+
+            </article>
+
+          ))}
+
+        </div>
+
+
+        <div
+          id="eee-faculty-profile-note"
+          className="eee-profile-note"
+        >
+
+          <Info size={18} />
+
+          <span>
+            Faculty names and designations are displayed from the
+            Electrical and Electronics Engineering department
+            information provided for Government Polytechnic College,
+            Masab Tank.
+          </span>
+
+        </div>
+
+      </section>
+
+
+      {/* =====================================================
+          LABORATORIES
+      ===================================================== */}
+
+      <section className="eee-section">
+
+        <SectionTitle icon={FlaskConical}>
+          Laboratories & Learning Facilities
+        </SectionTitle>
+
+
+        <div className="eee-facilities-grid">
+
+          {facilities.map((facility) => {
+
+            const Icon = facility.icon;
+
+            return (
+
+              <div
+                className="eee-facility-card"
+                key={facility.title}
+              >
+
+                <div className="eee-facility-icon">
+
+                  <Icon size={27} />
+
+                </div>
+
+
+                <h3>
+                  {facility.title}
+                </h3>
+
+
+                <p>
+                  {facility.description}
+                </p>
+
+              </div>
+
+            );
+
+          })}
+
+        </div>
+
+      </section>
+
+
+      {/* =====================================================
+          PROGRAMME
+      ===================================================== */}
+
+      <section className="eee-section">
+
+        <SectionTitle icon={GraduationCap}>
+          Programme Information
+        </SectionTitle>
+
+
+        <div className="eee-program-card">
+
+          <div className="eee-program-icon">
+
+            <Zap size={38} />
+
+          </div>
+
+
+          <div>
+
+            <span className="eee-program-label">
+              DIPLOMA PROGRAMME
+            </span>
+
+
+            <h3>
+              Diploma in Electrical & Electronics Engineering
+            </h3>
+
+
+            <p>
+              The Electrical and Electronics Engineering programme
+              provides students with theoretical knowledge and
+              practical exposure in electrical circuits, electrical
+              machines, power systems, control systems, electrical
+              measurements, power electronics and related
+              technologies.
+            </p>
+
+          </div>
+
+        </div>
+
       </section>
 
     </main>
   );
 }
-
-export default EEEDepartment;

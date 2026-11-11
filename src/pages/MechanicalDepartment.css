@@ -1,350 +1,849 @@
+/* =========================================================
+   MECHANICAL ENGINEERING DEPARTMENT
+   Government Polytechnic College - Masab Tank
+========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
 .mechanical-page {
-  color: #29283a;
-  background: #fff;
+  width: 100%;
+  min-height: 100vh;
+  background: #f5f7fa;
+  color: #263238;
 }
 
-.mechanical-page .container {
-  width: min(1150px, calc(100% - 40px));
-  margin: auto;
-}
 
-/* HERO */
+/* =========================================================
+   HERO
+========================================================= */
 
 .mechanical-hero {
-  padding: 85px 0;
-  color: #fff;
-  background: linear-gradient(135deg, #3b2415, #a85d28);
+  width: 100%;
+  min-height: 280px;
+  background: linear-gradient(
+    135deg,
+    #6b1d1d 0%,
+    #8b2424 50%,
+    #5d1515 100%
+  );
+  border-bottom: 5px solid #e5b72f;
+  position: relative;
+  overflow: hidden;
 }
 
-.mechanical-back {
-  display: inline-flex;
+.mechanical-hero::before {
+  content: "";
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  right: -100px;
+  top: -150px;
+}
+
+.mechanical-hero::after {
+  content: "";
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  left: -120px;
+  bottom: -170px;
+}
+
+.mechanical-hero-overlay {
+  width: 100%;
+  min-height: 280px;
+  display: flex;
   align-items: center;
-  gap: 7px;
-  margin-bottom: 28px;
-  color: #f8e4d2;
-  font-size: 13px;
-  text-decoration: none;
+  position: relative;
+  z-index: 2;
 }
 
-.mechanical-hero span,
-.mechanical-section span,
-.mechanical-heading span,
-.mechanical-details span,
-.mechanical-cta span {
-  display: block;
-  margin-bottom: 12px;
-  color: #a85d28;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 2px;
+.mechanical-hero-content {
+  width: min(1150px, calc(100% - 40px));
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  color: #ffffff;
 }
 
-.mechanical-hero span,
-.mechanical-cta span {
-  color: #f5c9a5;
-}
-
-.mechanical-hero h1 {
-  max-width: 800px;
-  margin: 0;
-  font-size: clamp(40px, 6vw, 68px);
-  line-height: 1.05;
-  letter-spacing: -2px;
-}
-
-.mechanical-hero h1 strong {
-  display: block;
-  color: #f5c9a5;
-}
-
-.mechanical-hero p {
-  max-width: 680px;
-  margin: 24px 0 0;
-  color: #f2dfd0;
-  font-size: 16px;
-  line-height: 1.8;
-}
-
-
-/* COMMON SECTIONS */
-
-.mechanical-section,
-.mechanical-light-section {
-  padding: 80px 0;
-}
-
-.mechanical-light-section {
-  background: #fbf6f1;
-}
-
-
-/* ABOUT */
-
-.mechanical-about {
-  display: grid;
-  grid-template-columns: .8fr 1.2fr;
-  gap: 70px;
-}
-
-.mechanical-about h2,
-.mechanical-details h2 {
-  margin: 0;
-  font-size: clamp(30px, 4vw, 46px);
-  line-height: 1.15;
-}
-
-.mechanical-about p {
-  margin: 0 0 18px;
-  color: #706c77;
-  font-size: 15px;
-  line-height: 1.8;
-}
-
-
-/* SECTION HEADING */
-
-.mechanical-heading {
-  margin-bottom: 40px;
-  text-align: center;
-}
-
-.mechanical-heading h2 {
-  margin: 0;
-  font-size: clamp(30px, 4vw, 44px);
-}
-
-
-/* VISION & MISSION */
-
-.mechanical-two-column {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 22px;
-}
-
-.mechanical-two-column article {
-  padding: 30px;
-  border: 1px solid #eadbcf;
-  border-radius: 16px;
-  background: #fff;
-}
-
-.mechanical-two-column svg {
-  color: #a85d28;
-}
-
-.mechanical-two-column h3 {
-  margin: 18px 0 10px;
-  font-size: 24px;
-}
-
-.mechanical-two-column p,
-.mechanical-two-column li {
-  color: #706c77;
-  font-size: 14px;
-  line-height: 1.7;
-}
-
-.mechanical-two-column ul {
-  padding-left: 20px;
-}
-
-
-/* CORE AREAS */
-
-.mechanical-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
-.mechanical-card {
-  padding: 27px;
-  border: 1px solid #e8dfd8;
-  border-radius: 15px;
-  background: #fff;
-  transition: .25s ease;
-}
-
-.mechanical-card:hover {
-  transform: translateY(-5px);
-  border-color: #d8b394;
-  box-shadow: 0 15px 35px rgba(120, 70, 30, .08);
-}
-
-.mechanical-icon {
-  width: 50px;
-  height: 50px;
+.mechanical-hero-icon {
+  width: 78px;
+  height: 78px;
+  flex-shrink: 0;
+  border-radius: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 18px;
-  border-radius: 11px;
-  background: #f7eadf;
-  color: #a85d28;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffd95a;
 }
 
-.mechanical-card h3 {
-  margin: 0 0 9px;
-  font-size: 18px;
-}
-
-.mechanical-card p {
-  margin: 0;
-  color: #77737c;
+.mechanical-hero-label {
+  margin: 0 0 8px;
   font-size: 13px;
-  line-height: 1.7;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #ffd95a;
 }
 
-
-/* LABORATORIES */
-
-.mechanical-labs {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
-}
-
-.mechanical-labs div {
-  padding: 20px;
-  border: 1px solid #eadbcf;
-  border-radius: 12px;
-  background: #fff;
-  color: #555b60;
-  font-size: 14px;
-  font-weight: 600;
-  transition: .2s ease;
-}
-
-.mechanical-labs div:hover {
-  transform: translateY(-3px);
-  color: #a85d28;
-}
-
-
-/* DETAILS */
-
-.mechanical-details {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 70px;
-}
-
-.mechanical-details h2 {
-  font-size: 34px;
-}
-
-.mechanical-details p {
-  color: #77737c;
-  line-height: 1.7;
-}
-
-.mechanical-details ul {
+.mechanical-hero-content h1 {
   margin: 0;
-  padding-left: 20px;
+  font-size: clamp(30px, 5vw, 48px);
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: 0.5px;
 }
 
-.mechanical-details li {
-  margin-bottom: 12px;
-  color: #66616b;
+.mechanical-hero-subtitle {
+  margin: 12px 0 0;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.88);
 }
 
 
-/* CTA */
+/* =========================================================
+   MAIN CONTAINER
+========================================================= */
 
-.mechanical-cta {
-  padding: 65px 0;
-  color: #fff;
-  background: linear-gradient(135deg, #3b2415, #a85d28);
+.mechanical-container {
+  width: min(1150px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 28px 0 60px;
 }
 
-.mechanical-cta .container {
+
+/* =========================================================
+   BREADCRUMB
+========================================================= */
+
+.mechanical-breadcrumb {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 35px;
+  gap: 8px;
+  margin-bottom: 24px;
+  color: #697586;
+  font-size: 14px;
+  font-weight: 500;
 }
 
-.mechanical-cta h2 {
+.mechanical-breadcrumb .active {
+  color: #7b1e1e;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   COMMON SECTION
+========================================================= */
+
+.mechanical-section {
+  background: #ffffff;
+  border: 1px solid #e3e7ef;
+  border-radius: 18px;
+  padding: 32px;
+  margin-bottom: 26px;
+  box-shadow: 0 8px 25px rgba(31, 41, 55, 0.05);
+}
+
+.mechanical-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 28px;
+}
+
+.mechanical-section-icon {
+  width: 50px;
+  height: 50px;
+  flex-shrink: 0;
+  border-radius: 13px;
+  background: #f9ecec;
+  color: #8b2424;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mechanical-section-label {
+  margin: 0 0 4px;
+  color: #a05a00;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.mechanical-section-heading h2 {
   margin: 0;
-  font-size: clamp(28px, 4vw, 42px);
+  color: #202938;
+  font-size: 27px;
+  line-height: 1.2;
 }
 
-.mechanical-cta a {
-  display: inline-flex;
+
+/* =========================================================
+   HOD SECTION
+========================================================= */
+
+.mechanical-hod-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+.mechanical-hod-image-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mechanical-hod-image {
+  width: 260px;
+  height: 320px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: linear-gradient(
+    145deg,
+    #f2f4f7,
+    #e5e9ef
+  );
+  border: 1px solid #dce1e8;
+  box-shadow: 0 12px 30px rgba(31, 41, 55, 0.12);
+  position: relative;
+}
+
+.mechanical-hod-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.mechanical-hod-placeholder {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #8b2424;
+  gap: 10px;
+  background: linear-gradient(
+    145deg,
+    #f8eeee,
+    #eef1f5
+  );
+}
+
+.mechanical-hod-placeholder span {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.mechanical-hod-badge {
+  margin-top: 14px;
+  padding: 9px 15px;
+  border-radius: 30px;
+  display: flex;
   align-items: center;
   gap: 8px;
-  flex-shrink: 0;
-  padding: 14px 20px;
-  border-radius: 9px;
-  background: #fff;
-  color: #a85d28;
+  background: #8b2424;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: 0 5px 15px rgba(139, 36, 36, 0.2);
+}
+
+.mechanical-hod-content h3 {
+  margin: 0;
+  color: #7b1e1e;
+  font-size: 29px;
+  line-height: 1.2;
+}
+
+.mechanical-hod-designation {
+  margin: 8px 0 20px;
+  color: #a05a00;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.mechanical-hod-content > p {
+  color: #596579;
+  font-size: 15px;
+  line-height: 1.85;
+  margin: 0 0 17px;
+}
+
+.mechanical-hod-content strong {
+  color: #343f52;
+}
+
+
+/* =========================================================
+   INFORMATION BOX
+========================================================= */
+
+.mechanical-info-box {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #e3e7ef;
+  border-radius: 14px;
+  background: #fafbfc;
+}
+
+.mechanical-info-box-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #7b1e1e;
+  margin-bottom: 14px;
+}
+
+.mechanical-info-box-title h4 {
+  margin: 0;
+  font-size: 17px;
+  color: #263238;
+}
+
+.mechanical-info-box ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mechanical-info-box li {
+  display: flex;
+  gap: 12px;
+  color: #596579;
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 14px;
+}
+
+.mechanical-info-box li:last-child {
+  margin-bottom: 0;
+}
+
+.mechanical-list-dot {
+  width: 8px;
+  height: 8px;
+  min-width: 8px;
+  margin-top: 8px;
+  border-radius: 50%;
+  background: #a05a00;
+}
+
+.mechanical-info-box p {
+  margin: 0;
+  color: #596579;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.mechanical-info-box strong {
+  color: #343f52;
+}
+
+
+/* =========================================================
+   ABOUT
+========================================================= */
+
+.mechanical-about-content {
+  width: 100%;
+}
+
+.mechanical-about-text p {
+  margin: 0 0 18px;
+  color: #596579;
+  font-size: 15px;
+  line-height: 1.9;
+}
+
+.mechanical-about-text p:last-child {
+  margin-bottom: 0;
+}
+
+.mechanical-about-text strong {
+  color: #343f52;
+}
+
+
+/* =========================================================
+   FOCUS AREAS
+========================================================= */
+
+.mechanical-focus-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 28px;
+}
+
+.mechanical-focus-card {
+  padding: 22px;
+  border: 1px solid #e3e7ef;
+  border-radius: 15px;
+  background: #ffffff;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.mechanical-focus-card:hover {
+  transform: translateY(-5px);
+  border-color: #d6a4a4;
+  box-shadow: 0 12px 28px rgba(31, 41, 55, 0.09);
+}
+
+.mechanical-focus-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: #f9ecec;
+  color: #8b2424;
+  margin-bottom: 15px;
+}
+
+.mechanical-focus-card h3 {
+  margin: 0 0 8px;
+  color: #293241;
+  font-size: 16px;
+}
+
+.mechanical-focus-card p {
+  margin: 0;
+  color: #697586;
   font-size: 13px;
+  line-height: 1.65;
+}
+
+
+/* =========================================================
+   VISION
+========================================================= */
+
+.mechanical-vision-section {
+  background: linear-gradient(
+    135deg,
+    #fffdf8,
+    #ffffff
+  );
+}
+
+.mechanical-vision-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 26px;
+  border-radius: 16px;
+  background: linear-gradient(
+    135deg,
+    #f9ecec,
+    #fff7e8
+  );
+  border: 1px solid #ead9c5;
+}
+
+.mechanical-vision-icon {
+  width: 58px;
+  height: 58px;
+  min-width: 58px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #8b2424;
+  color: #ffffff;
+}
+
+.mechanical-vision-card span {
+  display: block;
+  margin-bottom: 8px;
+  color: #a05a00;
+  font-size: 11px;
   font-weight: 800;
-  text-decoration: none;
+  letter-spacing: 1.5px;
+}
+
+.mechanical-vision-card p {
+  margin: 0;
+  color: #394456;
+  font-size: 16px;
+  line-height: 1.8;
+  font-weight: 600;
 }
 
 
-/* TABLET */
+/* =========================================================
+   MISSION
+========================================================= */
 
-@media (max-width: 900px) {
-  .mechanical-about,
-  .mechanical-details {
+.mechanical-mission-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.mechanical-mission-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 22px;
+  border: 1px solid #e3e7ef;
+  border-radius: 15px;
+  background: #ffffff;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.mechanical-mission-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(31, 41, 55, 0.08);
+}
+
+.mechanical-mission-number {
+  width: 45px;
+  height: 45px;
+  min-width: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: #8b2424;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.mechanical-mission-card h3 {
+  margin: 1px 0 9px;
+  color: #293241;
+  font-size: 16px;
+}
+
+.mechanical-mission-card p {
+  margin: 0;
+  color: #697586;
+  font-size: 13.5px;
+  line-height: 1.75;
+}
+
+
+/* =========================================================
+   STRENGTH / OVERVIEW
+========================================================= */
+
+.mechanical-strength-section {
+  background: #fbfcfd;
+}
+
+.mechanical-strength-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 17px;
+}
+
+.mechanical-strength-card {
+  text-align: center;
+  padding: 24px 18px;
+  border: 1px solid #e3e7ef;
+  border-radius: 15px;
+  background: #ffffff;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.mechanical-strength-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 28px rgba(31, 41, 55, 0.08);
+}
+
+.mechanical-strength-card svg {
+  color: #8b2424;
+  margin-bottom: 12px;
+}
+
+.mechanical-strength-card h3 {
+  margin: 0 0 7px;
+  color: #293241;
+  font-size: 16px;
+}
+
+.mechanical-strength-card p {
+  margin: 0;
+  color: #697586;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   BOTTOM NOTE
+========================================================= */
+
+.mechanical-bottom-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 5px;
+  padding: 18px;
+  color: #697586;
+  font-size: 13px;
+  text-align: center;
+}
+
+.mechanical-bottom-note svg {
+  color: #8b2424;
+}
+
+
+/* =========================================================
+   RESPONSIVE - 1000px
+========================================================= */
+
+@media (max-width: 1000px) {
+
+  .mechanical-hod-layout {
+    grid-template-columns: 250px 1fr;
+    gap: 28px;
+  }
+
+  .mechanical-hod-image {
+    width: 230px;
+    height: 290px;
+  }
+
+  .mechanical-focus-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .mechanical-strength-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .mechanical-mission-grid {
     grid-template-columns: 1fr;
-    gap: 35px;
-  }
-
-  .mechanical-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .mechanical-labs {
-    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 
-/* MOBILE */
+/* =========================================================
+   RESPONSIVE - 760px
+========================================================= */
 
-@media (max-width: 650px) {
-  .mechanical-page .container {
-    width: calc(100% - 28px);
-  }
+@media (max-width: 760px) {
 
   .mechanical-hero {
-    padding: 60px 0;
+    min-height: 240px;
   }
 
-  .mechanical-hero h1 {
-    font-size: 40px;
+  .mechanical-hero-overlay {
+    min-height: 240px;
   }
 
-  .mechanical-section,
-  .mechanical-light-section {
-    padding: 60px 0;
+  .mechanical-hero-content {
+    width: min(100% - 30px, 650px);
+    gap: 16px;
   }
 
-  .mechanical-two-column,
-  .mechanical-grid,
-  .mechanical-labs {
+  .mechanical-hero-icon {
+    width: 62px;
+    height: 62px;
+  }
+
+  .mechanical-container {
+    width: min(100% - 30px, 650px);
+    padding-top: 22px;
+  }
+
+  .mechanical-section {
+    padding: 24px;
+    border-radius: 15px;
+  }
+
+  .mechanical-hod-layout {
     grid-template-columns: 1fr;
   }
 
-  .mechanical-two-column article,
-  .mechanical-card {
-    padding: 23px;
+  .mechanical-hod-image-wrapper {
+    width: 100%;
   }
 
-  .mechanical-details h2 {
-    font-size: 30px;
+  .mechanical-hod-image {
+    width: 230px;
+    height: 285px;
   }
 
-  .mechanical-cta .container {
-    flex-direction: column;
+  .mechanical-hod-content h3 {
+    font-size: 25px;
+  }
+
+  .mechanical-focus-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .mechanical-strength-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE - 520px
+========================================================= */
+
+@media (max-width: 520px) {
+
+  .mechanical-hero {
+    min-height: 220px;
+  }
+
+  .mechanical-hero-overlay {
+    min-height: 220px;
+  }
+
+  .mechanical-hero-content {
     align-items: flex-start;
   }
 
-  .mechanical-cta {
-    padding: 55px 0;
+  .mechanical-hero-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 13px;
+  }
+
+  .mechanical-hero-label {
+    font-size: 10px;
+    letter-spacing: 1.2px;
+  }
+
+  .mechanical-hero-content h1 {
+    font-size: 27px;
+  }
+
+  .mechanical-hero-subtitle {
+    font-size: 13px;
+  }
+
+  .mechanical-container {
+    width: calc(100% - 20px);
+  }
+
+  .mechanical-section {
+    padding: 20px 16px;
+  }
+
+  .mechanical-section-heading {
+    gap: 11px;
+  }
+
+  .mechanical-section-icon {
+    width: 43px;
+    height: 43px;
+  }
+
+  .mechanical-section-heading h2 {
+    font-size: 22px;
+  }
+
+  .mechanical-hod-image {
+    width: 200px;
+    height: 250px;
+  }
+
+  .mechanical-hod-content h3 {
+    font-size: 23px;
+  }
+
+  .mechanical-hod-content > p {
+    font-size: 14px;
+    line-height: 1.75;
+  }
+
+  .mechanical-focus-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mechanical-strength-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mechanical-vision-card {
+    padding: 20px;
+    gap: 14px;
+  }
+
+  .mechanical-vision-icon {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+  }
+
+  .mechanical-vision-card p {
+    font-size: 14px;
+  }
+
+  .mechanical-mission-card {
+    padding: 18px;
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE - 380px
+========================================================= */
+
+@media (max-width: 380px) {
+
+  .mechanical-hero-content {
+    gap: 10px;
+  }
+
+  .mechanical-hero-icon {
+    width: 45px;
+    height: 45px;
+  }
+
+  .mechanical-hero-content h1 {
+    font-size: 23px;
+  }
+
+  .mechanical-section-heading h2 {
+    font-size: 20px;
+  }
+
+  .mechanical-hod-image {
+    width: 180px;
+    height: 225px;
+  }
+
+  .mechanical-info-box {
+    padding: 16px;
+  }
+
+  .mechanical-mission-card {
+    flex-direction: column;
+  }
+
+  .mechanical-vision-card {
+    flex-direction: column;
   }
 }

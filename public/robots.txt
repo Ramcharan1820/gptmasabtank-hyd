@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://college-website.tejayadavn.workers.dev/sitemap.xml

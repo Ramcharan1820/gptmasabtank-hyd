@@ -54,8 +54,15 @@ function Result() {
     setResult(null);
     setError("");
 
-    if (!pin.trim()) {
+    const enteredPin = pin.trim().toUpperCase();
+
+    if (!enteredPin) {
       setError("Please enter your PIN.");
+      return;
+    }
+
+    if (!/^[A-Z0-9-]+$/.test(enteredPin)) {
+      setError("PIN can contain only letters, numbers, and hyphens.");
       return;
     }
 
@@ -66,7 +73,7 @@ function Result() {
 
       params.append(
         "pin",
-        pin.trim().toUpperCase()
+        enteredPin
       );
 
       params.append("scheme", scheme);

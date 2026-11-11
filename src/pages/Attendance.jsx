@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import "./Attendance.css";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.replace(/\/+$/, "");
@@ -51,7 +51,8 @@ function Attendance() {
 
       if (!response.ok || !result?.success || !result?.data) {
         throw new Error(
-          "We couldn't retrieve attendance from SBTET right now."
+          result?.message ||
+            "We couldn't retrieve attendance from SBTET right now."
         );
       }
 

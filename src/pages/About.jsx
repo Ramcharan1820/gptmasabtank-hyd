@@ -1,413 +1,418 @@
 import React from "react";
 import {
-  Award,
-  BookOpen,
   Building2,
-  CheckCircle2,
-  GraduationCap,
-  Target,
   Users,
+  GraduationCap,
+  CalendarDays,
+  MapPin,
+  Trophy,
+  ChevronRight,
+  Car,
+  HardHat,
+  Cpu,
+  Radio,
+  Zap,
+  Cog,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import "./About.css";
 
+/* =========================================================
+   VERIFIED DEPARTMENTS / PROGRAMMES
+   Government Polytechnic, Masab Tank
+========================================================= */
+
+const departments = [
+  {
+    name: "Automobile Engineering",
+    code: "AU",
+    slug: "automobile-engineering",
+    icon: Car,
+  },
+  {
+    name: "Civil Engineering",
+    code: "CE",
+    slug: "civil-engineering",
+    icon: HardHat,
+  },
+  {
+    name: "Computer Science and Engineering",
+    code: "CS",
+    slug: "computer-science-engineering",
+    icon: Cpu,
+  },
+  {
+    name: "Electronics & Communication Engineering",
+    code: "EC",
+    slug: "electronics-communication-engineering",
+    icon: Radio,
+  },
+  {
+    name: "Electrical & Electronics Engineering",
+    code: "EE",
+    slug: "electrical-electronics-engineering",
+    icon: Zap,
+  },
+  {
+    name: "Mechanical Engineering",
+    code: "ME",
+    slug: "mechanical-engineering",
+    icon: Cog,
+  },
+];
+
 function About() {
   return (
-    <main className="about-page">
+    <div className="gptm-about-page">
 
-      {/* =========================================
-          PAGE HERO
-          ========================================= */}
+      {/* =====================================================
+          TOP PAGE HEADER
+      ====================================================== */}
 
-      <section className="about-hero">
+      <section className="gptm-page-header">
 
-        <div className="about-hero-overlay"></div>
+        <div className="gptm-header-overlay"></div>
 
-        <div className="about-container about-hero-content">
+        <div className="gptm-header-container">
 
-          <span className="about-eyebrow">
-            ABOUT OUR INSTITUTION
-          </span>
+          <div className="gptm-header-left">
 
-          <h1>
-            Government Polytechnic
-            <span>College, Masab Tank</span>
-          </h1>
+            <div className="gptm-header-title">
+              <Building2 size={34} strokeWidth={2.3} />
 
-          <p>
-            A government technical education institution committed
-            to quality education, practical skills and student
-            development.
+              <div>
+                <h1>
+                  About Government Polytechnic
+                </h1>
+
+                <h2>
+                  Masab Tank
+                </h2>
+              </div>
+            </div>
+
+            <p>
+              Quality Technical Education for a Brighter Future
+            </p>
+
+          </div>
+
+          {/* Breadcrumb */}
+
+          <div className="gptm-breadcrumb">
+
+            <Link to="/">
+              Home
+            </Link>
+
+            <span>/</span>
+
+            <Link to="/about">
+              About
+            </Link>
+
+            <span>/</span>
+
+            <strong>
+              Government Polytechnic
+            </strong>
+
+          </div>
+
+        </div>
+      </section>
+
+
+      {/* =====================================================
+          STATISTICS STRIP
+      ====================================================== */}
+
+      
+
+
+      {/* =====================================================
+          MAIN ABOUT CONTENT
+      ====================================================== */}
+
+      <main className="gptm-main-content">
+
+        {/* ===================================================
+            ABOUT COLLEGE
+        ==================================================== */}
+
+        <section className="gptm-about-section">
+
+          <div className="gptm-about-text">
+
+            <p>
+              <strong>
+                Government Polytechnic, Masab Tank
+              </strong>{" "}
+              is a government technical education institution located at
+              Masab Tank, Hyderabad, Telangana.
+            </p>
+
+            <p>
+              The institution is part of the Telangana State Board of
+              Technical Education and Training system and is identified
+              by <strong>College Code 001</strong> in SBTET records.
+            </p>
+
+            <p>
+              Government Polytechnic, Masab Tank offers diploma-level
+              technical education through engineering programmes including
+              Automobile Engineering, Civil Engineering, Computer Science
+              and Engineering, Electronics & Communication Engineering,
+              Electrical & Electronics Engineering and Mechanical Engineering.
+            </p>
+
+          </div>
+
+
+          {/* College Image */}
+
+          <div className="gptm-about-image">
+
+            <img
+              src="images/college.jpg"
+              alt="Government Polytechnic Masab Tank"
+              loading="lazy"
+            />
+
+            <div className="gptm-image-label">
+
+              <MapPin size={18} />
+
+              <div>
+                <strong>
+                  Government Polytechnic
+                </strong>
+
+                <span>
+                  Masab Tank, Hyderabad
+                </span>
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        {/* ===================================================
+            COLLEGE INFORMATION CARDS
+        ==================================================== */}
+
+        <section className="gptm-info-cards">
+
+          <div className="gptm-info-card">
+
+            <strong>
+              1923
+            </strong>
+
+            <span>
+              Established
+            </span>
+
+          </div>
+
+
+          <div className="gptm-info-card">
+
+            <strong>
+              001
+            </strong>
+
+            <span>
+              SBTET College Code
+            </span>
+
+          </div>
+
+
+          <div className="gptm-info-card">
+
+            <strong>
+              6
+            </strong>
+
+            <span>
+              Listed Programmes
+            </span>
+
+          </div>
+
+
+          <div className="gptm-info-card">
+
+            <strong>
+              540
+            </strong>
+
+            <span>
+              2025 Listed Intake
+            </span>
+
+          </div>
+
+        </section>
+
+
+        {/* ===================================================
+            EDUCATIONAL OBJECTIVES
+        ==================================================== */}
+
+        <section className="gptm-content-section">
+
+          <div className="gptm-section-title">
+
+            <span></span>
+
+            <h2>
+              Educational Objectives
+            </h2>
+
+          </div>
+
+          <ul className="gptm-objectives">
+
+            <li>
+              To provide diploma-level technical education in
+              engineering disciplines.
+            </li>
+
+            <li>
+              To provide students with academic and technical
+              knowledge relevant to their chosen engineering programme.
+            </li>
+
+            <li>
+              To develop practical and technical skills through
+              polytechnic education.
+            </li>
+
+            <li>
+              To prepare students for further education and
+              employment in technical fields.
+            </li>
+
+          </ul>
+
+        </section>
+        
+
+
+        {/* ===================================================
+            LOCATION
+        ==================================================== */}
+
+        <section className="gptm-content-section">
+
+          <div className="gptm-section-title">
+
+            <span></span>
+
+            <h2>
+              Location — Masab Tank
+            </h2>
+
+          </div>
+
+          <p className="gptm-location-text">
+
+            Government Polytechnic, Masab Tank is located in
+            <strong> Masab Tank, Hyderabad, Telangana – 500028.</strong>
+
           </p>
 
-        </div>
+          <p className="gptm-location-text">
 
-      </section>
+            The institution is situated in Hyderabad and forms part
+            of Telangana's government technical education system.
 
+          </p>
 
-      {/* =========================================
-          COLLEGE OVERVIEW
-          ========================================= */}
-
-      <section className="about-overview">
-
-        <div className="about-container">
-
-          <div className="about-overview-grid">
-
-            <div className="about-overview-content">
-
-              <span className="about-section-label">
-                COLLEGE OVERVIEW
-              </span>
-
-              <h2>
-                Empowering Students Through
-                <span> Technical Education</span>
-              </h2>
-
-              <div className="about-gold-line"></div>
-
-              <p>
-                Government Polytechnic College, Masab Tank is
-                dedicated to providing quality technical education
-                and developing skilled professionals for the
-                requirements of industry and society.
-              </p>
-
-              <p>
-                The institution provides students with opportunities
-                to develop technical knowledge, practical skills,
-                professional values and confidence through academic
-                learning and practical exposure.
-              </p>
-
-              <p>
-                With dedicated faculty, technical laboratories and
-                student-focused learning, the college aims to create
-                an environment that supports academic and personal
-                growth.
-              </p>
-
-            </div>
+        </section>
 
 
-            <div className="about-overview-card">
+        {/* ===================================================
+            DEPARTMENTS
+        ==================================================== */}
 
-              <div className="overview-card-icon">
-                <GraduationCap size={32} />
-              </div>
+        <section
+          className="gptm-departments-section"
+          id="departments"
+        >
 
-              <span>
-                GOVERNMENT POLYTECHNIC
-              </span>
+          <div className="gptm-section-title">
 
-              <h3>
-                Quality Technical Education
-              </h3>
-
-              <p>
-                Building technical knowledge, practical skills and
-                professional abilities for the future.
-              </p>
-
-              <div className="overview-card-line"></div>
-
-              <div className="overview-card-items">
-
-                <div>
-                  <CheckCircle2 size={18} />
-                  <span>
-                    Practical Learning
-                  </span>
-                </div>
-
-                <div>
-                  <CheckCircle2 size={18} />
-                  <span>
-                    Skilled Faculty
-                  </span>
-                </div>
-
-                <div>
-                  <CheckCircle2 size={18} />
-                  <span>
-                    Student Development
-                  </span>
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </section>
-
-
-      {/* =========================================
-          VISION & MISSION
-          ========================================= */}
-
-      <section className="about-vision-mission">
-
-        <div className="about-container">
-
-          <div className="about-section-heading">
-
-            <span className="about-section-label">
-              OUR DIRECTION
-            </span>
+            <span></span>
 
             <h2>
-              Vision & Mission
+              Departments
             </h2>
 
-            <p>
-              Our educational approach focuses on technical
-              excellence, practical learning and responsible
-              student development.
-            </p>
-
           </div>
 
 
-          <div className="vision-mission-grid">
+          <div className="gptm-department-grid">
 
-            {/* VISION */}
+            {departments.map((department) => {
 
-            <div className="vision-card">
+              const Icon = department.icon;
 
-              <div className="vm-icon">
-                <Target size={28} />
-              </div>
+              return (
+                <Link
+                  key={department.slug}
+                  to={`/departments/${department.slug}`}
+                  className="gptm-department-card"
+                >
 
-              <span className="vm-label">
-                OUR VISION
-              </span>
+                  <div className="gptm-department-left">
 
-              <h3>
-                Excellence Through Technical Education
-              </h3>
+                    <div className="gptm-department-icon">
+                      <Icon size={22} />
+                    </div>
 
-              <p>
-                To provide quality technical education and develop
-                competent, skilled and responsible students who can
-                contribute effectively to industry and society.
-              </p>
+                    <div>
 
-            </div>
+                      <h3>
+                        {department.name}
+                      </h3>
+
+                      <span>
+                        Diploma Programme
+                      </span>
+
+                    </div>
+
+                  </div>
 
 
-            {/* MISSION */}
+                  <div className="gptm-department-right">
 
-            <div className="mission-card">
+                    <small>
+                      {department.code}
+                    </small>
 
-              <div className="vm-icon">
-                <Award size={28} />
-              </div>
+                    <ChevronRight size={21} />
 
-              <span className="vm-label">
-                OUR MISSION
-              </span>
+                  </div>
 
-              <h3>
-                Knowledge, Skills & Character
-              </h3>
-
-              <p>
-                To provide an effective learning environment that
-                combines theoretical knowledge with practical
-                training, innovation, discipline and professional
-                development.
-              </p>
-
-            </div>
+                </Link>
+              );
+            })}
 
           </div>
 
-        </div>
+        </section>
 
-      </section>
+      </main>
 
-
-      {/* =========================================
-          OBJECTIVES
-          ========================================= */}
-
-      <section className="about-objectives">
-
-        <div className="about-container">
-
-          <div className="about-section-heading centered">
-
-            <span className="about-section-label">
-              OUR OBJECTIVES
-            </span>
-
-            <h2>
-              What We Focus On
-            </h2>
-
-            <p>
-              The college focuses on developing students with
-              technical competence and professional confidence.
-            </p>
-
-          </div>
-
-
-          <div className="objectives-grid">
-
-            <div className="objective-card">
-
-              <div className="objective-icon">
-                <BookOpen size={24} />
-              </div>
-
-              <h3>
-                Academic Excellence
-              </h3>
-
-              <p>
-                Encourage strong academic foundations and
-                continuous learning.
-              </p>
-
-            </div>
-
-
-            <div className="objective-card">
-
-              <div className="objective-icon">
-                <Building2 size={24} />
-              </div>
-
-              <h3>
-                Practical Skills
-              </h3>
-
-              <p>
-                Provide practical exposure through laboratories,
-                projects and technical activities.
-              </p>
-
-            </div>
-
-
-            <div className="objective-card">
-
-              <div className="objective-icon">
-                <Users size={24} />
-              </div>
-
-              <h3>
-                Student Development
-              </h3>
-
-              <p>
-                Develop communication, teamwork, discipline and
-                professional abilities.
-              </p>
-
-            </div>
-
-
-            <div className="objective-card">
-
-              <div className="objective-icon">
-                <Award size={24} />
-              </div>
-
-              <h3>
-                Industry Readiness
-              </h3>
-
-              <p>
-                Prepare students with technical and professional
-                skills required for future opportunities.
-              </p>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </section>
-
-
-      {/* =========================================
-          WHY CHOOSE US
-          ========================================= */}
-
-      <section className="about-why">
-
-        <div className="about-container">
-
-          <div className="about-why-box">
-
-            <div className="about-why-content">
-
-              <span className="about-section-label">
-                WHY CHOOSE US
-              </span>
-
-              <h2>
-                Building Skills for
-                <span> Tomorrow</span>
-              </h2>
-
-              <p>
-                We aim to provide students with a strong combination
-                of technical education, practical learning and
-                professional development.
-              </p>
-
-            </div>
-
-
-            <div className="why-list">
-
-              <div className="why-item">
-                <CheckCircle2 size={20} />
-                <span>
-                  Student-focused technical education
-                </span>
-              </div>
-
-              <div className="why-item">
-                <CheckCircle2 size={20} />
-                <span>
-                  Practical and laboratory-based learning
-                </span>
-              </div>
-
-              <div className="why-item">
-                <CheckCircle2 size={20} />
-                <span>
-                  Experienced teaching and support staff
-                </span>
-              </div>
-
-              <div className="why-item">
-                <CheckCircle2 size={20} />
-                <span>
-                  Focus on professional and personal development
-                </span>
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </section>
-
-    </main>
+    </div>
   );
 }
 

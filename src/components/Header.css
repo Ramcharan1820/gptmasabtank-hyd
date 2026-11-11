@@ -1,14 +1,34 @@
-.header {
-  height: 105px;
-  padding: 0 5%;
+/* =========================================================
+   GOVERNMENT POLYTECHNIC COLLEGE
+   PROFESSIONAL GOVERNMENT-STYLE HEADER
+   ========================================================= */
+
+.site-header {
+  width: 100%;
+  background: #ffffff;
+  position: relative;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+
+/* =========================================================
+   TOP HEADER
+   ========================================================= */
+
+.header-top {
+  min-height: 145px;
+  padding: 18px 4%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  background: #fff;
-  border-bottom: 1px solid #e7e9ef;
-  position: relative;
-  z-index: 100;
+  gap: 30px;
+  background: #ffffff;
 }
+
+
+/* =========================================================
+   COLLEGE BRAND
+   ========================================================= */
 
 .college-brand {
   display: flex;
@@ -16,19 +36,19 @@
   gap: 18px;
   text-decoration: none;
   color: inherit;
+  flex: 1;
+  min-width: 310px;
 }
 
 .logo-box {
-  width: 62px;
-  height: 62px;
+  width: 92px;
+  height: 92px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 16px;
-  background: #eee9ff;
-  border: 1px solid #d9ceff;
-  overflow: hidden;
   flex-shrink: 0;
+  overflow: hidden;
+  background: #ffffff;
 }
 
 .logo-box img {
@@ -40,78 +60,458 @@
 
 .college-text h1 {
   margin: 0;
-  color: #202033;
-  font-size: 22px;
+  color: #124a88;
+  font-size: 25px;
   line-height: 1.2;
-  font-weight: 750;
-  letter-spacing: -0.4px;
+  font-weight: 800;
+  letter-spacing: 0.1px;
 }
 
 .college-text p {
-  margin: 5px 0 0;
-  color: #77798a;
+  margin: 7px 0 0;
+  color: #4b5563;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   OFFICIAL PROFILE
+   ========================================================= */
+
+.official-profile {
+  width: 155px;
+  min-width: 155px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.official-photo {
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #d9dfe8;
+  background: #f4f6f8;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.official-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.official-info {
+  width: 100%;
+  max-width: 155px;
+  text-align: center;
+}
+
+.official-info h3 {
+  margin: 8px 0 3px;
+  color: #084b8a;
+  font-size: 12px;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+.official-info p {
+  margin: 0;
+  color: #172033;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+
+/* =========================================================
+   CONTACT SECTION
+   ========================================================= */
+
+.header-contact {
+  min-width: 285px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 7px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.contact-icon {
+  color: #064d91;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.contact-item a {
+  color: #084b8a;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.contact-item a:hover {
+  text-decoration: underline;
+}
+
+.working-hours {
+  color: #124a88;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: right;
+}
+
+.social-links {
+  display: flex;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.social-links a {
+  width: 31px;
+  height: 31px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #248fd1;
+  color: #ffffff;
+  text-decoration: none;
   font-size: 15px;
+  font-weight: 800;
+  transition: 0.2s ease;
+}
+
+.social-links a:hover {
+  transform: translateY(-2px);
+  background: #0969a9;
+}
+
+
+/* =========================================================
+   BLUE NAVIGATION BAR
+   ========================================================= */
+
+.navigation-wrapper {
+  width: 100%;
+  background: #2498df;
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .main-nav {
+  width: 100%;
+  max-width: 1450px;
+  min-height: 54px;
+  padding: 0 2%;
   display: flex;
   align-items: center;
-  gap: 28px;
+  justify-content: space-between;
+  gap: 2px;
 }
 
-.main-nav a {
+
+/* =========================================================
+   NORMAL NAVIGATION LINKS
+   ========================================================= */
+
+.main-nav > a {
   position: relative;
-  color: #343447;
+  padding: 17px 17px;
+  color: #ffffff;
   text-decoration: none;
-  font-size: 15px;
-  font-weight: 600;
-  transition: .25s;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: background 0.2s ease;
 }
 
-.main-nav a:not(.student-btn)::after {
+.main-nav > a:hover {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.main-nav > a::after {
   content: "";
   position: absolute;
-  left: 0;
-  bottom: -7px;
-  width: 0;
+  left: 17px;
+  right: 17px;
+  bottom: 8px;
   height: 2px;
-  background: #5d43cf;
-  transition: .25s;
+  background: #ffffff;
+  transform: scaleX(0);
+  transition: transform 0.2s ease;
 }
 
-.main-nav a:not(.student-btn):hover {
-  color: #5d43cf;
+.main-nav > a:hover::after {
+  transform: scaleX(1);
 }
 
-.main-nav a:not(.student-btn):hover::after {
+
+/* =========================================================
+   DEPARTMENTS MENU
+   ========================================================= */
+
+.departments-menu {
+  position: relative;
+  height: 54px;
+  display: flex;
+  align-items: stretch;
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   DEPARTMENTS BUTTON
+   ========================================================= */
+
+.departments-trigger {
+  position: relative;
+
+  height: 54px;
+
+  padding: 0 17px;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  white-space: nowrap;
+
+  transition: background 0.2s ease;
+}
+
+.departments-trigger:hover {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+
+/* =========================================================
+   DEPARTMENTS ARROW
+   ========================================================= */
+
+.departments-arrow {
+  display: inline-flex;
+  align-items: center;
+
+  font-size: 13px;
+
+  transition: transform 0.2s ease;
+}
+
+.departments-menu:hover .departments-arrow,
+.departments-menu.departments-open .departments-arrow {
+  transform: rotate(180deg);
+}
+
+
+/* =========================================================
+   DEPARTMENTS DROPDOWN
+   ========================================================= */
+
+.departments-dropdown {
+  position: absolute;
+
+  top: 54px;
+  left: 0;
+
+  width: 330px;
+
+  padding: 8px 0;
+
+  background: #ffffff;
+
+  border-radius: 0 0 8px 8px;
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.18),
+    0 3px 10px rgba(0, 0, 0, 0.08);
+
+  z-index: 99999;
+
+  overflow: hidden;
+
+  animation: departmentDropdownShow 0.15s ease-out;
+}
+
+
+/* =========================================================
+   DROPDOWN ANIMATION
+   ========================================================= */
+
+@keyframes departmentDropdownShow {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* =========================================================
+   DEPARTMENT DROPDOWN ITEM
+   ========================================================= */
+
+.department-dropdown-item {
+  position: relative;
+
   width: 100%;
+  min-height: 50px;
+
+  box-sizing: border-box;
+
+  padding: 10px 20px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  color: #4a4a4a;
+
+  background: #ffffff;
+
+  text-decoration: none;
+
+  font-size: 16px;
+  font-weight: 400;
+
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    padding-left 0.18s ease;
 }
 
-.student-btn {
-  padding: 14px 20px;
-  background: linear-gradient(135deg, #6848d5, #5135bd);
-  color: #fff !important;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(91, 62, 201, .25);
-  transition: .25s;
-}
 
-.student-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 25px rgba(91, 62, 201, .35);
+/* Remove normal navbar underline */
+
+.department-dropdown-item::after {
+  display: none !important;
 }
 
 
-/* HAMBURGER */
+/* Department icon */
+
+.department-dropdown-icon {
+  width: 19px;
+  min-width: 19px;
+  height: 19px;
+
+  color: #666666;
+
+  transition:
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+
+/* Department text */
+
+.department-dropdown-item span {
+  line-height: 1.3;
+}
+
+
+/* =========================================================
+   DEPARTMENT HOVER
+   ========================================================= */
+
+.department-dropdown-item:hover {
+  background: #f3f6f9;
+
+  color: #124a88;
+
+  padding-left: 25px;
+}
+
+.department-dropdown-item:hover .department-dropdown-icon {
+  color: #124a88;
+
+  transform: scale(1.08);
+}
+
+
+/* =========================================================
+   STUDENT PORTAL
+   ========================================================= */
+
+.main-nav .student-btn {
+  margin-left: 8px;
+  padding: 10px 17px;
+  border-radius: 5px;
+  background: #126fb0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.main-nav .student-btn:hover {
+  background: #0d5d96;
+}
+
+.main-nav .student-btn::after {
+  display: none;
+}
+
+.main-nav .admin-login-nav-link {
+  padding: 10px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 5px;
+  background: #124a88;
+}
+
+.main-nav .admin-login-nav-link:hover {
+  background: #0d3a6d;
+}
+
+.main-nav .admin-login-nav-link::after {
+  display: none;
+}
+
+
+/* =========================================================
+   HAMBURGER
+   ========================================================= */
 
 .menu-toggle {
   display: none;
-  width: 45px;
-  height: 45px;
-  padding: 9px;
-  border: 0;
-  border-radius: 10px;
-  background: #f0ecff;
+  width: 44px;
+  height: 44px;
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  background: #e9f4fc;
   cursor: pointer;
 }
 
@@ -120,115 +520,332 @@
   width: 25px;
   height: 3px;
   margin: 4px auto;
-  border-radius: 5px;
-  background: #5135bd;
+  border-radius: 3px;
+  background: #0969a9;
 }
 
 
-/* TABLET */
+/* =========================================================
+   LARGE SCREEN
+   ========================================================= */
 
-@media (max-width: 1100px) {
-  .main-nav {
+@media (max-width: 1250px) {
+
+  .header-top {
     gap: 18px;
-  }
-
-  .main-nav a {
-    font-size: 14px;
-  }
-
-  .college-text h1 {
-    font-size: 19px;
-  }
-}
-
-
-/* MOBILE */
-
-@media (max-width: 850px) {
-
-  .header {
-    height: 82px;
-    padding: 10px 5%;
+    padding: 15px 3%;
   }
 
   .college-brand {
+    min-width: 280px;
     gap: 12px;
   }
 
   .logo-box {
-    width: 52px;
-    height: 52px;
-    border-radius: 12px;
+    width: 78px;
+    height: 78px;
   }
 
   .college-text h1 {
-    font-size: 17px;
+    font-size: 20px;
+  }
+
+  .college-text p {
+    font-size: 14px;
+  }
+
+  .official-profile {
+    width: 125px;
+    min-width: 125px;
+  }
+
+  .official-photo {
+    width: 70px;
+    height: 70px;
+  }
+
+  .official-info {
+    max-width: 125px;
+  }
+
+  .official-info h3 {
+    font-size: 11px;
+  }
+
+  .header-contact {
+    min-width: 245px;
+  }
+
+  .main-nav {
+    gap: 0;
+  }
+
+  .main-nav > a {
+    padding-left: 12px;
+    padding-right: 12px;
+    font-size: 13px;
+  }
+
+  .departments-trigger {
+    padding-left: 12px;
+    padding-right: 12px;
+    font-size: 13px;
+  }
+
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1000px) {
+
+  .header-top {
+    min-height: 115px;
+  }
+
+  .college-brand {
+    min-width: 250px;
+  }
+
+  .logo-box {
+    width: 68px;
+    height: 68px;
+  }
+
+  .college-text h1 {
+    font-size: 18px;
+  }
+
+  .college-text p {
+    font-size: 13px;
+  }
+
+  .official-profile {
+    width: 100px;
+    min-width: 100px;
+  }
+
+  .official-photo {
+    width: 60px;
+    height: 60px;
+  }
+
+  .official-info {
+    max-width: 100px;
+  }
+
+  .official-info h3 {
+    font-size: 10px;
+  }
+
+  .official-info p {
+    font-size: 9px;
+  }
+
+  .header-contact {
+    min-width: 210px;
+  }
+
+  .contact-item a {
+    font-size: 10px;
+  }
+
+  .working-hours {
+    font-size: 9px;
+  }
+
+  .main-nav > a {
+    padding: 16px 8px;
+    font-size: 12px;
+  }
+
+  .departments-trigger {
+    padding: 0 8px;
+    font-size: 12px;
+  }
+
+  .departments-dropdown {
+    width: 310px;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 800px) {
+
+  .header-top {
+    min-height: 82px;
+    padding: 10px 4%;
+    gap: 0;
+    justify-content: space-between;
+  }
+
+  .college-brand {
+    min-width: 0;
+    flex: 1;
+    gap: 10px;
+  }
+
+  .logo-box {
+    width: 55px;
+    height: 55px;
+  }
+
+  .college-text h1 {
+    font-size: 16px;
+    line-height: 1.15;
   }
 
   .college-text p {
     margin-top: 3px;
-    font-size: 12px;
+    font-size: 11px;
   }
 
-  /* Show three lines */
+  .official-profile,
+  .header-contact {
+    display: none;
+  }
+
   .menu-toggle {
     display: block;
+    flex-shrink: 0;
   }
 
-  /* Hide menu initially */
+  .navigation-wrapper {
+    position: relative;
+    min-height: 0;
+  }
+
   .main-nav {
     display: none;
-    position: absolute;
-    top: 82px;
-    left: 0;
+
     width: 100%;
-    padding: 20px 5%;
+
+    padding: 8px 5%;
+
     flex-direction: column;
+
     align-items: stretch;
+
+    justify-content: flex-start;
+
     gap: 0;
-    background: #fff;
-    border-top: 1px solid #eee;
-    border-bottom: 1px solid #ddd;
-    box-shadow: 0 15px 30px rgba(0,0,0,.08);
+
+    background: #2498df;
   }
 
-  /* Show when hamburger clicked */
   .main-nav.open {
     display: flex;
   }
 
-  .main-nav a {
-    padding: 14px 5px;
-    font-size: 15px;
-    border-bottom: 1px solid #f0eef5;
+
+  /* Mobile normal links */
+
+  .main-nav > a {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 13px 10px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+
+    font-size: 14px;
   }
 
-  .main-nav a:not(.student-btn)::after {
+  .main-nav > a::after {
     display: none;
   }
 
-  .student-btn {
-    margin-top: 12px;
-    text-align: center;
-    border: 0 !important;
+
+  /* =====================================================
+     MOBILE DEPARTMENTS
+     ===================================================== */
+
+  .departments-menu {
+    width: 100%;
+    height: auto;
+
+    display: block;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
   }
+
+  .departments-trigger {
+    width: 100%;
+    height: auto;
+
+    min-height: 48px;
+
+    box-sizing: border-box;
+
+    padding: 13px 10px;
+
+    justify-content: space-between;
+
+    font-size: 14px;
+  }
+
+
+  .departments-dropdown {
+    position: static;
+
+    width: 100%;
+
+    padding: 0;
+
+    border-radius: 0;
+
+    box-shadow: none;
+
+    animation: none;
+
+    background: #ffffff;
+  }
+
+
+  .department-dropdown-item {
+    min-height: 48px;
+
+    padding: 10px 25px;
+
+    font-size: 14px;
+  }
+
+
+  .department-dropdown-item:hover {
+    padding-left: 30px;
+  }
+
+
+  .main-nav .student-btn {
+    margin: 10px 0 5px;
+
+    text-align: center;
+  }
+
+  .main-nav .admin-login-nav-link {
+    margin: 5px 0 10px;
+    text-align: center;
+  }
+
 }
 
 
-/* SMALL MOBILE */
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
 
-@media (max-width: 500px) {
+@media (max-width: 450px) {
 
-  .header {
-    padding: 10px 4%;
-  }
-
-  .college-text h1 {
-    font-size: 15px;
-  }
-
-  .college-text p {
-    font-size: 11px;
+  .header-top {
+    padding: 9px 3%;
   }
 
   .logo-box {
@@ -236,8 +853,25 @@
     height: 48px;
   }
 
-  .menu-toggle {
-    width: 42px;
-    height: 42px;
+  .college-text h1 {
+    font-size: 14px;
   }
+
+  .college-text p {
+    font-size: 10px;
+  }
+
+  .menu-toggle {
+    width: 40px;
+    height: 40px;
+  }
+
+  .departments-dropdown {
+    width: 100%;
+  }
+
+  .department-dropdown-item {
+    font-size: 13px;
+  }
+
 }

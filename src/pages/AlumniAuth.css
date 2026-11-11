@@ -1,0 +1,563 @@
+.alumni-auth-page {
+  min-height: calc(100vh - 140px);
+  background: #f5f7fb;
+  padding: 40px 20px 70px;
+  font-family: "Poppins", "Segoe UI", Arial, sans-serif;
+  color: #172033;
+  display: flex;
+  align-items: center;
+}
+
+/* =========================================================
+   MAIN CONTAINER
+========================================================= */
+
+.alumni-auth-container {
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+/* =========================================================
+   MAIN CARD
+========================================================= */
+
+.alumni-auth-card {
+  width: 100%;
+  min-height: 570px;
+  background: #ffffff;
+  border: 1px solid #e2e6ed;
+  border-radius: 8px;
+  display: grid;
+  grid-template-columns: 43% 57%;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(20, 32, 50, 0.08);
+}
+
+/* =========================================================
+   LEFT BRAND SECTION
+========================================================= */
+
+.alumni-auth-brand {
+  background: #ffffff;
+  border-right: 1px solid #e1e5eb;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+
+  padding: 55px 42px;
+}
+
+.alumni-auth-logo {
+  margin-bottom: 24px;
+}
+
+.alumni-logo-circle {
+  width: 88px;
+  height: 88px;
+
+  border-radius: 50%;
+
+  background: #eef3fb;
+  color: #174ea6;
+
+  border: 1px solid #d7e2f2;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.alumni-auth-brand h1 {
+  margin: 0;
+
+  color: #172033;
+
+  font-size: 24px;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.alumni-auth-brand h1 span {
+  display: block;
+  color: #174ea6;
+  margin-top: 2px;
+}
+
+.alumni-auth-brand h2 {
+  margin: 8px 0 0;
+
+  color: #174ea6;
+
+  font-size: 24px;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.alumni-auth-brand p {
+  max-width: 390px;
+
+  margin: 28px 0 25px;
+
+  color: #687386;
+
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+/* =========================================================
+   SECURITY
+========================================================= */
+
+.alumni-auth-security {
+  width: 100%;
+  max-width: 380px;
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: 10px;
+
+  padding: 15px 16px;
+
+  background: #f7f9fc;
+  border: 1px solid #e5e9ef;
+  border-radius: 6px;
+
+  text-align: left;
+}
+
+.alumni-auth-security > svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+
+  color: #174ea6;
+}
+
+.alumni-auth-security div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.alumni-auth-security strong {
+  color: #172033;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.alumni-auth-security span {
+  color: #7a8493;
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   RIGHT FORM SECTION
+========================================================= */
+
+.alumni-auth-form-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 55px 65px;
+
+  background: #ffffff;
+}
+
+.alumni-auth-form-content {
+  width: 100%;
+  max-width: 430px;
+}
+
+/* =========================================================
+   HEADING
+========================================================= */
+
+.alumni-auth-heading {
+  margin-bottom: 28px;
+}
+
+.alumni-auth-label {
+  display: block;
+
+  margin-bottom: 9px;
+
+  color: #174ea6;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: 1.5px;
+}
+
+.alumni-auth-heading h2 {
+  margin: 0;
+
+  color: #172033;
+
+  font-size: 28px;
+  line-height: 1.3;
+  font-weight: 500;
+}
+
+.alumni-auth-subtitle {
+  margin: 8px 0 0;
+
+  color: #7a8493;
+
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* =========================================================
+   AUTH PROVIDER BUTTONS
+========================================================= */
+
+.alumni-auth-provider {
+  width: 100%;
+  height: 50px;
+
+  border: 1px solid transparent;
+  border-radius: 5px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 17px;
+
+  cursor: pointer;
+
+  font-family: inherit;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.alumni-auth-provider:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(20, 32, 50, 0.12);
+}
+
+.alumni-auth-provider:active {
+  transform: translateY(0);
+}
+
+.alumni-auth-provider + .alumni-auth-provider {
+  margin-top: 12px;
+}
+
+/* Google */
+
+.alumni-auth-provider.google {
+  background: #ffffff;
+  color: #303030;
+  border-color: #d8dde5;
+}
+
+/* LinkedIn */
+
+.alumni-auth-provider.linkedin {
+  background: #0a66c2;
+  color: #ffffff;
+}
+
+/* Provider Icon */
+
+.alumni-auth-provider-icon {
+  width: 27px;
+  height: 27px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  font-weight: 700;
+}
+
+.google-icon {
+  color: #4285f4;
+
+  font-family: Arial, sans-serif;
+  font-size: 20px;
+}
+
+.linkedin-icon {
+  color: #ffffff;
+
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 2px;
+
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+}
+
+.provider-text {
+  flex: 1;
+  text-align: center;
+}
+
+.alumni-auth-provider > svg {
+  flex-shrink: 0;
+}
+
+/* =========================================================
+   DIVIDER
+========================================================= */
+
+.alumni-auth-divider {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+
+  margin: 30px 0 27px;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: #d9dde3;
+}
+
+.divider-circle {
+  width: 42px;
+  height: 42px;
+
+  border-radius: 50%;
+
+  background: #f0f1f3;
+
+  color: #626b78;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* =========================================================
+   EMAIL FORM
+========================================================= */
+
+.alumni-auth-email-form {
+  width: 100%;
+}
+
+.alumni-auth-email-form label {
+  display: block;
+
+  margin-bottom: 9px;
+
+  color: #596579;
+
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.alumni-auth-email-input {
+  width: 100%;
+  height: 52px;
+
+  display: flex;
+  align-items: center;
+
+  border-bottom: 1px solid #cbd0d7;
+
+  transition: border-color 0.2s ease;
+}
+
+.alumni-auth-email-input > svg {
+  flex-shrink: 0;
+
+  color: #8993a2;
+
+  margin-right: 10px;
+}
+
+.alumni-auth-email-input:focus-within {
+  border-bottom-color: #174ea6;
+}
+
+.alumni-auth-email-input input {
+  flex: 1;
+
+  min-width: 0;
+
+  height: 100%;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  color: #172033;
+
+  font-family: inherit;
+
+  font-size: 14px;
+}
+
+.alumni-auth-email-input input::placeholder {
+  color: #aeb5bf;
+}
+
+.alumni-auth-email-submit {
+  width: 45px;
+  height: 45px;
+
+  border: none;
+  background: transparent;
+
+  color: #8d1111;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  flex-shrink: 0;
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.alumni-auth-email-submit:hover {
+  color: #b21f1f;
+  transform: translateX(3px);
+}
+
+/* =========================================================
+   EMAIL ERROR
+========================================================= */
+
+.alumni-auth-email-input.has-error {
+  border-bottom-color: #b42318;
+}
+
+.alumni-auth-error {
+  margin: 8px 0 0;
+
+  color: #b42318;
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   NOTE
+========================================================= */
+
+.alumni-auth-note {
+  margin: 22px 0 0;
+
+  color: #8a93a1;
+
+  font-size: 11.5px;
+  line-height: 1.65;
+
+  text-align: left;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+  .alumni-auth-page {
+    padding: 30px 16px 55px;
+  }
+
+  .alumni-auth-card {
+    grid-template-columns: 1fr;
+  }
+
+  .alumni-auth-brand {
+    border-right: none;
+    border-bottom: 1px solid #e1e5eb;
+
+    padding: 45px 30px;
+  }
+
+  .alumni-auth-form-section {
+    padding: 45px 35px;
+  }
+}
+
+@media (max-width: 560px) {
+  .alumni-auth-page {
+    min-height: auto;
+    padding: 20px 12px 40px;
+  }
+
+  .alumni-auth-card {
+    border-radius: 6px;
+  }
+
+  .alumni-auth-brand {
+    padding: 35px 20px;
+  }
+
+  .alumni-auth-logo {
+    margin-bottom: 18px;
+  }
+
+  .alumni-logo-circle {
+    width: 75px;
+    height: 75px;
+  }
+
+  .alumni-auth-brand h1 {
+    font-size: 20px;
+  }
+
+  .alumni-auth-brand h2 {
+    font-size: 20px;
+  }
+
+  .alumni-auth-brand p {
+    margin-top: 20px;
+    font-size: 13px;
+  }
+
+  .alumni-auth-security {
+    padding: 13px;
+  }
+
+  .alumni-auth-form-section {
+    padding: 35px 20px;
+  }
+
+  .alumni-auth-heading h2 {
+    font-size: 24px;
+  }
+
+  .alumni-auth-provider {
+    height: 48px;
+    font-size: 13px;
+  }
+
+  .alumni-auth-divider {
+    margin: 25px 0 23px;
+  }
+}

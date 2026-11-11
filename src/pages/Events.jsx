@@ -1,200 +1,322 @@
-import React from "react";
-import { ArrowRight, CalendarDays } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import {
+  CalendarDays,
+  MapPin,
+  RefreshCw,
+  AlertCircle,
+  PartyPopper,
+  CalendarCheck
+} from "lucide-react";
+
 import "./Events.css";
 
-const events = [
-  {
-    image: "/events/sports.jpg",
-    date: "15 August 2026",
-    title: "Sports Activities",
-    category: "Sports",
-    description:
-      "Encouraging teamwork, fitness and sportsmanship through student competitions and activities.",
-  },
-  {
-    image: "/events/cultural.jpg",
-    date: "20 August 2026",
-    title: "Cultural Programs",
-    category: "Cultural",
-    description:
-      "A platform for students to showcase creativity, talent and cultural traditions.",
-  },
-  {
-    image: "/events/fest.jpg",
-    date: "05 September 2026",
-    title: "College Fest",
-    category: "Fest",
-    description:
-      "An exciting celebration bringing students together through entertainment and activities.",
-  },
-  {
-    image: "/events/technical.jpg",
-    date: "20 September 2026",
-    title: "Technical Workshop",
-    category: "Technical",
-    description:
-      "Technical workshops and hands-on learning activities to develop practical skills.",
-  },
-];
+const API_URL = "http://localhost:5000/api/events";
 
 function Events() {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  // Fetch events from MySQL through Express API
+  const fetchEvents = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await fetch(API_URL);
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || "Unable to fetch events.");
+      }
+
+      setEvents(Array.isArray(result.data) ? result.data : []);
+
+    } catch (err) {
+      console.error("Events API Error:", err);
+      setError(err.message || "Unable to load events.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Format MySQL date without timezone shifting
+  const formatDate = (date) => {
+    if (!date) return "Date not announced";
+
+    const dateString = String(date).slice(0, 10);
+    const parts = dateString.split("-");
+
+    if (parts.length !== 3) return dateString;
+
+    const [year, month, day] = parts;
+
+    const parsedDate = new Date(
+      Number(year),
+      Number(month) - 1,
+      Number(day)
+    );
+
+    if (isNaN(parsedDate.getTime())) return dateString;
+
+    return parsedDate.toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
+  };
+
+  // Determine event status
+  const isUpcoming = (date) => {
+    if (!date) return false;
+
+    const parts = String(date).slice(0, 10).split("-");
+
+    if (parts.length !== 3) return false;
+
+    const [year, month, day] = parts;
+
+    const eventDate = new Date(
+      Number(year),
+      Number(month) - 1,
+      Number(day)
+    );
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return eventDate >= today;
+  };
+
   return (
-    <main className="events-page">
+    <div className="events-page">
 
-      {/* HERO */}
+      {/* HERO SECTION */}
+
       <section className="events-hero">
-        <img
-          src="/events/events-banner.jpg"
-          alt="Government Polytechnic College Events"
-          className="events-hero-image"
-        />
+        <div className="events-hero-overlay">
+          <div className="events-hero-content">
 
-        <div className="events-hero-overlay"></div>
+            <span className="events-tag">
+              <PartyPopper size={16} />
+              COLLEGE ACTIVITIES
+            </span>
 
-        <div className="events-container events-hero-content">
-          <span>COLLEGE ACTIVITIES</span>
+            <h1>College Events</h1>
 
-          <h1>
-            Programs & <strong>Events</strong>
-          </h1>
+            <p>
+              Explore technical events, cultural celebrations,
+              workshops, sports activities and memorable moments
+              at Government Polytechnic College, Masab Tank.
+            </p>
 
-          <p>
-            Discover the academic, technical, cultural, sports and
-            student-development activities happening at Government
-            Polytechnic College, Masab Tank.
-          </p>
+          </div>
         </div>
       </section>
 
-      {/* EVENTS */}
-      <section className="events-section">
-        <div className="events-container">
+      {/* EVENTS SECTION */}
 
-          <div className="events-heading">
-            <span>STUDENT LIFE</span>
+      <section className="events-container">
 
-            <h2>Programs & Events</h2>
+        <div className="events-heading">
+
+          <div>
+            <span className="events-subtitle">
+              WHAT'S HAPPENING
+            </span>
+
+            <h2>Latest Events & Activities</h2>
 
             <p>
-              Explore the activities and events that make college life
-              engaging, creative and memorable.
+              Stay updated with the latest activities and
+              celebrations happening at our college.
             </p>
           </div>
 
+          <button
+            className="events-refresh"
+            onClick={fetchEvents}
+            disabled={loading}
+          >
+            <RefreshCw size={16} />
+            Refresh
+          </button>
+
+        </div>
+
+        {/* LOADING */}
+
+        {loading && (
+          <div className="events-message">
+            <RefreshCw
+              size={30}
+              className="events-spinner"
+            />
+
+            <p>Loading college events...</p>
+          </div>
+        )}
+
+        {/* ERROR */}
+
+        {!loading && error && (
+          <div className="events-message error">
+
+            <AlertCircle size={35} />
+
+            <h3>Unable to Load Events</h3>
+
+            <p>{error}</p>
+
+            <button onClick={fetchEvents}>
+              Try Again
+            </button>
+
+          </div>
+        )}
+
+        {/* NO EVENTS */}
+
+        {!loading && !error && events.length === 0 && (
+          <div className="events-message">
+
+            <CalendarDays size={45} />
+
+            <h3>No Events Available</h3>
+
+            <p>
+              College events will appear here once published
+              by the administration.
+            </p>
+
+          </div>
+        )}
+
+        {/* EVENTS GRID */}
+
+        {!loading && !error && events.length > 0 && (
+
           <div className="events-grid">
 
-            {events.map((event, index) => (
-              <article className="event-card" key={index}>
+            {events.map((event) => {
 
-                <img
-                  src={event.image}
-                  alt={event.title}
-                  className="event-image"
-                />
+              const upcoming = isUpcoming(event.event_date);
 
-                <div className="event-overlay"></div>
+              return (
 
-                <div className="event-card-content">
+                <article
+                  className="event-card"
+                  key={event.id}
+                >
 
-                  <div className="event-date">
-                    <CalendarDays size={16} />
-                    <span>{event.date}</span>
+                  {/* IMAGE */}
+
+                  <div className="event-image">
+
+                    {event.image ? (
+
+                      <img
+                        src={
+                          event.image.startsWith("http")
+                            ? event.image
+                            : event.image.startsWith("/")
+                              ? event.image
+                              : `http://localhost:5000/${event.image.replace(/^\/+/, "")}`
+                        }
+                        alt={event.title}
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                        }}
+                      />
+
+                    ) : (
+
+                      <div className="event-image-placeholder">
+                        <CalendarDays size={55} />
+                        <span>College Events</span>
+                      </div>
+
+                    )}
+
+                    <span
+                      className={`event-status ${
+                        upcoming ? "upcoming" : "completed"
+                      }`}
+                    >
+                      {upcoming ? "Upcoming" : "Completed"}
+                    </span>
+
                   </div>
 
-                  <h3>{event.title}</h3>
+                  {/* EVENT DETAILS */}
 
-                  <span className="event-category">
-                    {event.category}
-                  </span>
+                  <div className="event-details">
 
-                  <p>{event.description}</p>
+                    {event.category && (
+                      <span className="event-category">
+                        {event.category}
+                      </span>
+                    )}
 
-                  <button className="event-button">
-                    View Details
-                    <ArrowRight size={16} />
-                  </button>
+                    <h3>{event.title}</h3>
 
-                </div>
+                    <p className="event-description">
+                      {event.description ||
+                        "More information about this event will be announced soon."}
+                    </p>
 
-              </article>
-            ))}
+                    <div className="event-info">
+
+                      <div>
+                        <CalendarCheck size={17} />
+                        <span>
+                          {formatDate(event.event_date)}
+                        </span>
+                      </div>
+
+                      <div>
+                        <MapPin size={17} />
+                        <span>
+                          Government Polytechnic College,
+                          Masab Tank
+                        </span>
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </article>
+
+              );
+
+            })}
 
           </div>
-        </div>
+
+        )}
+
       </section>
 
-      {/* CATEGORIES */}
-      <section className="event-categories">
-        <div className="events-container">
+      {/* BOTTOM SECTION */}
 
-          <div className="events-heading">
-            <span>ACTIVITIES</span>
-            <h2>Something for Everyone</h2>
-          </div>
+      <section className="events-bottom">
 
-          <div className="category-grid">
+        <h2>Be Part of Our College Activities</h2>
 
-            <div className="category-item">
-              <span>01</span>
-              <h3>Sports</h3>
-              <p>
-                Sports competitions and activities encouraging
-                fitness, teamwork and discipline.
-              </p>
-            </div>
+        <p>
+          Participate, learn, connect and create unforgettable
+          memories through our college events.
+        </p>
 
-            <div className="category-item">
-              <span>02</span>
-              <h3>Culturals</h3>
-              <p>
-                Cultural celebrations and programs showcasing
-                student creativity and talent.
-              </p>
-            </div>
-
-            <div className="category-item">
-              <span>03</span>
-              <h3>Fests</h3>
-              <p>
-                College celebrations and student gatherings
-                filled with learning and entertainment.
-              </p>
-            </div>
-
-            <div className="category-item">
-              <span>04</span>
-              <h3>Technical Programs</h3>
-              <p>
-                Workshops, seminars and technical activities
-                focused on practical skills.
-              </p>
-            </div>
-
-          </div>
-        </div>
       </section>
 
-      {/* CTA */}
-      <section className="events-cta">
-        <div className="events-container">
-
-          <div>
-            <span>GOVERNMENT POLYTECHNIC COLLEGE</span>
-
-            <h2>
-              Learn, participate and grow beyond the classroom.
-            </h2>
-          </div>
-
-          <a href="/contact">
-            Contact College
-            <ArrowRight size={17} />
-          </a>
-
-        </div>
-      </section>
-
-    </main>
+    </div>
   );
 }
 

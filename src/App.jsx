@@ -1,15 +1,16 @@
-import React, { useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 
-// Attendance Page
-import Attendance from "./pages/Attendance";
 
-// Result Pages
-import Result from "./pages/Result";
-import MidResult from "./pages/MidResult";
-import SemesterResult from "./pages/SemesterResult";
+/*admin login*/
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
 
-// Main Pages
+/* Layout */
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import ScrollToTop from "./components/ScrollToTop";
+
+/* Main Pages */
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Departments from "./pages/Departments";
@@ -18,183 +19,139 @@ import Placements from "./pages/Placements";
 import Events from "./pages/Events";
 import Gallery from "./pages/Gallery";
 import Contact from "./pages/Contact";
+
+/* Student Portal */
 import StudentPortal from "./pages/StudentPortal";
+import Attendance from "./pages/Attendance";
+import Result from "./pages/Result";
+import ConsolidatedResult from "./pages/ConsolidatedResult";
 
-// Department Pages
-import CSE from "./pages/CSEDepartment";
-import ECE from "./pages/ECEDepartment";
-import EEE from "./pages/EEEDepartment";
-import Mechanical from "./pages/MechanicalDepartment";
-import Civil from "./pages/CivilDepartment";
-import Automobile from "./pages/AutomobileDepartment";
-import Pharmacy from "./pages/PharmacyDepartment";
+/* Alumni */
+import Alumni from "./pages/Alumni";
+import AlumniAuth from "./pages/AlumniAuth";
+import AlumniRegistration from "./pages/AlumniRegistration";
 
-// Layout Components
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+/* Department Pages */
+import CSEDepartment from "./pages/CSEDepartment";
+import ECEDepartment from "./pages/ECEDepartment";
+import EEEDepartment from "./pages/EEEDepartment";
+import MechanicalDepartment from "./pages/MechanicalDepartment";
+import CivilDepartment from "./pages/CivilDepartment";
+import AutomobileDepartment from "./pages/AutomobileDepartment";
+import PharmacyDepartment from "./pages/PharmacyDepartment";
 
-function ScrollToTop() {
-  const { pathname } = useLocation();
+function App() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith("/admin");
+  const isAdminLoginRoute = location.pathname === "/admin/login";
+  const isAdminDashboardRoute = location.pathname === "/admin/dashboard";
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
-
-  return null;
-}
-
-export default function App() {
   return (
-    <div className="app">
-
-      <Header />
-
+    <>
       <ScrollToTop />
 
+      {!isAdminLoginRoute && (
+        <Header showNavigation={!isAdminDashboardRoute} />
+      )}
+
       <Routes>
+        {/* Main Pages */}
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/departments" element={<Departments />} />
+        <Route path="/faculty" element={<Faculty />} />
+        <Route path="/placements" element={<Placements />} />
+        <Route path="/events" element={<Events />} />
+        <Route path="/gallery" element={<Gallery />} />
+        <Route path="/contact" element={<Contact />} />
 
-        {/* =========================
-            MAIN ROUTES
-        ========================== */}
-
-        <Route
-          path="/"
-          element={<Home />}
-        />
-
-        <Route
-          path="/about"
-          element={<About />}
-        />
-
-        <Route
-          path="/departments"
-          element={<Departments />}
-        />
-
-        <Route
-          path="/faculty"
-          element={<Faculty />}
-        />
-
-        <Route
-          path="/placements"
-          element={<Placements />}
-        />
-
-        <Route
-          path="/events"
-          element={<Events />}
-        />
-
-        <Route
-          path="/gallery"
-          element={<Gallery />}
-        />
-
-        <Route
-          path="/contact"
-          element={<Contact />}
-        />
-
-        {/* =========================
-            STUDENT PORTAL
-        ========================== */}
-
-        <Route
-          path="/student-portal"
-          element={<StudentPortal />}
-        />
-
-        {/* =========================
-            ATTENDANCE
-        ========================== */}
-
+        {/* Student Portal */}
+        <Route path="/student-portal" element={<StudentPortal />} />
         <Route
           path="/student-portal/attendance"
           element={<Attendance />}
         />
-
-        {/* =========================
-            RESULT
-        ========================== */}
-
+        <Route path="/student-portal/result" element={<Result />} />
         <Route
-          path="/student-portal/result"
-          element={<Result />}
+          path="/student-portal/consolidated-result"
+          element={<ConsolidatedResult />}
         />
 
-        {/* =========================
-            MID RESULT
-        ========================== */}
 
+        {/* Admin Pages */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+
+        {/* Alumni */}
+        <Route path="/alumni" element={<Alumni />} />
+        <Route path="/alumni/register" element={<AlumniAuth />} />
         <Route
-          path="/student-portal/result/mid"
-          element={<MidResult />}
+          path="/alumni/register/form"
+          element={<AlumniRegistration />}
         />
 
-        {/* =========================
-            SEMESTER RESULT
-        ========================== */}
-
-        <Route
-          path="/student-portal/result/semester"
-          element={<SemesterResult />}
-        />
-
-        {/* =========================
-            DEPARTMENT ROUTES
-        ========================== */}
-
+        {/* Department Pages */}
         <Route
           path="/departments/cse"
-          element={<CSE />}
+          element={<CSEDepartment />}
         />
 
         <Route
           path="/departments/ece"
-          element={<ECE />}
+          element={<ECEDepartment />}
         />
 
         <Route
           path="/departments/eee"
-          element={<EEE />}
+          element={<EEEDepartment />}
         />
 
         <Route
           path="/departments/mechanical"
-          element={<Mechanical />}
+          element={<MechanicalDepartment />}
         />
 
         <Route
           path="/departments/civil"
-          element={<Civil />}
+          element={<CivilDepartment />}
         />
 
         <Route
           path="/departments/automobile"
-          element={<Automobile />}
+          element={<AutomobileDepartment />}
         />
 
         <Route
           path="/departments/pharmacy"
-          element={<Pharmacy />}
+          element={<PharmacyDepartment />}
         />
 
-        {/* =========================
-            FALLBACK ROUTE
-            MUST BE LAST
-        ========================== */}
-
+        {/* 404 */}
         <Route
           path="*"
-          element={<Home />}
+          element={
+            <div
+              style={{
+                minHeight: "60vh",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexDirection: "column",
+                gap: "10px",
+                padding: "40px 20px",
+                textAlign: "center",
+              }}
+            >
+              <h1>404</h1>
+              <p>Page not found.</p>
+            </div>
+          }
         />
-
       </Routes>
 
-      <Footer />
-
-    </div>
+      {!isAdminRoute && <Footer />}
+    </>
   );
 }
+
+export default App;

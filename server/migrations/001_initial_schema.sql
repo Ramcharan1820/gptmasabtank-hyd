@@ -1,0 +1,65 @@
+CREATE TABLE IF NOT EXISTS admins (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(150) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  role VARCHAR(50) NOT NULL DEFAULT 'admin',
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY admins_email_unique (email)
+);
+
+CREATE TABLE IF NOT EXISTS events (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  title VARCHAR(255) NOT NULL,
+  description TEXT NULL,
+  event_date DATE NOT NULL,
+  category VARCHAR(100) NULL,
+  image VARCHAR(2048) NULL,
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY events_active_date_idx (is_active, event_date, id)
+);
+
+CREATE TABLE IF NOT EXISTS notices (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  title VARCHAR(255) NOT NULL,
+  description TEXT NULL,
+  notice_date DATE NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS departments (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  department_name VARCHAR(200) NOT NULL,
+  department_code VARCHAR(50) NOT NULL,
+  description TEXT NULL,
+  hod_name VARCHAR(150) NULL,
+  intake INT UNSIGNED NOT NULL DEFAULT 0,
+  image VARCHAR(2048) NULL,
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY departments_code_unique (department_code)
+);
+
+CREATE TABLE IF NOT EXISTS alumni (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  full_name VARCHAR(150) NOT NULL,
+  department VARCHAR(100) NOT NULL,
+  alumni_status VARCHAR(30) NOT NULL,
+  graduation_year SMALLINT UNSIGNED NOT NULL,
+  pin VARCHAR(50) NULL,
+  organization VARCHAR(200) NULL,
+  email VARCHAR(255) NOT NULL,
+  phone VARCHAR(20) NOT NULL,
+  authentication_method VARCHAR(20) NOT NULL DEFAULT 'Email',
+  privacy_accepted TINYINT(1) NOT NULL DEFAULT 0,
+  information_confirmed TINYINT(1) NOT NULL DEFAULT 0,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY alumni_email_unique (email)
+);

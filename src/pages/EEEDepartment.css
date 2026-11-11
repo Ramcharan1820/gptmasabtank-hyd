@@ -1,350 +1,1173 @@
+/* =========================================================
+   ELECTRICAL & ELECTRONICS ENGINEERING DEPARTMENT
+   Government Polytechnic College - Masab Tank
+========================================================= */
+
 .eee-page {
-  color: #29283a;
-  background: #fff;
+  width: 100%;
+  min-height: 100vh;
+  background: #f5f7fa;
+  color: #18212f;
+  overflow: hidden;
 }
 
-.eee-page .container {
-  width: min(1150px, calc(100% - 40px));
-  margin: auto;
+.eee-page * {
+  box-sizing: border-box;
 }
 
-/* HERO */
+/* =========================================================
+   HERO
+========================================================= */
 
 .eee-hero {
-  padding: 85px 0;
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    #7b1113 0%,
+    #991b1e 52%,
+    #6f0d10 100%
+  );
   color: #fff;
-  background: linear-gradient(135deg, #12352d, #16826b);
+  border-bottom: 4px solid #e5b72f;
 }
 
-.eee-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  margin-bottom: 28px;
-  color: #d8f5ed;
-  font-size: 13px;
-  text-decoration: none;
-}
+.eee-hero-inner {
+  width: min(1180px, 92%);
+  min-height: 235px;
+  margin: 0 auto;
+  padding: 48px 0 42px;
 
-.eee-hero span,
-.eee-section span,
-.eee-heading span,
-.eee-details span,
-.eee-cta span {
-  display: block;
-  margin-bottom: 12px;
-  color: #16826b;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 2px;
-}
-
-.eee-hero span,
-.eee-cta span {
-  color: #a9ead9;
-}
-
-.eee-hero h1 {
-  max-width: 800px;
-  margin: 0;
-  font-size: clamp(40px, 6vw, 68px);
-  line-height: 1.05;
-  letter-spacing: -2px;
-}
-
-.eee-hero h1 strong {
-  display: block;
-  color: #a9ead9;
-}
-
-.eee-hero p {
-  max-width: 680px;
-  margin: 24px 0 0;
-  color: #d8ebe6;
-  font-size: 16px;
-  line-height: 1.8;
-}
-
-
-/* COMMON SECTIONS */
-
-.eee-section,
-.eee-light-section {
-  padding: 80px 0;
-}
-
-.eee-light-section {
-  background: #f2f9f7;
-}
-
-
-/* ABOUT */
-
-.eee-about {
-  display: grid;
-  grid-template-columns: .8fr 1.2fr;
-  gap: 70px;
-}
-
-.eee-about h2,
-.eee-details h2 {
-  margin: 0;
-  font-size: clamp(30px, 4vw, 46px);
-  line-height: 1.15;
-}
-
-.eee-about p {
-  margin: 0 0 18px;
-  color: #706c77;
-  font-size: 15px;
-  line-height: 1.8;
-}
-
-
-/* SECTION HEADING */
-
-.eee-heading {
-  margin-bottom: 40px;
-  text-align: center;
-}
-
-.eee-heading h2 {
-  margin: 0;
-  font-size: clamp(30px, 4vw, 44px);
-}
-
-
-/* VISION & MISSION */
-
-.eee-two-column {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 22px;
-}
-
-.eee-two-column article {
-  padding: 30px;
-  border: 1px solid #d8ebe6;
-  border-radius: 16px;
-  background: #fff;
-}
-
-.eee-two-column svg {
-  color: #16826b;
-}
-
-.eee-two-column h3 {
-  margin: 18px 0 10px;
-  font-size: 24px;
-}
-
-.eee-two-column p,
-.eee-two-column li {
-  color: #706c77;
-  font-size: 14px;
-  line-height: 1.7;
-}
-
-.eee-two-column ul {
-  padding-left: 20px;
-}
-
-
-/* CORE AREAS */
-
-.eee-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
-.eee-card {
-  padding: 27px;
-  border: 1px solid #e0e9e6;
-  border-radius: 15px;
-  background: #fff;
-  transition: .25s ease;
-}
-
-.eee-card:hover {
-  transform: translateY(-5px);
-  border-color: #add8cd;
-  box-shadow: 0 15px 35px rgba(22, 130, 107, .08);
-}
-
-.eee-icon {
-  width: 50px;
-  height: 50px;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 18px;
-  border-radius: 11px;
-  background: #e3f4ef;
-  color: #16826b;
-}
-
-.eee-card h3 {
-  margin: 0 0 9px;
-  font-size: 18px;
-}
-
-.eee-card p {
-  margin: 0;
-  color: #77737c;
-  font-size: 13px;
-  line-height: 1.7;
-}
-
-
-/* LABORATORIES */
-
-.eee-labs {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
-}
-
-.eee-labs div {
-  padding: 20px;
-  border: 1px solid #d8ebe6;
-  border-radius: 12px;
-  background: #fff;
-  color: #555b60;
-  font-size: 14px;
-  font-weight: 600;
-  transition: .2s ease;
-}
-
-.eee-labs div:hover {
-  transform: translateY(-3px);
-  color: #16826b;
-}
-
-
-/* DETAILS */
-
-.eee-details {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 70px;
-}
-
-.eee-details h2 {
-  font-size: 34px;
-}
-
-.eee-details p {
-  color: #77737c;
-  line-height: 1.7;
-}
-
-.eee-details ul {
-  margin: 0;
-  padding-left: 20px;
-}
-
-.eee-details li {
-  margin-bottom: 12px;
-  color: #66616b;
-}
-
-
-/* CTA */
-
-.eee-cta {
-  padding: 65px 0;
-  color: #fff;
-  background: linear-gradient(135deg, #12352d, #16826b);
-}
-
-.eee-cta .container {
-  display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   gap: 35px;
 }
 
-.eee-cta h2 {
-  margin: 0;
-  font-size: clamp(28px, 4vw, 42px);
+.eee-hero-label {
+  display: inline-block;
+  margin-bottom: 12px;
+
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #f6d778;
 }
 
-.eee-cta a {
-  display: inline-flex;
+.eee-hero h1 {
+  margin: 0;
+
+  font-size: clamp(30px, 4vw, 48px);
+  line-height: 1.1;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.eee-hero p {
+  margin: 17px 0 0;
+
+  font-size: 16px;
+  color: #f8e8e8;
+}
+
+.eee-breadcrumb {
+  display: flex;
   align-items: center;
   gap: 8px;
-  flex-shrink: 0;
-  padding: 14px 20px;
-  border-radius: 9px;
-  background: #fff;
-  color: #16826b;
-  font-size: 13px;
-  font-weight: 800;
+
+  white-space: nowrap;
+  font-size: 14px;
+  padding-bottom: 5px;
+}
+
+.eee-breadcrumb a {
+  color: #f7dede;
   text-decoration: none;
+  transition: color 0.2s ease;
 }
 
-
-/* TABLET */
-
-@media (max-width: 900px) {
-  .eee-about,
-  .eee-details {
-    grid-template-columns: 1fr;
-    gap: 35px;
-  }
-
-  .eee-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .eee-labs {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.eee-breadcrumb a:hover {
+  color: #fff;
 }
 
+.eee-breadcrumb span {
+  color: #fff;
+  font-weight: 600;
+}
 
-/* MOBILE */
+/* =========================================================
+   STATISTICS
+========================================================= */
 
-@media (max-width: 650px) {
-  .eee-page .container {
-    width: calc(100% - 28px);
-  }
+.eee-stats {
+  width: min(1180px, 92%);
+  margin: -32px auto 45px;
 
-  .eee-hero {
-    padding: 60px 0;
-  }
+  position: relative;
+  z-index: 5;
 
-  .eee-hero h1 {
-    font-size: 40px;
-  }
+  background: #fff;
+  border: 1px solid #e2e7ee;
+  border-radius: 14px;
 
-  .eee-section,
-  .eee-light-section {
-    padding: 60px 0;
-  }
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
 
-  .eee-two-column,
-  .eee-grid,
-  .eee-labs {
-    grid-template-columns: 1fr;
-  }
+  box-shadow: 0 12px 35px rgba(20, 31, 50, 0.09);
 
-  .eee-two-column article,
-  .eee-card {
-    padding: 23px;
-  }
+  overflow: hidden;
+}
 
-  .eee-details h2 {
-    font-size: 30px;
-  }
+.eee-stat {
+  min-height: 135px;
+  padding: 24px 18px;
 
-  .eee-cta .container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  text-align: center;
+
+  border-right: 1px solid #e7ebf0;
+}
+
+.eee-stat:last-child {
+  border-right: 0;
+}
+
+.eee-stat-icon {
+  width: 45px;
+  height: 45px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #8c171b;
+  background: #fff4f3;
+
+  margin-bottom: 8px;
+}
+
+.eee-stat strong {
+  font-size: 23px;
+  color: #1768b0;
+}
+
+.eee-stat span {
+  margin-top: 4px;
+  color: #697586;
+  font-size: 13px;
+}
+
+/* =========================================================
+   COMMON SECTION
+========================================================= */
+
+.eee-section {
+  width: min(1180px, 92%);
+  margin: 0 auto 30px;
+
+  background: #fff;
+  border: 1px solid #e4e8ed;
+  border-radius: 12px;
+
+  padding: 32px;
+
+  box-shadow: 0 5px 20px rgba(20, 31, 50, 0.045);
+}
+
+.eee-section-title {
+  min-height: 36px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin-bottom: 25px;
+
+  color: #18212f;
+}
+
+.eee-section-title h2 {
+  margin: 0;
+
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.eee-section-title svg {
+  color: #8c171b;
+}
+
+.eee-title-line {
+  width: 5px;
+  height: 35px;
+
+  background: #a7191d;
+  border-radius: 2px;
+}
+
+/* =========================================================
+   ABOUT DEPARTMENT
+========================================================= */
+
+.eee-about-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 0.8fr;
+  gap: 35px;
+}
+
+.eee-about-content p {
+  color: #455468;
+  font-size: 16px;
+  line-height: 1.85;
+
+  margin: 0 0 17px;
+}
+
+.eee-established {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: #64748b;
+  font-size: 14px;
+
+  margin-bottom: 18px;
+}
+
+.eee-established svg {
+  color: #a7191d;
+}
+
+.eee-about-card {
+  padding: 30px;
+
+  border-radius: 12px;
+
+  background: linear-gradient(
+    145deg,
+    #fff8f7,
+    #fff
+  );
+
+  border: 1px solid #ecd9d9;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.eee-about-icon {
+  width: 58px;
+  height: 58px;
+
+  border-radius: 13px;
+
+  background: #a7191d;
+  color: #fff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 18px;
+}
+
+.eee-about-card h3 {
+  margin: 0 0 10px;
+
+  color: #7d1418;
+  font-size: 20px;
+  line-height: 1.4;
+}
+
+.eee-about-card p {
+  margin: 0;
+
+  color: #64748b;
+  line-height: 1.7;
+}
+
+/* =========================================================
+   HOD
+========================================================= */
+
+.eee-hod {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 35px;
+
+  padding: 25px;
+
+  background: #f9fafb;
+  border: 1px solid #e1e6ec;
+  border-radius: 12px;
+}
+
+.eee-hod-photo {
+  position: relative;
+
+  width: 100%;
+  min-height: 320px;
+
+  overflow: hidden;
+
+  border-radius: 10px;
+  background: #edf1f5;
+  border: 1px solid #d6dde5;
+}
+
+.eee-hod-photo img {
+  width: 100%;
+  height: 100%;
+  min-height: 320px;
+
+  object-fit: cover;
+  display: block;
+}
+
+.eee-hod-placeholder {
+  display: none;
+
+  position: absolute;
+  inset: 0;
+
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+
+  color: #9aa6b2;
+}
+
+.eee-image-placeholder .eee-hod-placeholder {
+  display: flex;
+}
+
+.eee-small-label {
+  display: inline-block;
+
+  color: #a7191d;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.eee-hod-details h3 {
+  margin: 8px 0;
+
+  color: #1768b0;
+  font-size: 25px;
+}
+
+.eee-hod-role {
+  color: #596579;
+  font-size: 16px;
+
+  margin: 0 0 20px;
+}
+
+.eee-hod-info {
+  color: #4b596b;
+  line-height: 1.75;
+}
+
+.eee-hod-info p {
+  margin: 0 0 15px;
+}
+
+.eee-hod-info strong {
+  color: #26364a;
+}
+
+/* =========================================================
+   EDUCATIONAL QUALIFICATIONS
+========================================================= */
+
+.eee-qualification-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.eee-qualification-card {
+  display: grid;
+  grid-template-columns: 58px 1fr;
+  gap: 18px;
+
+  padding: 25px;
+
+  border: 1px solid #dfe5ec;
+  border-radius: 12px;
+
+  background: #fff;
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.eee-qualification-card:hover {
+  transform: translateY(-4px);
+
+  border-color: #c4d5e5;
+
+  box-shadow: 0 10px 25px rgba(20, 31, 50, 0.08);
+}
+
+.eee-qualification-icon {
+  width: 50px;
+  height: 50px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+
+  color: #1768b0;
+  background: #eaf3ff;
+}
+
+.eee-qualification-card span {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #a7191d;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.eee-qualification-card h3 {
+  margin: 0 0 9px;
+
+  color: #1768b0;
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.eee-qualification-card p {
+  margin: 0;
+
+  color: #657386;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+/* =========================================================
+   PROFESSIONAL EXPERIENCE
+========================================================= */
+
+.eee-experience-card {
+  display: grid;
+  grid-template-columns: 65px 1fr;
+  gap: 22px;
+
+  padding: 28px;
+
+  border-radius: 12px;
+  border: 1px solid #dbe4ed;
+
+  background: linear-gradient(
+    135deg,
+    #f8fbff,
+    #fff
+  );
+}
+
+.eee-experience-icon {
+  width: 58px;
+  height: 58px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 14px;
+
+  color: #1768b0;
+  background: #e7f1ff;
+}
+
+.eee-experience-label {
+  display: block;
+
+  color: #a7191d;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+}
+
+.eee-experience-card h3 {
+  margin: 7px 0 10px;
+
+  color: #1768b0;
+  font-size: 21px;
+}
+
+.eee-experience-card p {
+  margin: 0 0 12px;
+
+  color: #5b6879;
+  line-height: 1.75;
+}
+
+.eee-experience-card p:last-child {
+  margin-bottom: 0;
+}
+
+.eee-experience-card strong {
+  color: #26364a;
+}
+
+/* =========================================================
+   VISION & MISSION
+========================================================= */
+
+.eee-vision-mission {
+  display: grid;
+  grid-template-columns: 1fr 1.25fr;
+  gap: 25px;
+}
+
+.eee-vm-card {
+  padding: 28px;
+
+  border-radius: 12px;
+  border: 1px solid #e1e6ec;
+
+  display: grid;
+  grid-template-columns: 55px 1fr;
+  gap: 18px;
+}
+
+.eee-vm-card.vision {
+  background: #fffaf1;
+  border-color: #ead9af;
+}
+
+.eee-vm-card.mission {
+  background: #f8fbff;
+  border-color: #d5e2f0;
+}
+
+.eee-vm-icon {
+  width: 48px;
+  height: 48px;
+
+  border-radius: 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eee-vm-card.vision .eee-vm-icon {
+  color: #9b6b00;
+  background: #ffedbb;
+}
+
+.eee-vm-card.mission .eee-vm-icon {
+  color: #1768b0;
+  background: #e4f0ff;
+}
+
+.eee-vm-card > div:last-child > span {
+  display: block;
+
+  margin-bottom: 13px;
+
+  color: #172033;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.eee-vm-card p {
+  margin: 0;
+
+  color: #4b596b;
+  line-height: 1.7;
+}
+
+.eee-mission-list p {
+  margin-bottom: 13px;
+}
+
+.eee-mission-list p:last-child {
+  margin-bottom: 0;
+}
+
+.eee-mission-list strong {
+  color: #1768b0;
+}
+
+/* =========================================================
+   FACULTY
+========================================================= */
+
+.eee-section-heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.eee-faculty-count {
+  padding: 8px 14px;
+
+  border-radius: 20px;
+
+  color: #8c171b;
+  background: #fff2f2;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.eee-faculty-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.eee-faculty-card {
+  min-height: 220px;
+
+  display: grid;
+  grid-template-columns: 145px 1fr;
+  gap: 20px;
+
+  padding: 18px;
+
+  border: 1px solid #dce2e9;
+  border-radius: 10px;
+
+  background: #fff;
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.eee-faculty-card:hover {
+  transform: translateY(-4px);
+
+  border-color: #b8cde2;
+
+  box-shadow: 0 12px 28px rgba(20, 31, 50, 0.09);
+}
+
+.eee-faculty-photo {
+  position: relative;
+
+  width: 145px;
+  height: 175px;
+
+  overflow: hidden;
+
+  border: 1px solid #d7dee7;
+  border-radius: 9px;
+
+  background: #f1f4f7;
+}
+
+.eee-faculty-photo img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  display: block;
+}
+
+.eee-faculty-placeholder {
+  display: none;
+
+  position: absolute;
+  inset: 0;
+
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 7px;
+
+  color: #9ba7b5;
+  font-size: 12px;
+}
+
+/* FIXED SELECTOR */
+.eee-faculty-image-placeholder .eee-faculty-placeholder {
+  display: flex;
+}
+
+.eee-faculty-details {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.eee-faculty-designation {
+  color: #a7191d;
+
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.eee-faculty-details h3 {
+  margin: 7px 0 10px;
+
+  color: #1768b0;
+
+  font-size: 17px;
+  line-height: 1.35;
+}
+
+.eee-faculty-profile {
+  padding: 7px 10px;
+
+  border-radius: 6px;
+
+  background: #f2f6fa;
+  color: #637286;
+
+  font-size: 12px;
+
+  border: 1px solid #e1e7ed;
+}
+
+.eee-profile-btn {
+  margin-top: auto;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  padding: 8px 13px;
+
+  border: 1px solid #a7191d;
+  border-radius: 5px;
+
+  color: #a7191d;
+  background: #fff;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.eee-profile-btn:hover {
+  color: #fff;
+  background: #a7191d;
+
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   FACULTY INFORMATION NOTE
+========================================================= */
+
+.eee-profile-note {
+  margin-top: 22px;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+
+  padding: 14px 16px;
+
+  border-radius: 8px;
+
+  background: #f8fafc;
+  border: 1px solid #e1e7ee;
+
+  color: #66758a;
+
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.eee-profile-note svg {
+  flex-shrink: 0;
+
+  margin-top: 2px;
+
+  color: #1768b0;
+}
+
+/* =========================================================
+   FACILITIES
+========================================================= */
+
+.eee-facilities-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.eee-facility-card {
+  padding: 25px 20px;
+
+  border: 1px solid #dfe5ec;
+  border-radius: 10px;
+
+  background: #fff;
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.eee-facility-card:hover {
+  transform: translateY(-4px);
+
+  box-shadow: 0 10px 25px rgba(20, 31, 50, 0.08);
+
+  border-color: #bdd1e5;
+}
+
+.eee-facility-icon {
+  width: 50px;
+  height: 50px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+
+  color: #1768b0;
+  background: #eaf3ff;
+
+  margin-bottom: 16px;
+}
+
+.eee-facility-card h3 {
+  margin: 0 0 9px;
+
+  color: #18212f;
+  font-size: 17px;
+  line-height: 1.4;
+}
+
+.eee-facility-card p {
+  margin: 0;
+
+  color: #657386;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+/* =========================================================
+   PROGRAMME
+========================================================= */
+
+.eee-program-card {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+
+  padding: 30px;
+
+  border-radius: 12px;
+
+  background: linear-gradient(
+    135deg,
+    #f5f9ff,
+    #ffffff
+  );
+
+  border: 1px solid #d8e4f0;
+}
+
+.eee-program-icon {
+  flex: 0 0 75px;
+
+  width: 75px;
+  height: 75px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 18px;
+
+  color: #fff;
+  background: #1768b0;
+}
+
+.eee-program-label {
+  color: #a7191d;
+
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.eee-program-card h3 {
+  margin: 7px 0 8px;
+
+  color: #1768b0;
+  font-size: 22px;
+}
+
+.eee-program-card p {
+  margin: 0;
+
+  color: #5b6879;
+  line-height: 1.7;
+}
+
+/* =========================================================
+   RESPONSIVE - 1000PX
+========================================================= */
+
+@media (max-width: 1000px) {
+  .eee-hero-inner {
+    min-height: auto;
+
+    padding: 40px 0;
+
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .eee-cta {
-    padding: 55px 0;
+  .eee-breadcrumb {
+    padding-bottom: 0;
+  }
+
+  .eee-about-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .eee-vision-mission {
+    grid-template-columns: 1fr;
+  }
+
+  .eee-facilities-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .eee-hod {
+    grid-template-columns: 220px 1fr;
+  }
+
+  .eee-faculty-card {
+    grid-template-columns: 120px 1fr;
+  }
+
+  .eee-faculty-photo {
+    width: 120px;
+    height: 160px;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE - 760PX
+========================================================= */
+
+@media (max-width: 760px) {
+  .eee-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .eee-stat:nth-child(2) {
+    border-right: 0;
+  }
+
+  .eee-stat:nth-child(1),
+  .eee-stat:nth-child(2) {
+    border-bottom: 1px solid #e7ebf0;
+  }
+
+  .eee-section {
+    padding: 24px 20px;
+  }
+
+  .eee-hod {
+    grid-template-columns: 1fr;
+  }
+
+  .eee-hod-photo {
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  .eee-faculty-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .eee-experience-card {
+    grid-template-columns: 1fr;
+  }
+
+  .eee-experience-icon {
+    width: 52px;
+    height: 52px;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE - 520PX
+========================================================= */
+
+@media (max-width: 520px) {
+  .eee-hero-inner {
+    width: 90%;
+    padding: 32px 0;
+  }
+
+  .eee-hero h1 {
+    font-size: 27px;
+  }
+
+  .eee-hero p {
+    font-size: 14px;
+  }
+
+  .eee-breadcrumb {
+    font-size: 12px;
+
+    flex-wrap: wrap;
+    white-space: normal;
+  }
+
+  .eee-stats {
+    width: 90%;
+    margin-top: -20px;
+  }
+
+  .eee-stat {
+    min-height: 115px;
+    padding: 18px 10px;
+  }
+
+  .eee-section {
+    width: 92%;
+    padding: 21px 16px;
+  }
+
+  .eee-section-title h2 {
+    font-size: 19px;
+  }
+
+  .eee-title-line {
+    width: 4px;
+    height: 30px;
+  }
+
+  .eee-qualification-card {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
+
+  .eee-vm-card {
+    grid-template-columns: 1fr;
+    padding: 22px;
+  }
+
+  .eee-faculty-card {
+    grid-template-columns: 95px 1fr;
+    gap: 13px;
+    padding: 12px;
+  }
+
+  .eee-faculty-photo {
+    width: 95px;
+    height: 130px;
+  }
+
+  .eee-faculty-details h3 {
+    font-size: 14px;
+  }
+
+  .eee-faculty-profile {
+    font-size: 10px;
+  }
+
+  .eee-profile-btn {
+    font-size: 10px;
+    padding: 6px 8px;
+  }
+
+  .eee-facilities-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .eee-program-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 22px;
+  }
+
+  .eee-program-card h3 {
+    font-size: 19px;
+  }
+
+  .eee-profile-note {
+    font-size: 12px;
+  }
+}
+
+/* =========================================================
+   VERY SMALL SCREENS
+========================================================= */
+
+@media (max-width: 380px) {
+  .eee-faculty-card {
+    grid-template-columns: 1fr;
+  }
+
+  .eee-faculty-photo {
+    width: 100%;
+    height: 190px;
+  }
+
+  .eee-faculty-details {
+    width: 100%;
+  }
+
+  .eee-profile-btn {
+    margin-top: 15px;
+  }
+
+  .eee-section-heading-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .eee-faculty-count {
+    margin-top: -10px;
+  }
+
+  .eee-experience-card {
+    padding: 20px;
+  }
+
+  .eee-program-icon {
+    width: 65px;
+    height: 65px;
+    flex-basis: 65px;
   }
 }

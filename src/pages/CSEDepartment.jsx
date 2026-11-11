@@ -1,271 +1,773 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import {
-  Code2,
-  Database,
-  Globe,
-  Network,
-  BrainCircuit,
-  Terminal,
-  ArrowLeft,
-  ArrowRight,
+  Info,
+  CalendarDays,
+  Users,
+  UserRound,
+  Eye,
+  Building2,
+  Target,
+  Lightbulb,
+  FlaskConical,
+  GraduationCap,
+  Award,
+  Laptop,
+  ChevronRight,
 } from "lucide-react";
 
 import "./CSEDepartment.css";
 
-const areas = [
+/* =========================================================
+   FACULTY DATA
+========================================================= */
+
+const faculty = [
   {
-    icon: Code2,
-    title: "Programming",
-    text: "Developing programming, logical thinking and problem-solving skills.",
+    name: "MD RIAZ",
+    designation: "LECTURER",
+    qualification: "B.Tech, M.Tech in Computer Science & Engineering",
+    joined: "20 September 2010",
+    image: "/images/departments/cse/md-riaz.jpg",
+    profile:
+      "https://dte.telangana.gov.in/filePreview?fileName=CMS/File_290120261224281476637643.pdf",
   },
   {
-    icon: Globe,
-    title: "Web Development",
-    text: "Learning modern web technologies and application development.",
+    name: "V. SAI DURGA PRASAD GOUD",
+    designation: "LECTURER",
+    qualification: "B.Tech in Data Science",
+    joined: "15 August 2025",
+    image: "/images/departments/cse/sai-durga-prasad-goud.jpg",
+    profile:
+      "https://dte.telangana.gov.in/filePreview?fileName=CMS/File_290120261104549702435983.pdf",
   },
   {
-    icon: Database,
-    title: "Database Systems",
-    text: "Understanding databases, data management and information systems.",
+    name: "N. SRILAXMI",
+    designation: "LECTURER",
+    qualification: "B.Tech",
+    joined: "7 August 2025",
+    image: "/images/departments/cse/n-srilaxmi.jpg",
+    profile:
+      "https://dte.telangana.gov.in/filePreview?fileName=CMS/File_110320261145573564034269.pdf",
   },
   {
-    icon: Network,
-    title: "Computer Networks",
-    text: "Learning networking concepts, communication and network security.",
+    name: "N. MOUNIKA",
+    designation: "LECTURER",
+    qualification: "B.Tech",
+    joined: "7 August 2025",
+    image: "/images/departments/cse/n-mounika.jpg",
+    profile:
+      "https://dte.telangana.gov.in/filePreview?fileName=CMS/File_110320261147388421233708.pdf",
   },
   {
-    icon: BrainCircuit,
-    title: "Artificial Intelligence",
-    text: "Introduction to AI, machine learning and intelligent applications.",
+    name: "B. MOUNIKA",
+    designation: "LECTURER",
+    qualification: "B.Tech",
+    joined: "7 August 2025",
+    image: "/images/departments/cse/b-mounika.jpg",
+    profile:
+      "https://dte.telangana.gov.in/filePreview?fileName=CMS/File_110320261146394985107915.pdf",
   },
   {
-    icon: Terminal,
-    title: "Software Development",
-    text: "Developing software applications using practical engineering methods.",
+    name: "USHASWINI",
+    designation: "LECTURER",
+    qualification: "B.Tech in Computer Science & Engineering",
+    joined: "7 August 2025",
+    image: "/images/departments/cse/ushaswini.jpg",
+    profile:
+      "https://dte.telangana.gov.in/filePreview?fileName=CMS/File_110320261147057910594688.pdf",
   },
 ];
 
-function CSEDepartment() {
+/* =========================================================
+   LABORATORIES
+========================================================= */
+
+const labs = [
+  {
+    icon: Laptop,
+    title: "Programming Laboratory",
+    description:
+      "Practical learning environment for programming, problem solving and software development.",
+  },
+  {
+    icon: Building2,
+    title: "Computer Laboratory",
+    description:
+      "Computer facilities supporting academic, practical and project-based learning.",
+  },
+  {
+    icon: FlaskConical,
+    title: "Networking Laboratory",
+    description:
+      "Practical exposure to computer networks, communication and networking concepts.",
+  },
+  {
+    icon: GraduationCap,
+    title: "Project & Innovation",
+    description:
+      "Platform for students to develop academic projects and practical technology skills.",
+  },
+];
+
+/* =========================================================
+   SECTION TITLE
+========================================================= */
+
+function SectionTitle({ icon: Icon, children }) {
+  return (
+    <div className="cse-section-title">
+      <span className="cse-title-line"></span>
+
+      <Icon
+        size={21}
+        strokeWidth={2.2}
+      />
+
+      <h2>{children}</h2>
+    </div>
+  );
+}
+
+/* =========================================================
+   MAIN COMPONENT
+========================================================= */
+
+export default function CSEDepartment() {
   return (
     <main className="cse-page">
 
-      {/* HERO */}
+      {/* =====================================================
+          HERO
+      ===================================================== */}
+
       <section className="cse-hero">
-        <div className="container">
 
-          <Link to="/departments" className="cse-back">
-            <ArrowLeft size={16} />
-            Back to Departments
-          </Link>
+        <div className="cse-hero-inner">
 
-          <span>ACADEMIC DEPARTMENT</span>
+          <div className="cse-hero-content">
 
-          <h1>
-            Computer Science &
-            <strong>Engineering</strong>
-          </h1>
+            <span className="cse-hero-label">
+              GOVERNMENT POLYTECHNIC COLLEGE
+            </span>
 
-          <p>
-            Developing programming, computing, problem-solving and
-            modern technical skills through practical and
-            application-oriented learning.
-          </p>
+            <h1>
+              Department of Computer Science
+              <br />
+              and Engineering
+            </h1>
+
+            <p>
+              Government Polytechnic College, Masab Tank, Hyderabad
+            </p>
+
+          </div>
+
+          <div className="cse-breadcrumb">
+
+            <a href="/">
+              Home
+            </a>
+
+            <ChevronRight size={15} />
+
+            <a href="/departments">
+              Departments
+            </a>
+
+            <ChevronRight size={15} />
+
+            <span>
+              CSE
+            </span>
+
+          </div>
 
         </div>
+
       </section>
 
 
-      {/* ABOUT */}
+      {/* =====================================================
+          QUICK STATISTICS
+      ===================================================== */}
+
+      <section className="cse-stats">
+
+        <div className="cse-stat">
+
+          <div className="cse-stat-icon">
+            <Users size={24} />
+          </div>
+
+          <strong>
+            6+
+          </strong>
+
+          <span>
+            Faculty Profiles
+          </span>
+
+        </div>
+
+
+        <div className="cse-stat">
+
+          <div className="cse-stat-icon">
+            <GraduationCap size={24} />
+          </div>
+
+          <strong>
+            CSE
+          </strong>
+
+          <span>
+            Diploma Programme
+          </span>
+
+        </div>
+
+
+        <div className="cse-stat">
+
+          <div className="cse-stat-icon">
+            <Laptop size={24} />
+          </div>
+
+          <strong>
+            Computer
+          </strong>
+
+          <span>
+            Technology Education
+          </span>
+
+        </div>
+
+
+        <div className="cse-stat">
+
+          <div className="cse-stat-icon">
+            <Award size={24} />
+          </div>
+
+          <strong>
+            Technical
+          </strong>
+
+          <span>
+            Skill Development
+          </span>
+
+        </div>
+
+      </section>
+
+
+      {/* =====================================================
+          ABOUT DEPARTMENT
+      ===================================================== */}
+
       <section className="cse-section">
-        <div className="container cse-about">
 
-          <div>
-            <span>ABOUT THE DEPARTMENT</span>
+        <SectionTitle icon={Info}>
+          About the Department
+        </SectionTitle>
 
-            <h2>
-              Computing, innovation and technology.
-            </h2>
+        <div className="cse-about-grid">
+
+          <div className="cse-about-content">
+
+            <div className="cse-established">
+
+              <CalendarDays size={18} />
+
+              <span>
+                Department of Computer Science & Engineering
+              </span>
+
+            </div>
+
+            <p>
+              The Department of Computer Science and Engineering at
+              Government Polytechnic College, Masab Tank, Hyderabad,
+              provides students with technical knowledge and practical
+              skills in computer science and related technologies.
+            </p>
+
+            <p>
+              The department focuses on developing strong fundamentals,
+              practical competence, problem-solving ability and
+              industry-oriented technical skills through academic and
+              laboratory learning.
+            </p>
+
+            <p>
+              Students are encouraged to apply their knowledge through
+              practical activities, projects and continuous technical
+              learning.
+            </p>
+
           </div>
 
-          <div>
-            <p>
-              The Computer Science & Engineering department
-              provides students with strong foundations in
-              programming, computer systems, databases, networking
-              and software development.
-            </p>
+
+          <div className="cse-about-card">
+
+            <div className="about-card-icon">
+              <Laptop size={30} />
+            </div>
+
+            <h3>
+              Computer Science & Engineering
+            </h3>
 
             <p>
-              Students develop practical skills through laboratory
-              exercises, programming activities, projects and
-              application-based learning.
+              Building technical knowledge, practical skills and
+              professional capabilities for the digital era.
             </p>
+
           </div>
 
         </div>
+
       </section>
 
 
-      {/* VISION & MISSION */}
-      <section className="cse-light-section">
-        <div className="container">
+      {/* =====================================================
+          HOD
+      ===================================================== */}
 
-          <div className="cse-heading">
-            <span>OUR DIRECTION</span>
-            <h2>Vision & Mission</h2>
+      <section className="cse-section">
+
+        <SectionTitle icon={UserRound}>
+          Head of the Department
+        </SectionTitle>
+
+        <div className="cse-hod">
+
+          <div className="cse-hod-photo">
+
+            <img
+              src="/images/departments/cse/hod.jpg"
+              alt="Head of Department"
+              onError={(e) => {
+
+                e.currentTarget.style.display = "none";
+
+                e.currentTarget.parentElement.classList.add(
+                  "cse-image-placeholder"
+                );
+
+              }}
+            />
+
+            <div className="hod-placeholder-content">
+
+              <UserRound size={48} />
+
+              <span>
+                HOD
+              </span>
+
+            </div>
+
           </div>
 
-          <div className="cse-two-column">
 
-            <article>
-              <Code2 size={25} />
+          <div className="cse-hod-details">
 
-              <h3>Vision</h3>
+            <span className="cse-small-label">
+              HEAD OF DEPARTMENT
+            </span>
+
+            <h3>
+              Sri. NANNAM SREENIVASULU, M.Tech
+            </h3>
+
+            <p className="cse-hod-role">
+              Head of Department — Computer Science & Engineering
+            </p>
+
+            <div className="cse-hod-info">
 
               <p>
-                To develop technically skilled and innovative
-                computer professionals with strong knowledge,
-                practical abilities and problem-solving skills.
+                <strong>
+                  Experience:
+                </strong>{" "}
+                28 years of teaching experience as Lecturer,
+                Senior Lecturer and Head of Department in Government
+                Polytechnic Colleges.
               </p>
-            </article>
 
-            <article>
-              <BrainCircuit size={25} />
-
-              <h3>Mission</h3>
+              <p>
+                <strong>
+                  Academic Qualifications:
+                </strong>
+              </p>
 
               <ul>
-                <li>Develop strong programming fundamentals.</li>
-                <li>Provide practical computer laboratory experience.</li>
-                <li>Encourage innovation and project development.</li>
-                <li>Prepare students for industry and higher education.</li>
+
+                <li>
+                  Bachelor of Technology in Computer Science
+                  Engineering — Sri Krishnadevaraya University, 1996
+                </li>
+
+                <li>
+                  Master of Technology (DSCE) — JNTUH, Hyderabad, 2011
+                </li>
+
+                <li>
+                  Master of Technology (CSE) — JNTUH, Hyderabad, 2014
+                </li>
+
               </ul>
-            </article>
+
+            </div>
 
           </div>
 
         </div>
+
       </section>
 
 
-      {/* CORE AREAS */}
+      {/* =====================================================
+          HOD MESSAGE
+      ===================================================== */}
+
       <section className="cse-section">
-        <div className="container">
 
-          <div className="cse-heading">
-            <span>ACADEMIC FOCUS</span>
-            <h2>Core Areas</h2>
+        <SectionTitle icon={Info}>
+          HOD's Message
+        </SectionTitle>
+
+        <div className="cse-message">
+
+          <div className="cse-quote-mark">
+            “
           </div>
 
-          <div className="cse-grid">
+          <div>
 
-            {areas.map((area, index) => {
-              const Icon = area.icon;
+            <p>
+              The Department of Computer Science and Engineering is
+              committed to providing students with quality technical
+              education, practical exposure and opportunities for
+              continuous learning.
+            </p>
 
-              return (
-                <article className="cse-card" key={index}>
+            <p>
+              The department encourages students to develop technical
+              competence, professional values, creativity and
+              problem-solving skills so that they can confidently meet
+              the requirements of higher education and industry.
+            </p>
 
-                  <div className="cse-icon">
-                    <Icon size={23} />
-                  </div>
+            <div className="cse-message-signature">
 
-                  <h3>{area.title}</h3>
+              <strong>
+                — Head of the Department
+              </strong>
 
-                  <p>{area.text}</p>
-
-                </article>
-              );
-            })}
-
-          </div>
-
-        </div>
-      </section>
-
-
-      {/* LABORATORIES */}
-      <section className="cse-light-section">
-        <div className="container">
-
-          <div className="cse-heading">
-            <span>PRACTICAL LEARNING</span>
-            <h2>Laboratories</h2>
-          </div>
-
-          <div className="cse-labs">
-
-            <div>Programming Laboratory</div>
-            <div>Database Laboratory</div>
-            <div>Web Development Laboratory</div>
-            <div>Computer Networks Laboratory</div>
-            <div>Software Development Laboratory</div>
-            <div>Computer Hardware Laboratory</div>
-
-          </div>
-
-        </div>
-      </section>
-
-
-      {/* DEPARTMENT DETAILS */}
-      <section className="cse-section">
-        <div className="container">
-
-          <div className="cse-details">
-
-            <div>
-              <span>DEPARTMENT</span>
-
-              <h2>
+              <span>
                 Computer Science & Engineering
-              </h2>
+              </span>
 
-              <p>
-                Government Polytechnic College,
-                Masab Tank, Hyderabad.
-              </p>
-            </div>
-
-            <div>
-              <span>STUDENT DEVELOPMENT</span>
-
-              <ul>
-                <li>Programming Skills</li>
-                <li>Problem Solving</li>
-                <li>Project Development</li>
-                <li>Industry-Oriented Knowledge</li>
-              </ul>
             </div>
 
           </div>
 
         </div>
+
       </section>
 
 
-      {/* CTA */}
-      <section className="cse-cta">
-        <div className="container">
+      {/* =====================================================
+          VISION & MISSION
+      ===================================================== */}
 
-          <div>
-            <span>EXPLORE MORE</span>
+      <section className="cse-section">
 
-            <h2>
-              Explore other academic departments.
-            </h2>
+        <div className="cse-vision-mission">
+
+          {/* VISION */}
+
+          <div className="cse-vm-card vision">
+
+            <div className="cse-vm-icon">
+
+              <Lightbulb size={26} />
+
+            </div>
+
+            <div>
+
+              <span>
+                VISION OF THE DEPARTMENT
+              </span>
+
+              <p>
+                Develop the students who can technologically adopt,
+                innovate, self-motivated and turn into responsible
+                citizen possessing human values, globally competent
+                professional.
+              </p>
+
+            </div>
+
           </div>
 
-          <Link to="/departments">
-            View Departments
-            <ArrowRight size={17} />
-          </Link>
+
+          {/* MISSION */}
+
+          <div className="cse-vm-card mission">
+
+            <div className="cse-vm-icon">
+
+              <Target size={26} />
+
+            </div>
+
+            <div>
+
+              <span>
+                MISSION OF THE DEPARTMENT
+              </span>
+
+              <div className="cse-mission-list">
+
+                <p>
+                  <strong>
+                    M1:
+                  </strong>{" "}
+                  To provide knowledge based technology and serve to
+                  meet the needs of society in computer and allied
+                  industries.
+                </p>
+
+                <p>
+                  <strong>
+                    M2:
+                  </strong>{" "}
+                  To make students professionally strong foundation
+                  to create innovative technologies.
+                </p>
+
+                <p>
+                  <strong>
+                    M3:
+                  </strong>{" "}
+                  To inculcate values of professional ethics,
+                  leadership qualities and lifelong learning.
+                </p>
+
+                <p>
+                  <strong>
+                    M4:
+                  </strong>{" "}
+                  To prepare students for accountable through
+                  self evaluation and continuous improvement.
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
 
         </div>
+
+      </section>
+
+
+      {/* =====================================================
+          TEACHING FACULTY
+      ===================================================== */}
+
+      <section className="cse-section">
+
+        <div className="cse-section-heading-row">
+
+          <SectionTitle icon={Users}>
+            Teaching Faculty
+          </SectionTitle>
+
+          <span className="faculty-count">
+            {faculty.length} Faculty Profiles
+          </span>
+
+        </div>
+
+
+        <div className="cse-faculty-grid">
+
+          {faculty.map((member) => (
+
+            <article
+              className="cse-faculty-card"
+              key={member.name}
+            >
+
+              <div className="faculty-photo">
+
+                <img
+                  src={member.image}
+                  alt={member.name}
+                  onError={(e) => {
+
+                    e.currentTarget.style.display = "none";
+
+                    e.currentTarget.parentElement.classList.add(
+                      "faculty-image-placeholder"
+                    );
+
+                  }}
+                />
+
+                <div className="faculty-placeholder">
+
+                  <UserRound size={38} />
+
+                </div>
+
+              </div>
+
+
+              <div className="faculty-details">
+
+                <span className="faculty-designation">
+                  {member.designation}
+                </span>
+
+                <h3>
+                  {member.name}
+                </h3>
+
+                <p className="faculty-qualification">
+                  {member.qualification}
+                </p>
+
+                <div className="faculty-joined">
+
+                  <CalendarDays size={15} />
+
+                  <span>
+                    Joined: {member.joined}
+                  </span>
+
+                </div>
+
+                <a
+                  href={member.profile}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="faculty-profile-btn"
+                >
+
+                  <Eye size={16} />
+
+                  View Official Profile
+
+                </a>
+
+              </div>
+
+            </article>
+
+          ))}
+
+        </div>
+
+      </section>
+
+
+      {/* =====================================================
+          LABORATORIES
+      ===================================================== */}
+
+      <section className="cse-section">
+
+        <SectionTitle icon={FlaskConical}>
+          Laboratories & Learning Facilities
+        </SectionTitle>
+
+        <div className="cse-labs-grid">
+
+          {labs.map((lab) => {
+
+            const Icon = lab.icon;
+
+            return (
+
+              <div
+                className="cse-lab-card"
+                key={lab.title}
+              >
+
+                <div className="cse-lab-icon">
+
+                  <Icon size={27} />
+
+                </div>
+
+                <h3>
+                  {lab.title}
+                </h3>
+
+                <p>
+                  {lab.description}
+                </p>
+
+              </div>
+
+            );
+
+          })}
+
+        </div>
+
+      </section>
+
+
+      {/* =====================================================
+          PROGRAMME
+      ===================================================== */}
+
+      <section className="cse-section">
+
+        <SectionTitle icon={GraduationCap}>
+          Programme Information
+        </SectionTitle>
+
+        <div className="cse-program-card">
+
+          <div className="program-main-icon">
+
+            <Laptop size={38} />
+
+          </div>
+
+          <div>
+
+            <span className="program-label">
+              DIPLOMA PROGRAMME
+            </span>
+
+            <h3>
+              Diploma in Computer Science & Engineering
+            </h3>
+
+            <p>
+              The programme combines theoretical knowledge with
+              practical laboratory learning to develop students'
+              technical and problem-solving capabilities.
+            </p>
+
+          </div>
+
+        </div>
+
       </section>
 
     </main>
   );
 }
-
-export default CSEDepartment;

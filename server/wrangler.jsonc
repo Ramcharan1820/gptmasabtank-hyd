@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "college-website-api",
+  "name": "college-website-backend",
   "main": "./worker.js",
   "compatibility_date": "2026-10-02",
   "compatibility_flags": [
