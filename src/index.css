@@ -59,3 +59,25 @@ select {
 a {
   text-decoration: none;
 }
+
+.site-hero {
+  height: 380px;
+  min-height: 380px;
+  padding-block: 0;
+  display: flex;
+  align-items: center;
+}
+
+.site-hero h1,
+.site-hero .alumni-banner-title {
+  font-size: clamp(2.2rem, 4vw, 3rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+@media (max-width: 768px) {
+  .site-hero {
+    height: 320px;
+    min-height: 320px;
+  }
+}

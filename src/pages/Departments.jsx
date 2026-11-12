@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Cpu,
@@ -66,11 +66,81 @@ const departments = [
 ];
 
 function Departments() {
+  const [departmentRecords, setDepartmentRecords] = useState(departments);
+
+  useEffect(() => {
+    let active = true;
+
+    fetch("http://localhost:5000/api/departments")
+      .then(async (response) => {
+        const result = await response.json();
+        if (!response.ok || !result.success) {
+          throw new Error(result.message || "Unable to load departments.");
+        }
+        return result.departments;
+      })
+      .then((records) => {
+        if (active && Array.isArray(records)) {
+          setDepartmentRecords(
+            records.filter((department) => department.is_active !== false && Number(department.is_active) !== 0)
+          );
+        }
+      })
+      .catch((error) => {
+        console.error("Department content API error:", error);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const iconByCode = {
+    CSE: Cpu,
+    ECE: Radio,
+    EEE: Zap,
+    ME: Settings,
+    MECH: Settings,
+    CE: Building2,
+    CIVIL: Building2,
+    AE: Car,
+    AUTO: Car,
+    "D.PHARM": Pill,
+    PHARMACY: Pill,
+  };
+  const pathByCode = {
+    CSE: "/departments/cse",
+    ECE: "/departments/ece",
+    EEE: "/departments/eee",
+    ME: "/departments/mechanical",
+    MECH: "/departments/mechanical",
+    CE: "/departments/civil",
+    CIVIL: "/departments/civil",
+    AE: "/departments/automobile",
+    AUTO: "/departments/automobile",
+    "D.PHARM": "/departments/pharmacy",
+    PHARMACY: "/departments/pharmacy",
+  };
+  const displayDepartments = departmentRecords.map((department) => {
+    const code = department.department_code || department.code;
+    const normalizedCode = String(code || "").toUpperCase();
+    return {
+      code,
+      title: department.department_name || department.title,
+      text: department.description || department.text || "Explore the academic department, facilities and course information.",
+      icon: iconByCode[normalizedCode] || Building2,
+      link: pathByCode[normalizedCode],
+      image: department.image,
+      hodName: department.hod_name,
+      intake: department.intake,
+    };
+  });
+
   return (
     <main className="departments-page">
 
       {/* HERO SECTION */}
-      <section className="departments-hero">
+      <section className="site-hero departments-hero">
         <div className="departments-hero-content">
 
           <span className="section-label">
@@ -113,7 +183,7 @@ function Departments() {
 
         <div className="departments-grid">
 
-          {departments.map((department) => {
+          {displayDepartments.map((department) => {
             const Icon = department.icon;
 
             return (
@@ -123,7 +193,11 @@ function Departments() {
               >
 
                 <div className="department-icon">
-                  <Icon size={28} />
+                  {department.image ? (
+                    <img src={department.image} alt="" />
+                  ) : (
+                    <Icon size={28} />
+                  )}
                 </div>
 
                 <span className="department-code">
@@ -134,13 +208,21 @@ function Departments() {
 
                 <p>{department.text}</p>
 
-                <Link
-                  to={department.link}
-                  className="department-button"
-                >
-                  Explore Department
-                  <ArrowRight size={16} />
-                </Link>
+                {(department.hodName || Number(department.intake) > 0) && (
+                  <div className="department-card-meta">
+                    {department.hodName && <span>Head of section: {department.hodName}</span>}
+                    {Number(department.intake) > 0 && <span>Annual intake: {department.intake}</span>}
+                  </div>
+                )}
+
+                {department.link ? (
+                  <Link to={department.link} className="department-button">
+                    Explore Department
+                    <ArrowRight size={16} />
+                  </Link>
+                ) : (
+                  <span className="department-button">Department details coming soon</span>
+                )}
 
               </article>
             );

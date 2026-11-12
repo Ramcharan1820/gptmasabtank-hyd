@@ -24,7 +24,7 @@ const MechanicalDepartment = () => {
       {/* =====================================================
           HERO SECTION
       ===================================================== */}
-      <section className="mechanical-hero">
+      <section className="site-hero mechanical-hero">
         <div className="mechanical-hero-overlay">
           <div className="mechanical-hero-content">
 

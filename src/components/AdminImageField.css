@@ -1,0 +1,240 @@
+.admin-image-control {
+  display: grid;
+  min-width: 0;
+  gap: 10px;
+  font-weight: 400;
+}
+
+.admin-image-preview {
+  display: flex;
+  min-height: 92px;
+  align-items: center;
+  gap: 13px;
+  padding: 9px;
+  border: 1px solid #dfe6ee;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.admin-image-preview > img {
+  width: 108px;
+  height: 74px;
+  flex: 0 0 108px;
+  border-radius: 5px;
+  object-fit: cover;
+  background: #e8edf3;
+}
+
+.admin-image-preview-actions {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: #64748b;
+  font-size: 11px;
+}
+
+.admin-image-preview-actions button,
+.admin-image-library-heading button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 8px;
+  border: 1px solid #e3c9ce;
+  border-radius: 6px;
+  background: #fff;
+  color: #96384a;
+  font: inherit;
+  cursor: pointer;
+}
+
+.admin-image-preview-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.admin-image-empty {
+  display: flex;
+  min-height: 76px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #758398;
+  font-size: 12px;
+}
+
+.admin-image-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.admin-image-button {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 7px 11px;
+  border: 1px solid #d8e1eb;
+  border-radius: 6px;
+  background: #fff;
+  color: #34506f;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-image-button.primary {
+  border-color: #123c69;
+  background: #123c69;
+  color: #fff;
+}
+
+.admin-image-button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.admin-image-file-input {
+  display: none;
+}
+
+.admin-image-progress {
+  height: 5px;
+  overflow: hidden;
+  border-radius: 9px;
+  background: #e8edf4;
+}
+
+.admin-image-progress > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #258160;
+  transition: width 0.15s ease;
+}
+
+.admin-image-error {
+  margin: 0;
+  color: #a22d3d;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.admin-image-library {
+  padding: 12px;
+  border: 1px solid #dfe6ee;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.admin-image-library-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 11px;
+  color: #263d57;
+  font-size: 12px;
+}
+
+.admin-image-library-heading button {
+  padding: 4px;
+  border: 0;
+  color: #64748b;
+}
+
+.admin-image-library-empty {
+  margin: 0;
+  padding: 16px;
+  color: #758398;
+  font-size: 11px;
+  text-align: center;
+}
+
+.admin-image-library-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 9px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.admin-image-library-item {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #e1e7ee;
+  border-radius: 6px;
+  background: #f8fafc;
+}
+
+.admin-image-library-select {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #66758a;
+  font: inherit;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.admin-image-library-select img {
+  display: block;
+  width: 100%;
+  height: 83px;
+  object-fit: cover;
+}
+
+.admin-image-library-select span {
+  display: block;
+  padding: 5px 25px 5px 7px;
+  text-align: left;
+}
+
+.admin-image-library-delete {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  display: grid;
+  width: 23px;
+  height: 23px;
+  place-items: center;
+  border: 0;
+  border-radius: 4px;
+  background: #fff;
+  color: #a22d3d;
+  box-shadow: 0 1px 5px rgba(15, 23, 42, 0.16);
+  cursor: pointer;
+}
+
+.admin-image-library-delete:disabled {
+  cursor: wait;
+}
+
+.admin-image-spin {
+  animation: admin-image-spin 1s linear infinite;
+}
+
+@keyframes admin-image-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-image-preview > img {
+    width: 86px;
+    flex-basis: 86px;
+  }
+}

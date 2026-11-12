@@ -14,7 +14,9 @@ import {
 
 import "./AdminLogin.css";
 
-const API_URL = "http://localhost:5000";
+const API_URL =
+  import.meta.env.VITE_API_BASE_URL?.replace(/\/+$/, "") ||
+  "http://localhost:5000";
 
 function AdminLogin() {
   const navigate = useNavigate();
@@ -253,4 +255,3 @@ function AdminLogin() {
 }
 
 export default AdminLogin;
-

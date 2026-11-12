@@ -6,6 +6,7 @@ import {
   ClipboardList,
   ExternalLink,
   ArrowRight,
+  Image as PhotoAlbumIcon,
 } from "lucide-react";
 
 import "./StudentPortal.css";
@@ -30,6 +31,15 @@ const links = [
   },
 
   {
+    title: "Event Photo Albums",
+    text: "Browse and download photos from college events.",
+    icon: PhotoAlbumIcon,
+    type: "internal",
+    url: "/event-media",
+    linkText: "Explore Event Photos",
+  },
+
+  {
     title: "Consolidated Result",
     text: "View your consolidated academic result.",
     icon: ClipboardList,
@@ -47,7 +57,7 @@ function StudentPortal() {
           HERO SECTION
       ========================== */}
 
-      <section className="student-portal-hero">
+      <section className="site-hero student-portal-hero">
 
         <div className="student-portal-container">
 

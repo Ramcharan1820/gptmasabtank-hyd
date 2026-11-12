@@ -25,6 +25,8 @@ import StudentPortal from "./pages/StudentPortal";
 import Attendance from "./pages/Attendance";
 import Result from "./pages/Result";
 import ConsolidatedResult from "./pages/ConsolidatedResult";
+import AdminEventMedia from "./pages/AdminEventMedia";
+import EventMediaGalleryPage from "./pages/EventMediaGalleryPage";
 
 /* Alumni */
 import Alumni from "./pages/Alumni";
@@ -45,13 +47,14 @@ function App() {
   const isAdminRoute = location.pathname.startsWith("/admin");
   const isAdminLoginRoute = location.pathname === "/admin/login";
   const isAdminDashboardRoute = location.pathname === "/admin/dashboard";
+  const isAdminMediaRoute = location.pathname === "/admin/media";
 
   return (
     <>
       <ScrollToTop />
 
       {!isAdminLoginRoute && (
-        <Header showNavigation={!isAdminDashboardRoute} />
+        <Header showNavigation={!isAdminDashboardRoute && !isAdminMediaRoute} />
       )}
 
       <Routes>
@@ -76,11 +79,17 @@ function App() {
           path="/student-portal/consolidated-result"
           element={<ConsolidatedResult />}
         />
+        <Route path="/event-media" element={<EventMediaGalleryPage />} />
+        <Route
+          path="/event-media/:eventId"
+          element={<EventMediaGalleryPage />}
+        />
 
 
         {/* Admin Pages */}
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/media" element={<AdminEventMedia />} />
 
         {/* Alumni */}
         <Route path="/alumni" element={<Alumni />} />

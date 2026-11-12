@@ -140,7 +140,7 @@ export default function CSEDepartment() {
           HERO
       ===================================================== */}
 
-      <section className="cse-hero">
+      <section className="site-hero cse-hero">
 
         <div className="cse-hero-inner">
 

@@ -98,7 +98,7 @@ function Events() {
 
       {/* HERO SECTION */}
 
-      <section className="events-hero">
+      <section className="site-hero events-hero">
         <div className="events-hero-overlay">
           <div className="events-hero-content">
 

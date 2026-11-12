@@ -136,7 +136,7 @@ function Result() {
           HERO
       ================================================= */}
 
-      <section className="result-hero">
+      <section className="site-hero result-hero">
 
         <div className="result-hero-content">
 

@@ -51,7 +51,7 @@ function PharmacyDepartment() {
     <main className="pharm-page">
 
       {/* HERO */}
-      <section className="pharm-hero">
+      <section className="site-hero pharm-hero">
         <div className="container">
 
           <Link to="/departments" className="pharm-back">

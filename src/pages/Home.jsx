@@ -270,7 +270,7 @@ export default function Home() {
           HERO SLIDESHOW
       ========================================= */}
 
-      <section className="hero">
+      <section className="site-hero hero">
 
         <div className="hero-slideshow">
 

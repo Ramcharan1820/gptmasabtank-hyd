@@ -1,9 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { MapPin, Phone, Mail, GraduationCap } from "lucide-react";
 import "./Footer.css";
 
 function Footer() {
+  const [contactDetails, setContactDetails] = useState(null);
+
+  useEffect(() => {
+    let active = true;
+
+    fetch("http://localhost:5000/api/content/contact")
+      .then(async (response) => {
+        const result = await response.json();
+        if (!response.ok || !result.success) {
+          throw new Error(result.message || "Unable to load contact details.");
+        }
+        return result.data;
+      })
+      .then((records) => {
+        if (active && Array.isArray(records) && records[0]) {
+          setContactDetails(records[0]);
+        }
+      })
+      .catch((error) => {
+        console.error("Footer contact content API error:", error);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
   return (
     <footer className="footer">
 
@@ -57,17 +84,17 @@ function Footer() {
 
           <p>
             <MapPin size={16} />
-            Masab Tank, Hyderabad, Telangana
+            {contactDetails?.address || "Masab Tank, Hyderabad, Telangana"}
           </p>
 
           <p>
             <Phone size={16} />
-            Official College Phone
+            {contactDetails?.phone || "Official College Phone"}
           </p>
 
           <p>
             <Mail size={16} />
-            Official College Email
+            {contactDetails?.email || "Official College Email"}
           </p>
         </div>
 

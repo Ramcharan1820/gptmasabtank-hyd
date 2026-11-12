@@ -23,7 +23,7 @@ function DepartmentDetails() {
           HERO
       ===================================================== */}
 
-      <section className="cse-hero">
+      <section className="site-hero cse-hero">
 
         <div className="container cse-hero-grid">
 

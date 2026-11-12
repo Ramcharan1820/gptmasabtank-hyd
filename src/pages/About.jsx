@@ -70,7 +70,7 @@ function About() {
           TOP PAGE HEADER
       ====================================================== */}
 
-      <section className="gptm-page-header">
+      <section className="site-hero gptm-page-header">
 
         <div className="gptm-header-overlay"></div>
 

@@ -877,8 +877,23 @@
   font-weight: 600;
 }
 
+.admin-image-form-field {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--admin-text);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.admin-image-form-field.full-width {
+  grid-column: 1 / -1;
+}
+
 .admin-form-grid input,
-.admin-form-grid textarea {
+.admin-form-grid textarea,
+.admin-form-grid select {
   width: 100%;
   padding: 11px 12px;
   border: 1px solid #dce3ec;
@@ -893,13 +908,18 @@
 }
 
 .admin-form-grid input:focus,
-.admin-form-grid textarea:focus {
+.admin-form-grid textarea:focus,
+.admin-form-grid select:focus {
   border-color: var(--admin-primary);
   box-shadow: 0 0 0 3px rgba(18,60,105,0.08);
 }
 
 .admin-form-grid textarea {
   resize: vertical;
+}
+
+.admin-form-grid select {
+  min-height: 40px;
 }
 
 .admin-form-grid .full-width {
@@ -1069,6 +1089,77 @@
 
 .admin-recent-item > svg {
   color: var(--admin-primary);
+}
+
+.admin-content-hint {
+  padding: 14px 16px;
+  margin: 0 0 20px;
+  color: #35516f;
+  background: #edf5fd;
+  border: 1px solid #d5e5f6;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.admin-managed-list {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-managed-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.admin-managed-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.admin-managed-preview img {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  object-fit: cover;
+  border-radius: 7px;
+  background: #eef2f7;
+}
+
+.admin-managed-preview strong,
+.admin-managed-preview span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-managed-preview strong {
+  color: var(--admin-primary-dark);
+  font-size: 12px;
+}
+
+.admin-managed-preview span {
+  margin-top: 4px;
+  color: var(--admin-muted);
+  font-size: 10px;
+  text-transform: capitalize;
+}
+
+.admin-managed-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
 }
 
 /* ==========================================
@@ -1414,5 +1505,17 @@
 
   .admin-footer {
     flex-direction: column;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-managed-item {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-managed-actions {
+    width: 100%;
+    justify-content: flex-end;
   }
 }

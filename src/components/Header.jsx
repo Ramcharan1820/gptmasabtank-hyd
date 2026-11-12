@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Car,
@@ -24,6 +24,32 @@ const departmentLinks = [
 export default function Header({ showNavigation = true }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [departmentsOpen, setDepartmentsOpen] = useState(false);
+  const [contactDetails, setContactDetails] = useState(null);
+
+  useEffect(() => {
+    let active = true;
+
+    fetch("http://localhost:5000/api/content/contact")
+      .then(async (response) => {
+        const result = await response.json();
+        if (!response.ok || !result.success) {
+          throw new Error(result.message || "Unable to load contact details.");
+        }
+        return result.data;
+      })
+      .then((records) => {
+        if (active && Array.isArray(records) && records[0]) {
+          setContactDetails(records[0]);
+        }
+      })
+      .catch((error) => {
+        console.error("Header contact content API error:", error);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   return (
     <header className="site-header">
@@ -79,16 +105,20 @@ export default function Header({ showNavigation = true }) {
         <div className="header-contact">
           <div className="contact-item">
             <span className="contact-icon">✉</span>
-            <a href="mailto:gpthyd01@gmail.com">gpthyd01@gmail.com</a>
+            <a href={`mailto:${contactDetails?.email || "gpthyd01@gmail.com"}`}>
+              {contactDetails?.email || "gpthyd01@gmail.com"}
+            </a>
           </div>
 
           <div className="contact-item">
             <span className="contact-icon">☎</span>
-            <a href="tel:9912342001">9912342001</a>
+            <a href={`tel:${contactDetails?.phone || "9912342001"}`}>
+              {contactDetails?.phone || "9912342001"}
+            </a>
           </div>
 
           <div className="working-hours">
-            All Working Days: 09:30 AM to 04:00 PM
+            {contactDetails?.working_hours || "All Working Days: 09:30 AM to 04:00 PM"}
           </div>
 
           <div className="social-links">

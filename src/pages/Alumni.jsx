@@ -83,7 +83,7 @@ function Alumni() {
   return (
     <main className="alumni-page">
       {/* Page Banner */}
-      <section className="alumni-page-banner">
+      <section className="site-hero alumni-page-banner">
         <div className="alumni-banner-overlay"></div>
 
         <div className="alumni-container alumni-banner-content">

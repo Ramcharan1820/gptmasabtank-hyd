@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   BriefcaseBusiness,
   GraduationCap,
@@ -52,11 +52,55 @@ const students = [
 ];
 
 function Placements() {
+  const [managedPlacements, setManagedPlacements] = useState(null);
+
+  useEffect(() => {
+    let active = true;
+
+    fetch("http://localhost:5000/api/content/placements")
+      .then(async (response) => {
+        const result = await response.json();
+        if (!response.ok || !result.success) {
+          throw new Error(result.message || "Unable to load placement content.");
+        }
+        return result.data;
+      })
+      .then((records) => {
+        if (active && Array.isArray(records)) {
+          setManagedPlacements(records);
+        }
+      })
+      .catch((error) => {
+        console.error("Placement content API error:", error);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const featureItems = (managedPlacements || []).filter((item) => item.kind === "feature");
+  const recruiterItems = (managedPlacements || []).filter((item) => item.kind === "recruiter");
+  const studentItems = (managedPlacements || []).filter((item) => item.kind === "student");
+  const displayedFeatures = managedPlacements !== null
+    ? featureItems
+    : [
+        { title: "Career Guidance", description: "Helping students understand career opportunities and prepare for recruitment processes." },
+        { title: "Training Programs", description: "Supporting technical, aptitude, communication and interview preparation activities." },
+        { title: "Student Development", description: "Encouraging students to improve their professional skills and confidence." },
+        { title: "Industry Interaction", description: "Creating opportunities for students to understand industry expectations and workplace requirements." },
+      ];
+  const displayedRecruiters = managedPlacements !== null
+    ? recruiterItems.map((item) => item.title || item.company)
+    : recruiters;
+  const displayedStudents = managedPlacements !== null ? studentItems : students;
+  const featureIcons = [BriefcaseBusiness, GraduationCap, Users, Building2];
+
   return (
     <main className="placements-page">
 
       {/* HERO */}
-      <section className="placements-hero">
+      <section className="site-hero placements-hero">
         <div className="placements-container">
 
           <span>CAREER & PLACEMENTS</span>
@@ -96,62 +140,18 @@ function Placements() {
 
 
           <div className="placement-features">
-
-            <article>
-              <div className="placement-feature-icon">
-                <BriefcaseBusiness size={24} />
-              </div>
-
-              <h3>Career Guidance</h3>
-
-              <p>
-                Helping students understand career opportunities
-                and prepare for recruitment processes.
-              </p>
-            </article>
-
-
-            <article>
-              <div className="placement-feature-icon">
-                <GraduationCap size={24} />
-              </div>
-
-              <h3>Training Programs</h3>
-
-              <p>
-                Supporting technical, aptitude, communication and
-                interview preparation activities.
-              </p>
-            </article>
-
-
-            <article>
-              <div className="placement-feature-icon">
-                <Users size={24} />
-              </div>
-
-              <h3>Student Development</h3>
-
-              <p>
-                Encouraging students to improve their professional
-                skills and confidence.
-              </p>
-            </article>
-
-
-            <article>
-              <div className="placement-feature-icon">
-                <Building2 size={24} />
-              </div>
-
-              <h3>Industry Interaction</h3>
-
-              <p>
-                Creating opportunities for students to understand
-                industry expectations and workplace requirements.
-              </p>
-            </article>
-
+            {displayedFeatures.map((feature, index) => {
+              const Icon = featureIcons[index % featureIcons.length];
+              return (
+                <article key={feature.id || feature.title}>
+                  <div className="placement-feature-icon">
+                    <Icon size={24} />
+                  </div>
+                  <h3>{feature.title}</h3>
+                  <p>{feature.description}</p>
+                </article>
+              );
+            })}
           </div>
 
         </div>
@@ -159,7 +159,7 @@ function Placements() {
 
 
       {/* 2. OUR RECRUITERS */}
-      <section className="recruiters-section">
+      <section className="recruiters-section" id="recruiters">
         <div className="placements-container">
 
           <div className="placements-section-title center">
@@ -180,7 +180,7 @@ function Placements() {
 
           <div className="recruiters-grid">
 
-            {recruiters.map((company, index) => (
+            {displayedRecruiters.map((company, index) => (
               <div
                 className="recruiter-card"
                 key={index}
@@ -221,14 +221,18 @@ function Placements() {
 
           <div className="students-grid">
 
-            {students.map((student, index) => (
+            {displayedStudents.map((student, index) => (
               <article
                 className="student-placement-card"
                 key={index}
               >
 
                 <div className="student-photo">
-                  <Users size={38} />
+                  {student.photo ? (
+                    <img src={student.photo} alt={student.name} />
+                  ) : (
+                    <Users size={38} />
+                  )}
                 </div>
 
                 <div className="student-info">
@@ -251,7 +255,7 @@ function Placements() {
                   </div>
 
                   <div className="student-package">
-                    {student.package}
+                    {student.package || student.description}
                   </div>
 
                 </div>

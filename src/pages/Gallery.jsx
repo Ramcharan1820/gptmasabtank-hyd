@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Image,
   X,
@@ -51,26 +51,45 @@ const galleryItems = [
   },
 ];
 
-const categories = [
-  "All",
-  "Campus",
-  "Laboratories",
-  "Activities",
-  "Students",
-  "Events",
-  "Celebrations",
-  "Sports",
-  "Academic",
-];
-
 function Gallery() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [selectedImage, setSelectedImage] = useState(null);
+  const [items, setItems] = useState(galleryItems);
+
+  useEffect(() => {
+    let active = true;
+
+    fetch("http://localhost:5000/api/content/gallery")
+      .then(async (response) => {
+        const result = await response.json();
+        if (!response.ok || !result.success) {
+          throw new Error(result.message || "Unable to load gallery.");
+        }
+        return result.data;
+      })
+      .then((records) => {
+        if (active && Array.isArray(records)) {
+          setItems(records);
+        }
+      })
+      .catch((error) => {
+        console.error("Gallery content API error:", error);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const categories = useMemo(
+    () => ["All", ...new Set(items.map((item) => item.category).filter(Boolean))],
+    [items]
+  );
 
   const filteredItems =
     activeCategory === "All"
-      ? galleryItems
-      : galleryItems.filter(
+      ? items
+      : items.filter(
           (item) => item.category === activeCategory
         );
 
@@ -96,7 +115,7 @@ function Gallery() {
     <main className="gallery-page">
 
       {/* HERO */}
-      <section className="gallery-hero">
+      <section className="site-hero gallery-hero">
         <div className="gallery-container">
 
           <span>COLLEGE GALLERY</span>

@@ -27,16 +27,21 @@ if (!process.env.SESSION_SECRET) {
 // MIDDLEWARE
 // =========================================================
 
-const allowedOrigins = [
+const allowedOrigins = new Set([
   "http://localhost:5173",
   "http://localhost:5174",
   "http://localhost:5175",
-];
+  ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
+  ...(process.env.FRONTEND_ORIGINS || "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean),
+]);
 
 app.use(
   cors({
     origin(origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin || allowedOrigins.has(origin)) {
         return callback(null, true);
       }
 
@@ -46,7 +51,16 @@ app.use(
   })
 );
 
-app.use(express.json({ limit: "1mb" }));
+app.use(
+  express.json({
+    limit: "1mb",
+    verify(req, res, buffer) {
+      if (req.originalUrl.startsWith("/api/media/cloudinary/webhook")) {
+        req.rawBody = Buffer.from(buffer);
+      }
+    },
+  })
+);
 
 // =========================================================
 // MYSQL SESSION STORE
@@ -105,6 +119,14 @@ function requireAdmin(req, res, next) {
 
   return next();
 }
+
+app.use(
+  "/api/media",
+  require("./mediaRoutes")({
+    db,
+    requireAdmin,
+  })
+);
 
 // =========================================================
 // SBTET API URLS
@@ -932,6 +954,7 @@ app.post("/api/departments", requireAdmin, async (req, res) => {
             hod_name,
             intake,
             image,
+            image_public_id,
             is_active
         } = req.body;
 
@@ -945,8 +968,8 @@ app.post("/api/departments", requireAdmin, async (req, res) => {
         const [result] = await db.query(
             `INSERT INTO departments
             (department_name, department_code, description,
-             hod_name, intake, image, is_active)
-            VALUES (?, ?, ?, ?, ?, ?, ?)`,
+             hod_name, intake, image, image_public_id, is_active)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)` ,
             [
                 department_name.trim(),
                 department_code.trim().toUpperCase(),
@@ -954,6 +977,7 @@ app.post("/api/departments", requireAdmin, async (req, res) => {
                 hod_name || null,
                 Number(intake) || 0,
                 image || null,
+                image_public_id || null,
                 is_active === undefined ? 1 : (is_active ? 1 : 0)
             ]
         );
@@ -994,6 +1018,7 @@ app.put("/api/departments/:id", requireAdmin, async (req, res) => {
             hod_name,
             intake,
             image,
+            image_public_id,
             is_active
         } = req.body;
 
@@ -1012,6 +1037,7 @@ app.put("/api/departments/:id", requireAdmin, async (req, res) => {
                  hod_name = ?,
                  intake = ?,
                  image = ?,
+                 image_public_id = ?,
                  is_active = ?
              WHERE id = ?`,
             [
@@ -1021,6 +1047,7 @@ app.put("/api/departments/:id", requireAdmin, async (req, res) => {
                 hod_name || null,
                 Number(intake) || 0,
                 image || null,
+                image_public_id || null,
                 is_active ? 1 : 0,
                 departmentId
             ]
@@ -1102,6 +1129,7 @@ app.get("/api/events", async (req, res) => {
         CAST(event_date AS CHAR) AS event_date,
         category,
         image,
+        image_public_id,
         is_active,
         created_at
       FROM events
@@ -1137,6 +1165,7 @@ app.get("/api/admin/events", requireAdmin, async (req, res) => {
         CAST(event_date AS CHAR) AS event_date,
         category,
         image,
+        image_public_id,
         is_active,
         created_at
       FROM events
@@ -1165,6 +1194,7 @@ app.post("/api/admin/events", requireAdmin, async (req, res) => {
       event_date,
       category,
       image,
+      image_public_id,
       is_active = true,
     } = req.body || {};
 
@@ -1184,14 +1214,15 @@ app.post("/api/admin/events", requireAdmin, async (req, res) => {
 
     const [result] = await db.execute(
       `INSERT INTO events
-        (title, description, event_date, category, image, is_active)
-       VALUES (?, ?, ?, ?, ?, ?)`,
+        (title, description, event_date, category, image, image_public_id, is_active)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [
         title.trim(),
         typeof description === "string" ? description.trim() || null : null,
         event_date,
         typeof category === "string" ? category.trim() || null : null,
         typeof image === "string" ? image.trim() || null : null,
+        typeof image_public_id === "string" ? image_public_id.trim() || null : null,
         is_active ? 1 : 0,
       ]
     );
@@ -1220,6 +1251,7 @@ app.put("/api/admin/events/:id", requireAdmin, async (req, res) => {
       event_date,
       category,
       image,
+      image_public_id,
       is_active = true,
     } = req.body || {};
 
@@ -1263,6 +1295,7 @@ app.put("/api/admin/events/:id", requireAdmin, async (req, res) => {
            event_date = ?,
            category = ?,
            image = ?,
+           image_public_id = ?,
            is_active = ?
        WHERE id = ?`,
       [
@@ -1271,6 +1304,7 @@ app.put("/api/admin/events/:id", requireAdmin, async (req, res) => {
         event_date,
         typeof category === "string" ? category.trim() || null : null,
         typeof image === "string" ? image.trim() || null : null,
+        typeof image_public_id === "string" ? image_public_id.trim() || null : null,
         is_active ? 1 : 0,
         eventId,
       ]
@@ -1323,6 +1357,308 @@ app.delete("/api/admin/events/:id", requireAdmin, async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Failed to delete event.",
+    });
+  }
+});
+
+// =========================================================
+// MANAGED WEBSITE CONTENT
+// =========================================================
+
+const managedContentTypes = new Set([
+  "faculty",
+  "placements",
+  "gallery",
+  "contact",
+]);
+
+function isManagedContentType(value) {
+  return managedContentTypes.has(value);
+}
+
+app.get("/api/content/:type", async (req, res) => {
+  const { type } = req.params;
+
+  if (!isManagedContentType(type)) {
+    return res.status(404).json({
+      success: false,
+      message: "Managed content section not found.",
+    });
+  }
+
+  try {
+    const [rows] = await db.execute(
+      `SELECT id, payload, is_active, sort_order
+       FROM site_content
+       WHERE content_type = ? AND is_active = 1
+       ORDER BY sort_order ASC, id ASC`,
+      [type]
+    );
+
+    return res.json({
+      success: true,
+      data: rows.map((row) => ({
+        id: row.id,
+        ...(typeof row.payload === "string"
+          ? JSON.parse(row.payload)
+          : row.payload),
+        is_active: Boolean(row.is_active),
+        sort_order: row.sort_order,
+      })),
+    });
+  } catch (error) {
+    console.error(`Get ${type} content error:`, error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: `Failed to fetch ${type} content. Apply database migration 003_site_content.sql if this section has not been set up.`,
+    });
+  }
+});
+
+app.get("/api/admin/content/:type", requireAdmin, async (req, res) => {
+  const { type } = req.params;
+
+  if (!isManagedContentType(type)) {
+    return res.status(404).json({
+      success: false,
+      message: "Managed content section not found.",
+    });
+  }
+
+  try {
+    const [rows] = await db.execute(
+      `SELECT id, payload, is_active, sort_order
+       FROM site_content
+       WHERE content_type = ?
+       ORDER BY sort_order ASC, id ASC`,
+      [type]
+    );
+
+    return res.json({
+      success: true,
+      data: rows.map((row) => ({
+        id: row.id,
+        ...(typeof row.payload === "string"
+          ? JSON.parse(row.payload)
+          : row.payload),
+        is_active: Boolean(row.is_active),
+        sort_order: row.sort_order,
+      })),
+    });
+  } catch (error) {
+    console.error(`Get admin ${type} content error:`, error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: `Failed to fetch ${type} content. Apply database migration 003_site_content.sql if this section has not been set up.`,
+    });
+  }
+});
+
+app.post("/api/admin/content/:type", requireAdmin, async (req, res) => {
+  const { type } = req.params;
+  const { payload, is_active = true, sort_order = 0 } = req.body || {};
+
+  if (!isManagedContentType(type)) {
+    return res.status(404).json({
+      success: false,
+      message: "Managed content section not found.",
+    });
+  }
+
+  if (
+    !payload ||
+    typeof payload !== "object" ||
+    Array.isArray(payload) ||
+    Buffer.byteLength(JSON.stringify(payload), "utf8") > 16000
+  ) {
+    return res.status(400).json({
+      success: false,
+      message: "Content must be a JSON object no larger than 16 KB.",
+    });
+  }
+
+  if (typeof is_active !== "boolean") {
+    return res.status(400).json({
+      success: false,
+      message: "Publish status must be true or false.",
+    });
+  }
+
+  const parsedOrder = Number(sort_order);
+  if (
+    !Number.isInteger(parsedOrder) ||
+    parsedOrder < -100000 ||
+    parsedOrder > 100000
+  ) {
+    return res.status(400).json({
+      success: false,
+      message: "Sort order must be a whole number between -100000 and 100000.",
+    });
+  }
+
+  try {
+    if (type === "contact") {
+      const [rows] = await db.execute(
+        "SELECT id FROM site_content WHERE content_type = ? LIMIT 1",
+        [type]
+      );
+
+      if (rows.length > 0) {
+        return res.status(409).json({
+          success: false,
+          message: "Contact details already exist. Edit the existing entry instead.",
+        });
+      }
+    }
+
+    const [result] = await db.execute(
+      `INSERT INTO site_content (content_type, payload, is_active, sort_order)
+       VALUES (?, ?, ?, ?)`,
+      [type, JSON.stringify(payload), is_active ? 1 : 0, parsedOrder]
+    );
+
+    return res.status(201).json({
+      success: true,
+      message: "Content created successfully.",
+      data: { id: result.insertId },
+    });
+  } catch (error) {
+    console.error(`Create ${type} content error:`, error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: `Failed to create ${type} content.`,
+    });
+  }
+});
+
+app.put("/api/admin/content/:type/:id", requireAdmin, async (req, res) => {
+  const { type } = req.params;
+  const contentId = Number(req.params.id);
+  const { payload, is_active = true, sort_order = 0 } = req.body || {};
+
+  if (!isManagedContentType(type)) {
+    return res.status(404).json({
+      success: false,
+      message: "Managed content section not found.",
+    });
+  }
+
+  if (!Number.isInteger(contentId) || contentId <= 0) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid content ID.",
+    });
+  }
+
+  if (
+    !payload ||
+    typeof payload !== "object" ||
+    Array.isArray(payload) ||
+    Buffer.byteLength(JSON.stringify(payload), "utf8") > 16000
+  ) {
+    return res.status(400).json({
+      success: false,
+      message: "Content must be a JSON object no larger than 16 KB.",
+    });
+  }
+
+  if (typeof is_active !== "boolean") {
+    return res.status(400).json({
+      success: false,
+      message: "Publish status must be true or false.",
+    });
+  }
+
+  const parsedOrder = Number(sort_order);
+  if (
+    !Number.isInteger(parsedOrder) ||
+    parsedOrder < -100000 ||
+    parsedOrder > 100000
+  ) {
+    return res.status(400).json({
+      success: false,
+      message: "Sort order must be a whole number between -100000 and 100000.",
+    });
+  }
+
+  try {
+    const [existingRows] = await db.execute(
+      "SELECT id FROM site_content WHERE id = ? AND content_type = ? LIMIT 1",
+      [contentId, type]
+    );
+
+    if (existingRows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Content item not found.",
+      });
+    }
+
+    const [result] = await db.execute(
+      `UPDATE site_content
+       SET payload = ?, is_active = ?, sort_order = ?
+       WHERE id = ? AND content_type = ?`,
+      [JSON.stringify(payload), is_active ? 1 : 0, parsedOrder, contentId, type]
+    );
+
+    return res.json({
+      success: true,
+      message: "Content updated successfully.",
+    });
+  } catch (error) {
+    console.error(`Update ${type} content error:`, error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: `Failed to update ${type} content.`,
+    });
+  }
+});
+
+app.delete("/api/admin/content/:type/:id", requireAdmin, async (req, res) => {
+  const { type } = req.params;
+  const contentId = Number(req.params.id);
+
+  if (!isManagedContentType(type)) {
+    return res.status(404).json({
+      success: false,
+      message: "Managed content section not found.",
+    });
+  }
+
+  if (!Number.isInteger(contentId) || contentId <= 0) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid content ID.",
+    });
+  }
+
+  try {
+    const [result] = await db.execute(
+      "DELETE FROM site_content WHERE id = ? AND content_type = ?",
+      [contentId, type]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Content item not found.",
+      });
+    }
+
+    return res.json({
+      success: true,
+      message: "Content deleted successfully.",
+    });
+  } catch (error) {
+    console.error(`Delete ${type} content error:`, error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: `Failed to delete ${type} content.`,
     });
   }
 });

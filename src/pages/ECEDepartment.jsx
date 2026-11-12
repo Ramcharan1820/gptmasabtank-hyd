@@ -112,7 +112,7 @@ export default function ECEDepartment() {
           HERO
       ===================================================== */}
 
-      <section className="ece-hero">
+      <section className="site-hero ece-hero">
 
         <div className="ece-hero-inner">
 

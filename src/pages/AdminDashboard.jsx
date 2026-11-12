@@ -20,12 +20,21 @@ import {
   Save,
   Eye,
   XCircle,
+  Images,
+  Contact,
+  Image as ImageIcon,
+  BriefcaseBusiness,
+  UserRound,
 } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
+import AdminImageField from "../components/AdminImageField";
 import "./AdminDashboard.css";
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = `${
+  import.meta.env.VITE_API_BASE_URL?.replace(/\/+$/, "") ||
+  "http://localhost:5000"
+}/api`;
 
 const initialNotice = {
   title: "",
@@ -39,6 +48,7 @@ const initialEvent = {
   event_date: "",
   category: "",
   image: "",
+  image_public_id: "",
   is_active: true,
 };
 
@@ -49,7 +59,78 @@ const initialDepartment = {
   hod_name: "",
   intake: "",
   image: "",
+  image_public_id: "",
   is_active: true,
+};
+
+const managedContentFields = {
+  Faculty: [
+    { name: "faculty_code", label: "Faculty ID" },
+    { name: "name", label: "Full name", required: true },
+    { name: "designation", label: "Designation", required: true },
+    { name: "department", label: "Department", required: true },
+    { name: "qualification", label: "Qualification" },
+    { name: "experience", label: "Experience" },
+    { name: "specialization", label: "Specialization", type: "textarea" },
+    { name: "email", label: "Email", type: "email" },
+    { name: "phone", label: "Phone", type: "tel" },
+    { name: "photo", label: "Faculty photo", type: "image", publicIdField: "photo_public_id" },
+    { name: "message", label: "Leadership message", type: "textarea", leadershipOnly: true },
+    { name: "is_leadership", label: "Show in principal spotlight", type: "checkbox" },
+  ],
+  Placements: [
+    {
+      name: "kind",
+      label: "Placement item type",
+      type: "select",
+      options: [
+        ["feature", "Training & placement feature"],
+        ["recruiter", "Recruiter / company"],
+        ["student", "Placed student"],
+      ],
+      required: true,
+    },
+    { name: "title", label: "Feature / company title", required: true },
+    { name: "description", label: "Description / role", type: "textarea" },
+    { name: "name", label: "Student name", studentOnly: true, required: true },
+    { name: "branch", label: "Department / branch", studentOnly: true },
+    { name: "company", label: "Hiring company", studentOnly: true },
+    { name: "package", label: "Package / placement details", studentOnly: true },
+    { name: "photo", label: "Student photo", type: "image", publicIdField: "photo_public_id", studentOnly: true },
+  ],
+  Gallery: [
+    { name: "title", label: "Image title", required: true },
+    { name: "category", label: "Category", required: true },
+    { name: "image", label: "Gallery image", type: "image", publicIdField: "image_public_id", required: true },
+    { name: "description", label: "Caption", type: "textarea" },
+  ],
+  Contact: [
+    { name: "address", label: "College address", type: "textarea", required: true },
+    { name: "phone", label: "Phone number", type: "tel" },
+    { name: "email", label: "Email address", type: "email" },
+    { name: "working_hours", label: "Working hours", type: "textarea" },
+    { name: "location_title", label: "Location title" },
+    { name: "location", label: "Location description", type: "textarea" },
+    { name: "map_url", label: "Google Maps link", type: "url" },
+    { name: "map_embed_url", label: "Map embed URL", type: "url" },
+    { name: "road_info", label: "Travel information: road", type: "textarea" },
+    { name: "train_info", label: "Travel information: train", type: "textarea" },
+    { name: "air_info", label: "Travel information: air", type: "textarea" },
+    { name: "landmark_info", label: "Nearby landmark", type: "textarea" },
+  ],
+};
+
+const emptyManagedForm = (section) => {
+  const form = {};
+  for (const field of managedContentFields[section] || []) {
+    if (field.type !== "checkbox" && field.type !== "select") {
+      form[field.name] = "";
+    }
+    if (field.publicIdField) form[field.publicIdField] = "";
+  }
+  form.kind = section === "Placements" ? "feature" : "";
+  form.is_leadership = false;
+  return form;
 };
 
 function AdminDashboard() {
@@ -69,18 +150,27 @@ function AdminDashboard() {
   const [events, setEvents] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [alumni, setAlumni] = useState([]);
+  const [managedContent, setManagedContent] = useState({
+    Faculty: [],
+    Placements: [],
+    Gallery: [],
+    Contact: [],
+  });
 
   const [search, setSearch] = useState("");
 
   const [noticeForm, setNoticeForm] = useState(initialNotice);
   const [eventForm, setEventForm] = useState(initialEvent);
   const [departmentForm, setDepartmentForm] = useState(initialDepartment);
+  const [managedForm, setManagedForm] = useState(emptyManagedForm("Faculty"));
+  const [managedSortOrder, setManagedSortOrder] = useState("0");
 
   const [editingId, setEditingId] = useState(null);
 
   const [showNoticeForm, setShowNoticeForm] = useState(false);
   const [showEventForm, setShowEventForm] = useState(false);
   const [showDepartmentForm, setShowDepartmentForm] = useState(false);
+  const [showManagedForm, setShowManagedForm] = useState(false);
 
   const menuItems = [
     {
@@ -103,6 +193,10 @@ function AdminDashboard() {
       name: "Alumni",
       icon: Users,
     },
+    { name: "Faculty", icon: UserRound },
+    { name: "Placements", icon: BriefcaseBusiness },
+    { name: "Gallery", icon: ImageIcon },
+    { name: "Contact", icon: Contact },
   ];
 
   const adminSectionTabs = [
@@ -110,6 +204,10 @@ function AdminDashboard() {
     "Notices",
     "Events",
     "Departments",
+    "Faculty",
+    "Placements",
+    "Gallery",
+    "Contact",
     "Alumni",
   ];
 
@@ -209,6 +307,21 @@ function AdminDashboard() {
       setEvents(eventResult.data || []);
       setDepartments(departmentResult.departments || []);
       setAlumni(alumniResult.data || []);
+
+      const managedSections = ["Faculty", "Placements", "Gallery", "Contact"];
+      const managedResults = await Promise.all(
+        managedSections.map((section) =>
+          apiRequest(`/admin/content/${section.toLowerCase()}`)
+        )
+      );
+      setManagedContent(
+        Object.fromEntries(
+          managedSections.map((section, index) => [
+            section,
+            managedResults[index].data || [],
+          ])
+        )
+      );
     } catch (error) {
       setError(error.message || "Unable to load dashboard data.");
     }
@@ -349,6 +462,7 @@ function AdminDashboard() {
         : "",
       category: event.category || "",
       image: event.image || "",
+      image_public_id: event.image_public_id || "",
       is_active: Boolean(event.is_active),
     });
 
@@ -430,6 +544,7 @@ function AdminDashboard() {
       hod_name: department.hod_name || "",
       intake: department.intake || "",
       image: department.image || "",
+      image_public_id: department.image_public_id || "",
       is_active: Boolean(department.is_active),
     });
 
@@ -458,6 +573,331 @@ function AdminDashboard() {
     } catch (error) {
       setError(error.message);
     }
+  };
+
+  // ==================================================
+  // FACULTY, PLACEMENTS, GALLERY AND CONTACT CONTENT
+  // ==================================================
+
+  const managedFields = managedContentFields[activeSection] || [];
+
+  const startManagedCreate = () => {
+    setManagedForm(emptyManagedForm(activeSection));
+    setManagedSortOrder("0");
+    setEditingId(null);
+    setShowManagedForm(true);
+    setError("");
+    setSuccess("");
+  };
+
+  const startManagedEdit = (item) => {
+    const form = emptyManagedForm(activeSection);
+    for (const field of managedFields) {
+      if (field.type === "checkbox" || field.type === "select") {
+        form[field.name] = item[field.name] ?? form[field.name];
+      } else {
+        form[field.name] = item[field.name] ?? "";
+      }
+      if (field.publicIdField) {
+        form[field.publicIdField] = item[field.publicIdField] ?? "";
+      }
+    }
+    form.is_active = Boolean(item.is_active);
+
+    setManagedForm(form);
+    setManagedSortOrder(String(item.sort_order ?? 0));
+    setEditingId(item.id);
+    setShowManagedForm(true);
+    setError("");
+    setSuccess("");
+  };
+
+  const handleManagedSubmit = async (event) => {
+    event.preventDefault();
+
+    const requiredFields = managedFields.filter((field) => {
+      if (!field.required) return false;
+      if (field.studentOnly && managedForm.kind !== "student") return false;
+      if (
+        field.name === "title" &&
+        activeSection === "Placements" &&
+        managedForm.kind === "student"
+      ) {
+        return false;
+      }
+      return true;
+    });
+    const missingField = requiredFields.find(
+      (field) => !String(managedForm[field.name] || "").trim()
+    );
+    if (missingField) {
+      setError(`${missingField.label} is required.`);
+      return;
+    }
+
+    const type = activeSection.toLowerCase();
+    const endpoint = editingId
+      ? `/admin/content/${type}/${editingId}`
+      : `/admin/content/${type}`;
+
+    setSaving(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      await apiRequest(endpoint, {
+        method: editingId ? "PUT" : "POST",
+        body: JSON.stringify({
+          payload: managedForm,
+          is_active: managedForm.is_active !== false,
+          sort_order: Number(managedSortOrder),
+        }),
+      });
+
+      setSuccess(
+        `${activeSection} ${editingId ? "updated" : "created"} successfully.`
+      );
+      setShowManagedForm(false);
+      setEditingId(null);
+      await fetchAllData();
+    } catch (error) {
+      setError(error.message || `Unable to save ${activeSection.toLowerCase()} content.`);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const deleteManagedContent = async (item) => {
+    if (!window.confirm(`Delete "${item.title || item.name || activeSection}"?`)) {
+      return;
+    }
+
+    try {
+      await apiRequest(
+        `/admin/content/${activeSection.toLowerCase()}/${item.id}`,
+        { method: "DELETE" }
+      );
+      setSuccess(`${activeSection} item deleted successfully.`);
+      await fetchAllData();
+    } catch (error) {
+      setError(error.message || `Unable to delete ${activeSection.toLowerCase()} content.`);
+    }
+  };
+
+  const renderManagedContent = () => {
+    const items = managedContent[activeSection] || [];
+    const canCreate = activeSection !== "Contact" || items.length === 0;
+
+    return (
+      <>
+        {sectionHeader(
+          `${activeSection} Management`,
+          `Create, update, publish, and organize ${activeSection.toLowerCase()} on the public website.`,
+          canCreate
+            ? ({
+                Faculty: "Add Faculty Member",
+                Placements: "Add Placement Item",
+                Gallery: "Add Gallery Image",
+                Contact: "Add Contact Details",
+              }[activeSection])
+            : null,
+          startManagedCreate
+        )}
+
+        {activeSection === "Contact" && items.length === 0 && (
+          <div className="admin-content-hint">
+            Add the official address, phone, email, map and travel information here. The public contact page updates automatically after publishing.
+          </div>
+        )}
+
+        {showManagedForm && (
+          <form className="admin-form-card" onSubmit={handleManagedSubmit}>
+            <div className="admin-form-title">
+              <h3>{editingId ? `Edit ${activeSection}` : `Add ${activeSection}`}</h3>
+              <button
+                type="button"
+                className="admin-icon-btn"
+                onClick={() => setShowManagedForm(false)}
+                aria-label="Close form"
+              >
+                <X />
+              </button>
+            </div>
+
+            <div className="admin-form-grid">
+              {managedFields
+                .filter((field) => {
+                  if (field.leadershipOnly && !managedForm.is_leadership) return false;
+                  if (field.studentOnly && managedForm.kind !== "student") return false;
+                  if (field.name === "title" && activeSection === "Placements" && managedForm.kind === "student") return false;
+                  return true;
+                })
+                .map((field) => field.type === "image" ? (
+                  <div className="admin-image-form-field" key={field.name}>
+                    <span>{field.label}{field.required ? " *" : ""}</span>
+                    <AdminImageField
+                      contentType={activeSection.toLowerCase()}
+                      value={managedForm[field.name] || ""}
+                      publicId={managedForm[field.publicIdField] || ""}
+                      disabled={saving}
+                      onChange={({ url, publicId }) =>
+                        setManagedForm({
+                          ...managedForm,
+                          [field.name]: url,
+                          [field.publicIdField]: publicId,
+                        })
+                      }
+                    />
+                  </div>
+                ) : (
+                  <label
+                    className={[
+                      field.type === "textarea" && "full-width",
+                      field.type === "checkbox" && "admin-checkbox-label",
+                    ].filter(Boolean).join(" ")}
+                    key={field.name}
+                  >
+                    {field.label}{field.required && (!field.studentOnly || managedForm.kind === "student") ? " *" : ""}
+                    {field.type === "textarea" ? (
+                      <textarea
+                        rows="3"
+                        value={managedForm[field.name] || ""}
+                        onChange={(event) =>
+                          setManagedForm({ ...managedForm, [field.name]: event.target.value })
+                        }
+                        required={field.required && (!field.studentOnly || managedForm.kind === "student")}
+                      />
+                    ) : field.type === "checkbox" ? (
+                      <input
+                        type="checkbox"
+                        checked={Boolean(managedForm[field.name])}
+                        onChange={(event) =>
+                          setManagedForm({ ...managedForm, [field.name]: event.target.checked })
+                        }
+                      />
+                    ) : field.type === "select" ? (
+                      <select
+                        value={managedForm[field.name] || ""}
+                        onChange={(event) =>
+                          setManagedForm({ ...managedForm, [field.name]: event.target.value })
+                        }
+                        required={field.required && (!field.studentOnly || managedForm.kind === "student")}
+                      >
+                        {field.options.map(([value, label]) => (
+                          <option key={value} value={value}>{label}</option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        type={field.type || "text"}
+                        value={managedForm[field.name] || ""}
+                        onChange={(event) =>
+                          setManagedForm({ ...managedForm, [field.name]: event.target.value })
+                        }
+                        required={field.required && (!field.studentOnly || managedForm.kind === "student")}
+                      />
+                    )}
+                  </label>
+                ))}
+
+              {activeSection !== "Contact" && (
+                <label>
+                  Display order
+                  <input
+                    type="number"
+                    value={managedSortOrder}
+                    onChange={(event) => setManagedSortOrder(event.target.value)}
+                  />
+                </label>
+              )}
+
+              <label className="admin-checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={managedForm.is_active !== false}
+                  onChange={(event) =>
+                    setManagedForm({ ...managedForm, is_active: event.target.checked })
+                  }
+                />
+                Publish this item
+              </label>
+            </div>
+
+            <div className="admin-form-actions">
+              <button className="admin-primary-btn" disabled={saving}>
+                <Save size={17} />
+                {saving ? "Saving..." : "Save Changes"}
+              </button>
+              <button
+                type="button"
+                className="admin-cancel-btn"
+                onClick={() => setShowManagedForm(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        )}
+
+        <div className="admin-panel-card">
+          <div className="admin-panel-heading">
+            <h3>{activeSection} ({items.length})</h3>
+            <p>Changes are saved to the database and reflected on the public page.</p>
+          </div>
+          {items.length === 0 ? (
+            <p className="admin-empty">No {activeSection.toLowerCase()} content yet. Add the first item to publish it.</p>
+          ) : (
+            <div className="admin-managed-list">
+              {items.map((item) => {
+                const title = item.title || item.name || item.address || "Untitled item";
+                const subtitle = activeSection === "Placements"
+                  ? item.kind
+                  : activeSection === "Faculty"
+                    ? `${item.designation || ""}${item.department ? ` · ${item.department}` : ""}`
+                    : activeSection === "Gallery"
+                      ? item.category
+                      : item.email || item.phone;
+
+                return (
+                  <article className="admin-managed-item" key={item.id}>
+                    <div className="admin-managed-preview">
+                      {(item.photo || item.image) && (
+                        <img src={item.photo || item.image} alt="" />
+                      )}
+                      <div>
+                        <strong>{title}</strong>
+                        <span>{subtitle || activeSection}</span>
+                      </div>
+                    </div>
+                    <div className="admin-managed-actions">
+                      <span className={item.is_active ? "status-active" : "status-inactive"}>
+                        {item.is_active ? "Published" : "Hidden"}
+                      </span>
+                      <button
+                        className="edit-btn"
+                        onClick={() => startManagedEdit(item)}
+                        title={`Edit ${title}`}
+                        aria-label={`Edit ${title}`}
+                      >
+                        <Pencil size={16} />
+                      </button>
+                      <button
+                        className="delete-btn"
+                        onClick={() => deleteManagedContent(item)}
+                        title={`Delete ${title}`}
+                        aria-label={`Delete ${title}`}
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </>
+    );
   };
 
   // ==================================================
@@ -903,20 +1343,22 @@ function AdminDashboard() {
               />
             </label>
 
-            <label>
-              Image URL
-              <input
-                type="text"
-                placeholder="Enter image path or URL"
+            <div className="admin-image-form-field">
+              <span>Event image</span>
+              <AdminImageField
+                contentType="events"
                 value={eventForm.image}
-                onChange={(e) =>
+                publicId={eventForm.image_public_id}
+                disabled={saving}
+                onChange={({ url, publicId }) =>
                   setEventForm({
                     ...eventForm,
-                    image: e.target.value,
+                    image: url,
+                    image_public_id: publicId,
                   })
                 }
               />
-            </label>
+            </div>
 
             <label className="full-width">
               Description
@@ -1136,19 +1578,22 @@ function AdminDashboard() {
               />
             </label>
 
-            <label className="full-width">
-              Image URL
-              <input
-                type="text"
+            <div className="admin-image-form-field full-width">
+              <span>Department image</span>
+              <AdminImageField
+                contentType="departments"
                 value={departmentForm.image}
-                onChange={(e) =>
+                publicId={departmentForm.image_public_id}
+                disabled={saving}
+                onChange={({ url, publicId }) =>
                   setDepartmentForm({
                     ...departmentForm,
-                    image: e.target.value,
+                    image: url,
+                    image_public_id: publicId,
                   })
                 }
               />
-            </label>
+            </div>
 
             <label className="full-width">
               Description
@@ -1347,6 +1792,12 @@ function AdminDashboard() {
       case "Departments":
         return renderDepartments();
 
+      case "Faculty":
+      case "Placements":
+      case "Gallery":
+      case "Contact":
+        return renderManagedContent();
+
       case "Alumni":
         return renderAlumni();
 
@@ -1377,6 +1828,7 @@ function AdminDashboard() {
                 setSearch("");
                 setError("");
                 setSuccess("");
+                setShowManagedForm(false);
               }}
             >
               {item}
@@ -1394,6 +1846,15 @@ function AdminDashboard() {
             </div>
 
             <div className="admin-topbar-actions">
+              <button
+                className="admin-refresh-btn"
+                onClick={() => navigate("/admin/media")}
+                type="button"
+              >
+                <Images size={16} />
+                Event Media
+              </button>
+
               <button className="admin-refresh-btn" onClick={fetchAllData}>
                 <RefreshCw size={16} />
                 Refresh Data

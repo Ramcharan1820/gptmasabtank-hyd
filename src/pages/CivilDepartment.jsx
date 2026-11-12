@@ -46,7 +46,7 @@ const CivilDepartment = () => {
       {/* =====================================================
           HERO SECTION
       ===================================================== */}
-      <section className="civil-hero">
+      <section className="site-hero civil-hero">
         <div className="civil-hero-overlay">
 
           <div className="civil-hero-content">

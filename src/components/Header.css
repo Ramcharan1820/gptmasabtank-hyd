@@ -202,12 +202,12 @@
 
 
 /* =========================================================
-   BLUE NAVIGATION BAR
+   MAROON NAVIGATION BAR
    ========================================================= */
 
 .navigation-wrapper {
   width: 100%;
-  background: #2498df;
+  background: #800000;
   min-height: 54px;
   display: flex;
   align-items: center;
@@ -472,12 +472,12 @@
   margin-left: 8px;
   padding: 10px 17px;
   border-radius: 5px;
-  background: #126fb0;
+  background: #6f0015;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
 .main-nav .student-btn:hover {
-  background: #0d5d96;
+  background: #5d0011;
 }
 
 .main-nav .student-btn::after {
@@ -488,11 +488,11 @@
   padding: 10px 13px;
   border: 1px solid rgba(255, 255, 255, 0.72);
   border-radius: 5px;
-  background: #124a88;
+  background: #630014;
 }
 
 .main-nav .admin-login-nav-link:hover {
-  background: #0d3a6d;
+  background: #4d0010;
 }
 
 .main-nav .admin-login-nav-link::after {
@@ -511,7 +511,7 @@
   padding: 8px;
   border: none;
   border-radius: 6px;
-  background: #e9f4fc;
+  background: #f7e9ed;
   cursor: pointer;
 }
 
@@ -521,7 +521,7 @@
   height: 3px;
   margin: 4px auto;
   border-radius: 3px;
-  background: #0969a9;
+  background: #800000;
 }
 
 
@@ -737,7 +737,7 @@
 
     gap: 0;
 
-    background: #2498df;
+    background: #800000;
   }
 
   .main-nav.open {

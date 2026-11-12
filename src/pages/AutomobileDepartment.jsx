@@ -124,7 +124,7 @@ export default function AutomobileDepartment() {
           HERO
       ===================================================== */}
 
-      <section className="auto-hero">
+      <section className="site-hero auto-hero">
 
         <div className="auto-hero-inner">
 

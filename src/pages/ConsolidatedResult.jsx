@@ -213,7 +213,7 @@ function ConsolidatedResult() {
 
   return (
     <main className="consolidated-page">
-      <section className="consolidated-hero">
+      <section className="site-hero consolidated-hero">
         <div className="consolidated-hero-inner">
           <Link className="consolidated-back-link" to="/student-portal">
             <ArrowLeft size={17} />

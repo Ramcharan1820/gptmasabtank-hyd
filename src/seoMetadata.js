@@ -97,6 +97,12 @@ export const PUBLIC_PAGES = {
       "Browse the Government Polytechnic College gallery for campus, laboratory, academic, event and student-activity images.",
   },
 
+  "/event-media": {
+    title: "College Event Photo Albums | Government Polytechnic College",
+    description:
+      "Browse and download photographs from events at Government Polytechnic College, Masab Tank.",
+  },
+
   "/contact": {
     title: "Contact & Location | Government Polytechnic College",
     description:

@@ -101,7 +101,7 @@ export default function EEEDepartment() {
           HERO
       ===================================================== */}
 
-      <section className="eee-hero">
+      <section className="site-hero eee-hero">
 
         <div className="eee-hero-inner">
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   BriefcaseBusiness,
   GraduationCap,
@@ -239,22 +239,55 @@ const FACULTY_DATA = [
   }
 ];
 
-const DEPARTMENTS = [
-  "All Departments",
-  "Mechanical",
-  "CSE",
-  "Civil",
-  "EEE",
-  "ECE",
-  "Automobile",
-  "General"
-];
-
 export default function Faculty() {
+  const [managedFaculty, setManagedFaculty] = useState(null);
   const [selectedDepartment, setSelectedDepartment] = useState("All Departments");
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredFaculty = FACULTY_DATA.filter((faculty) => {
+  useEffect(() => {
+    let active = true;
+
+    fetch("http://localhost:5000/api/content/faculty")
+      .then(async (response) => {
+        const result = await response.json();
+        if (!response.ok || !result.success) {
+          throw new Error(result.message || "Unable to load faculty.");
+        }
+        return result.data;
+      })
+      .then((records) => {
+        if (!active || !Array.isArray(records)) return;
+        setManagedFaculty(records);
+      })
+      .catch((error) => {
+        console.error("Faculty content API error:", error);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const facultyMembers = managedFaculty === null
+    ? FACULTY_DATA
+    : managedFaculty.filter((member) => !member.is_leadership);
+  const principalRecord = managedFaculty?.find((member) => member.is_leadership);
+  const principal = managedFaculty === null
+    ? PRINCIPAL_DATA
+    : principalRecord
+      ? {
+          ...PRINCIPAL_DATA,
+          ...principalRecord,
+          photo: principalRecord.photo || PRINCIPAL_DATA.photo,
+        }
+      : null;
+
+  const departments = [
+    "All Departments",
+    ...new Set(facultyMembers.map((faculty) => faculty.department).filter(Boolean)),
+  ];
+
+  const filteredFaculty = facultyMembers.filter((faculty) => {
     const matchesDepartment =
       selectedDepartment === "All Departments" ||
       faculty.department === selectedDepartment;
@@ -262,11 +295,12 @@ export default function Faculty() {
     const searchValue = searchTerm.toLowerCase();
 
     const matchesSearch =
-      faculty.name.toLowerCase().includes(searchValue) ||
-      faculty.department.toLowerCase().includes(searchValue) ||
-      faculty.designation.toLowerCase().includes(searchValue) ||
-      faculty.specialization.toLowerCase().includes(searchValue) ||
-      faculty.id.toLowerCase().includes(searchValue);
+      (faculty.name || "").toLowerCase().includes(searchValue) ||
+      (faculty.department || "").toLowerCase().includes(searchValue) ||
+      (faculty.designation || "").toLowerCase().includes(searchValue) ||
+      (faculty.specialization || "").toLowerCase().includes(searchValue) ||
+      (faculty.qualification || "").toLowerCase().includes(searchValue) ||
+      String(faculty.id || "").toLowerCase().includes(searchValue);
 
     return matchesDepartment && matchesSearch;
   });
@@ -274,7 +308,7 @@ export default function Faculty() {
   return (
     <main className="faculty-page">
       {/* HERO SECTION */}
-      <section className="faculty-hero">
+      <section className="site-hero faculty-hero">
         <div className="faculty-hero-pattern"></div>
         <div className="faculty-container faculty-hero-content">
           <span className="faculty-eyebrow">GOVERNMENT POLYTECHNIC, MASAB TANK</span>
@@ -289,6 +323,7 @@ export default function Faculty() {
       </section>
 
       {/* PRINCIPAL SPOTLIGHT */}
+      {principal && (
       <section className="faculty-section" style={{ paddingBottom: "20px" }}>
         <div className="faculty-container">
           <div className="faculty-heading">
@@ -301,8 +336,8 @@ export default function Faculty() {
           <div className="faculty-principal-spotlight">
             <div className="principal-image-wrap">
               <img
-                src={PRINCIPAL_DATA.photo}
-                alt={PRINCIPAL_DATA.name}
+                src={principal.photo}
+                alt={principal.name}
                 onError={(e) => {
                   e.target.onerror = null;
                   e.target.src = "/principal.jpg";
@@ -314,34 +349,35 @@ export default function Faculty() {
             </div>
 
             <div className="principal-details">
-              <h3>{PRINCIPAL_DATA.name}</h3>
-              <p className="principal-sub">{PRINCIPAL_DATA.designation}</p>
+              <h3>{principal.name}</h3>
+              <p className="principal-sub">{principal.designation}</p>
 
               <div className="principal-meta">
                 <span>
-                  <GraduationCap size={16} /> {PRINCIPAL_DATA.qualification}
+                  <GraduationCap size={16} /> {principal.qualification}
                 </span>
                 <span>
-                  <BriefcaseBusiness size={16} /> {PRINCIPAL_DATA.experience}
+                  <BriefcaseBusiness size={16} /> {principal.experience}
                 </span>
               </div>
 
               <blockquote className="principal-quote">
-                "{PRINCIPAL_DATA.message}"
+                "{principal.message}"
               </blockquote>
 
               <div className="principal-contact">
-                <a href={`mailto:${PRINCIPAL_DATA.email}`}>
-                  <Mail size={15} /> {PRINCIPAL_DATA.email}
+                <a href={`mailto:${principal.email}`}>
+                  <Mail size={15} /> {principal.email}
                 </a>
                 <span>
-                  <Phone size={15} /> {PRINCIPAL_DATA.phone}
+                  <Phone size={15} /> {principal.phone}
                 </span>
               </div>
             </div>
           </div>
         </div>
       </section>
+      )}
 
       {/* TEACHING FACULTY DIRECTORY */}
       <section className="faculty-section">
@@ -364,7 +400,7 @@ export default function Faculty() {
           {/* CONTROLS (FILTERS & SEARCH) */}
           <div className="faculty-controls">
             <div className="department-filters">
-              {DEPARTMENTS.map((department) => (
+              {departments.map((department) => (
                 <button
                   key={department}
                   type="button"
@@ -413,7 +449,7 @@ export default function Faculty() {
 
                   {/* DETAILS */}
                   <div className="faculty-card-body">
-                    <span className="faculty-id">FACULTY ID: {faculty.id}</span>
+                    <span className="faculty-id">FACULTY ID: {faculty.faculty_code || faculty.id}</span>
                     <h3>{faculty.name}</h3>
                     <p className="faculty-designation">{faculty.designation}</p>
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   MapPin,
   Phone,
@@ -15,6 +15,38 @@ import {
 import "./Contact.css";
 
 export default function Contact() {
+  const [details, setDetails] = useState(null);
+
+  useEffect(() => {
+    let active = true;
+
+    fetch("http://localhost:5000/api/content/contact")
+      .then(async (response) => {
+        const result = await response.json();
+        if (!response.ok || !result.success) {
+          throw new Error(result.message || "Unable to load contact details.");
+        }
+        return result.data;
+      })
+      .then((records) => {
+        if (active && Array.isArray(records) && records[0]) {
+          setDetails(records[0]);
+        }
+      })
+      .catch((error) => {
+        console.error("Contact content API error:", error);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const address = details?.address || "Government Polytechnic College, Masab Tank, Hyderabad, Telangana, India.";
+  const location = details?.location || "Masab Tank, Hyderabad, Telangana, India.";
+  const mapUrl = details?.map_url || "https://www.google.com/maps/search/?api=1&query=Government+Polytechnic+College+Masab+Tank+Hyderabad";
+  const mapEmbedUrl = details?.map_embed_url || "https://www.google.com/maps?q=Government%20Polytechnic%20College%20Masab%20Tank%20Hyderabad&output=embed";
+
   return (
     <main className="contact-page">
 
@@ -22,7 +54,7 @@ export default function Contact() {
           HERO
       ================================= */}
 
-      <section className="contact-hero">
+      <section className="site-hero contact-hero">
         <div className="contact-hero-content">
 
           <span className="contact-label">
@@ -75,11 +107,7 @@ export default function Contact() {
 
               <h3>College Address</h3>
 
-              <p>
-                Government Polytechnic College,
-                Masab Tank, Hyderabad,
-                Telangana, India.
-              </p>
+              <p>{address}</p>
 
             </div>
 
@@ -93,10 +121,7 @@ export default function Contact() {
 
               <h3>Phone</h3>
 
-              <p>
-                Contact the college office during
-                working hours for enquiries.
-              </p>
+              <p>{details?.phone ? <a href={`tel:${details.phone}`}>{details.phone}</a> : "Contact the college office during working hours for enquiries."}</p>
 
             </div>
 
@@ -110,10 +135,7 @@ export default function Contact() {
 
               <h3>Email</h3>
 
-              <p>
-                Contact the college through the
-                official communication channels.
-              </p>
+              <p>{details?.email ? <a href={`mailto:${details.email}`}>{details.email}</a> : "Contact the college through the official communication channels."}</p>
 
             </div>
 
@@ -127,11 +149,7 @@ export default function Contact() {
 
               <h3>Working Hours</h3>
 
-              <p>
-                Monday to Friday
-                <br />
-                During regular college working hours.
-              </p>
+              <p>{details?.working_hours || <>Monday to Friday<br />During regular college working hours.</>}</p>
 
             </div>
 
@@ -158,15 +176,15 @@ export default function Contact() {
                 LOCATION ON MAP
               </span>
 
-              <h2>Government Polytechnic College, Masab Tank</h2>
+              <h2>{details?.location_title || "Government Polytechnic College, Masab Tank"}</h2>
 
               <p>
-                Masab Tank, Hyderabad, Telangana, India.
+                {location}
               </p>
             </div>
 
             <a
-              href="https://www.google.com/maps/search/?api=1&query=Government+Polytechnic+College+Masab+Tank+Hyderabad"
+              href={mapUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="map-button"
@@ -185,7 +203,7 @@ export default function Contact() {
 
               <iframe
                 title="Government Polytechnic College Masab Tank Location"
-                src="https://www.google.com/maps?q=Government%20Polytechnic%20College%20Masab%20Tank%20Hyderabad&output=embed"
+                src={mapEmbedUrl}
                 loading="lazy"
                 allowFullScreen
                 referrerPolicy="no-referrer-when-downgrade"
@@ -214,9 +232,7 @@ export default function Contact() {
                   <h3>By Road</h3>
 
                   <p>
-                    Government Polytechnic College, Masab Tank
-                    is located in Hyderabad and is accessible
-                    by local roads and public transportation.
+                    {details?.road_info || "Government Polytechnic College, Masab Tank is located in Hyderabad and is accessible by local roads and public transportation."}
                   </p>
                 </div>
 
@@ -234,9 +250,7 @@ export default function Contact() {
                   <h3>By Train</h3>
 
                   <p>
-                    Hyderabad has several railway stations
-                    with local transport facilities available
-                    to reach Masab Tank.
+                    {details?.train_info || "Hyderabad has several railway stations with local transport facilities available to reach Masab Tank."}
                   </p>
                 </div>
 
@@ -254,9 +268,7 @@ export default function Contact() {
                   <h3>By Air</h3>
 
                   <p>
-                    Rajiv Gandhi International Airport is the
-                    nearest major airport. Taxi and bus
-                    services are available towards Hyderabad.
+                    {details?.air_info || "Rajiv Gandhi International Airport is the nearest major airport. Taxi and bus services are available towards Hyderabad."}
                   </p>
                 </div>
 
@@ -274,9 +286,7 @@ export default function Contact() {
                   <h3>Nearby Landmark</h3>
 
                   <p>
-                    Masab Tank is a well-known locality in
-                    central Hyderabad and is easily accessible
-                    from major areas of the city.
+                    {details?.landmark_info || "Masab Tank is a well-known locality in central Hyderabad and is easily accessible from major areas of the city."}
                   </p>
                 </div>
 
