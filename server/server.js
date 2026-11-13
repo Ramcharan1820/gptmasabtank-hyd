@@ -31,6 +31,7 @@ const allowedOrigins = new Set([
   "http://localhost:5173",
   "http://localhost:5174",
   "http://localhost:5175",
+  "https://gptmasabtank-hyd.vercel.app",
   ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
   ...(process.env.FRONTEND_ORIGINS || "")
     .split(",")
@@ -923,114 +924,114 @@ app.delete("/api/notices/:id", requireAdmin, async (req, res) => {
 
 // GET: Fetch all departments
 app.get("/api/departments", async (req, res) => {
-    try {
-        const [departments] = await db.query(
-            "SELECT * FROM departments ORDER BY id DESC"
-        );
+  try {
+    const [departments] = await db.query(
+      "SELECT * FROM departments ORDER BY id DESC"
+    );
 
-        res.json({
-            success: true,
-            departments
-        });
+    res.json({
+      success: true,
+      departments
+    });
 
-    } catch (error) {
-        console.error("Fetch departments error:", error);
+  } catch (error) {
+    console.error("Fetch departments error:", error);
 
-        res.status(500).json({
-            success: false,
-            message: "Failed to fetch departments."
-        });
-    }
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch departments."
+    });
+  }
 });
 
 
 // POST: Add a new department
 app.post("/api/departments", requireAdmin, async (req, res) => {
-    try {
-        const {
-            department_name,
-            department_code,
-            description,
-            hod_name,
-            intake,
-            image,
-            image_public_id,
-            is_active
-        } = req.body;
+  try {
+    const {
+      department_name,
+      department_code,
+      description,
+      hod_name,
+      intake,
+      image,
+      image_public_id,
+      is_active
+    } = req.body;
 
-        if (!department_name || !department_code) {
-            return res.status(400).json({
-                success: false,
-                message: "Department name and code are required."
-            });
-        }
+    if (!department_name || !department_code) {
+      return res.status(400).json({
+        success: false,
+        message: "Department name and code are required."
+      });
+    }
 
-        const [result] = await db.query(
-            `INSERT INTO departments
+    const [result] = await db.query(
+      `INSERT INTO departments
             (department_name, department_code, description,
              hod_name, intake, image, image_public_id, is_active)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)` ,
-            [
-                department_name.trim(),
-                department_code.trim().toUpperCase(),
-                description || null,
-                hod_name || null,
-                Number(intake) || 0,
-                image || null,
-                image_public_id || null,
-                is_active === undefined ? 1 : (is_active ? 1 : 0)
-            ]
-        );
+      [
+        department_name.trim(),
+        department_code.trim().toUpperCase(),
+        description || null,
+        hod_name || null,
+        Number(intake) || 0,
+        image || null,
+        image_public_id || null,
+        is_active === undefined ? 1 : (is_active ? 1 : 0)
+      ]
+    );
 
-        res.status(201).json({
-            success: true,
-            message: "Department added successfully.",
-            departmentId: result.insertId
-        });
+    res.status(201).json({
+      success: true,
+      message: "Department added successfully.",
+      departmentId: result.insertId
+    });
 
-    } catch (error) {
-        console.error("Add department error:", error);
+  } catch (error) {
+    console.error("Add department error:", error);
 
-        res.status(500).json({
-            success: false,
-            message: "Failed to add department. Check whether the department code already exists."
-        });
-    }
+    res.status(500).json({
+      success: false,
+      message: "Failed to add department. Check whether the department code already exists."
+    });
+  }
 });
 
 
 // PUT: Update an existing department
 app.put("/api/departments/:id", requireAdmin, async (req, res) => {
-    try {
-        const departmentId = Number(req.params.id);
+  try {
+    const departmentId = Number(req.params.id);
 
-        if (!Number.isInteger(departmentId) || departmentId <= 0) {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid department ID."
-            });
-        }
+    if (!Number.isInteger(departmentId) || departmentId <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid department ID."
+      });
+    }
 
-        const {
-            department_name,
-            department_code,
-            description,
-            hod_name,
-            intake,
-            image,
-            image_public_id,
-            is_active
-        } = req.body;
+    const {
+      department_name,
+      department_code,
+      description,
+      hod_name,
+      intake,
+      image,
+      image_public_id,
+      is_active
+    } = req.body;
 
-        if (!department_name || !department_code) {
-            return res.status(400).json({
-                success: false,
-                message: "Department name and code are required."
-            });
-        }
+    if (!department_name || !department_code) {
+      return res.status(400).json({
+        success: false,
+        message: "Department name and code are required."
+      });
+    }
 
-        const [result] = await db.query(
-            `UPDATE departments
+    const [result] = await db.query(
+      `UPDATE departments
              SET department_name = ?,
                  department_code = ?,
                  description = ?,
@@ -1040,79 +1041,79 @@ app.put("/api/departments/:id", requireAdmin, async (req, res) => {
                  image_public_id = ?,
                  is_active = ?
              WHERE id = ?`,
-            [
-                department_name.trim(),
-                department_code.trim().toUpperCase(),
-                description || null,
-                hod_name || null,
-                Number(intake) || 0,
-                image || null,
-                image_public_id || null,
-                is_active ? 1 : 0,
-                departmentId
-            ]
-        );
+      [
+        department_name.trim(),
+        department_code.trim().toUpperCase(),
+        description || null,
+        hod_name || null,
+        Number(intake) || 0,
+        image || null,
+        image_public_id || null,
+        is_active ? 1 : 0,
+        departmentId
+      ]
+    );
 
-        if (result.affectedRows === 0) {
-            return res.status(404).json({
-                success: false,
-                message: "Department not found."
-            });
-        }
-
-        res.json({
-            success: true,
-            message: "Department updated successfully."
-        });
-
-    } catch (error) {
-        console.error("Update department error:", error);
-
-        res.status(500).json({
-            success: false,
-            message: "Failed to update department."
-        });
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Department not found."
+      });
     }
+
+    res.json({
+      success: true,
+      message: "Department updated successfully."
+    });
+
+  } catch (error) {
+    console.error("Update department error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to update department."
+    });
+  }
 });
 
 
 // DELETE: Remove a department
 app.delete("/api/departments/:id", requireAdmin, async (req, res) => {
-    try {
-        const departmentId = Number(req.params.id);
+  try {
+    const departmentId = Number(req.params.id);
 
-        if (!Number.isInteger(departmentId) || departmentId <= 0) {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid department ID."
-            });
-        }
-
-        const [result] = await db.query(
-            "DELETE FROM departments WHERE id = ?",
-            [departmentId]
-        );
-
-        if (result.affectedRows === 0) {
-            return res.status(404).json({
-                success: false,
-                message: "Department not found."
-            });
-        }
-
-        res.json({
-            success: true,
-            message: "Department deleted successfully."
-        });
-
-    } catch (error) {
-        console.error("Delete department error:", error);
-
-        res.status(500).json({
-            success: false,
-            message: "Failed to delete department."
-        });
+    if (!Number.isInteger(departmentId) || departmentId <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid department ID."
+      });
     }
+
+    const [result] = await db.query(
+      "DELETE FROM departments WHERE id = ?",
+      [departmentId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Department not found."
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Department deleted successfully."
+    });
+
+  } catch (error) {
+    console.error("Delete department error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete department."
+    });
+  }
 });
 
 // =========================================================
