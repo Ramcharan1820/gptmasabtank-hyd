@@ -91,8 +91,9 @@ function Result() {
         `Requesting ${examType} result for ${semester}`
       );
 
+      const apiBase = import.meta.env.PROD ? "" : API_BASE_URL;
       const response = await fetch(
-        `${API_BASE_URL}/api/result?${params.toString()}`
+        `${apiBase}/api/result?${params.toString()}`
       );
 
       const data = await response.json();

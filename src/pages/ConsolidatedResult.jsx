@@ -166,7 +166,7 @@ function ConsolidatedResult() {
 
     try {
       const params = new URLSearchParams({ pin: enteredPin, scheme });
-      const apiBase = API_BASE_URL;
+      const apiBase = import.meta.env.PROD ? "" : API_BASE_URL;
       const response = await fetch(
         `${apiBase}/api/consolidated-result?${params.toString()}`
       );
