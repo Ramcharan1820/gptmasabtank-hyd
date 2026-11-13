@@ -34,6 +34,7 @@ const allowedOrigins = new Set([
   "http://localhost:5174",
   "http://localhost:5175",
   "http://localhost:3000",
+  "http://127.0.0.1:5173",
   "https://gptmasabtank-hyd.vercel.app",
   ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL.replace(/\/+$/, "")] : []),
   ...(process.env.FRONTEND_ORIGINS || "")
@@ -47,6 +48,7 @@ const isOriginAllowed = (origin) => {
   const cleanOrigin = origin.replace(/\/+$/, "");
   if (allowedOrigins.has(cleanOrigin)) return true;
   if (/^https:\/\/gptmasabtank-hyd.*\.vercel\.app$/.test(cleanOrigin)) return true;
+  if (/^http:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+)(:\d+)?$/.test(cleanOrigin)) return true;
   return false;
 };
 
@@ -59,7 +61,7 @@ const corsOptions = {
   },
   credentials: true,
   methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept", "X-Admin-Token"],
 };
 
 app.use(cors(corsOptions));
@@ -108,6 +110,42 @@ app.use(
     },
   })
 );
+
+// =========================================================
+// DUAL AUTHENTICATION SUPPORT (SESSION COOKIE + BEARER TOKEN)
+// =========================================================
+// If express-session cookie was blocked by the browser (common in cross-port localhost,
+// 127.0.0.1, or strict SameSite policies), resolve session via Authorization: Bearer <token>
+// or X-Admin-Token header.
+app.use((req, res, next) => {
+  if (req.session && req.session.admin) {
+    return next();
+  }
+
+  const rawAuth = req.headers.authorization || req.headers["x-admin-token"];
+  if (!rawAuth || typeof rawAuth !== "string") {
+    return next();
+  }
+
+  const token = rawAuth.startsWith("Bearer ")
+    ? rawAuth.slice(7).trim()
+    : rawAuth.trim();
+
+  if (!token) {
+    return next();
+  }
+
+  sessionStore.get(token, (err, sess) => {
+    if (!err && sess && sess.admin) {
+      if (!req.session) {
+        req.session = {};
+      }
+      req.session.admin = sess.admin;
+      req.sessionID = token;
+    }
+    return next();
+  });
+});
 
 // =========================================================
 // ADMIN AUTHENTICATION MIDDLEWARE
@@ -420,6 +458,7 @@ app.post("/api/admin/login", async (req, res) => {
           success: true,
           authenticated: true,
           message: "Login successful.",
+          token: req.sessionID,
           admin: req.session.admin,
         });
       });
@@ -467,27 +506,46 @@ app.get("/api/admin/me", (req, res) => {
 // =========================================================
 
 app.post("/api/admin/logout", requireAdmin, (req, res) => {
-  req.session.destroy((error) => {
-    if (error) {
-      console.error("Admin logout error:", error.message);
+  const rawAuth = req.headers.authorization || req.headers["x-admin-token"];
+  const token = rawAuth?.startsWith("Bearer ")
+    ? rawAuth.slice(7).trim()
+    : rawAuth?.trim() || req.sessionID;
 
-      return res.status(500).json({
-        success: false,
-        message: "Unable to log out.",
+  if (token) {
+    sessionStore.destroy(token, () => {});
+  }
+
+  const clearCookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  };
+
+  if (req.session && typeof req.session.destroy === "function") {
+    req.session.destroy((error) => {
+      res.clearCookie("college_admin_sid", clearCookieOptions);
+
+      if (error) {
+        console.error("Admin logout error:", error.message);
+
+        return res.status(500).json({
+          success: false,
+          message: "Unable to log out.",
+        });
+      }
+
+      return res.json({
+        success: true,
+        message: "Logged out successfully.",
       });
-    }
-
-    res.clearCookie("college_admin_sid", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
     });
-
+  } else {
+    res.clearCookie("college_admin_sid", clearCookieOptions);
     return res.json({
       success: true,
       message: "Logged out successfully.",
     });
-  });
+  }
 });
 
 // =========================================================

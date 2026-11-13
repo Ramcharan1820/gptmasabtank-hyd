@@ -30,7 +30,7 @@ import {
 
 import { useNavigate } from "react-router-dom";
 import AdminImageField from "../components/AdminImageField";
-import API_BASE_URL from "../apiConfig";
+import API_BASE_URL, { getAdminToken, clearAdminToken } from "../apiConfig";
 import "./AdminDashboard.css";
 
 const API_BASE = `${API_BASE_URL}/api`;
@@ -314,6 +314,9 @@ function AdminDashboard() {
   // ==================================================
 
   const apiRequest = async (endpoint, options = {}) => {
+    const token = getAdminToken();
+    const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
+
     const response = await fetch(`${API_BASE}${endpoint}`, {
       credentials: "include",
       ...options,
@@ -321,6 +324,7 @@ function AdminDashboard() {
         ...(options.body
           ? { "Content-Type": "application/json" }
           : {}),
+        ...authHeaders,
         ...(options.headers || {}),
       },
     });
@@ -352,12 +356,14 @@ function AdminDashboard() {
         const response = await apiRequest("/admin/me");
 
         if (!response.authenticated) {
+          clearAdminToken();
           navigate("/admin/login", { replace: true });
           return;
         }
 
         setAdmin(response.admin);
       } catch (error) {
+        clearAdminToken();
         navigate("/admin/login", { replace: true });
       } finally {
         setLoading(false);
@@ -1066,6 +1072,7 @@ function AdminDashboard() {
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
+      clearAdminToken();
       navigate("/admin/login", { replace: true });
     }
   };

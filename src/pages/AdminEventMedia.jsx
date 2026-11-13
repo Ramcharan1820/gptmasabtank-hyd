@@ -15,7 +15,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import CloudinaryEventGallery from "../components/CloudinaryEventGallery";
 import useBulkCloudinaryUpload from "../hooks/useBulkCloudinaryUpload";
-import API_BASE_URL from "../apiConfig";
+import API_BASE_URL, { getAdminAuthHeaders, clearAdminToken } from "../apiConfig";
 import "./AdminEventMedia.css";
 
 const API_BASE = API_BASE_URL;
@@ -101,9 +101,17 @@ export default function AdminEventMedia() {
   useEffect(() => {
     let active = true;
 
+    const authHeaders = getAdminAuthHeaders();
+
     Promise.all([
-      fetch(`${API_BASE}/api/admin/me`, { credentials: "include" }),
-      fetch(`${API_BASE}/api/media/events`, { credentials: "include" }),
+      fetch(`${API_BASE}/api/admin/me`, {
+        credentials: "include",
+        headers: { ...authHeaders },
+      }),
+      fetch(`${API_BASE}/api/media/events`, {
+        credentials: "include",
+        headers: { ...authHeaders },
+      }),
     ])
       .then(async ([sessionResponse, eventResponse]) => {
         const [session, eventPayload] = await Promise.all([
@@ -112,6 +120,7 @@ export default function AdminEventMedia() {
         ]);
 
         if (!sessionResponse.ok || !session.authenticated) {
+          clearAdminToken();
           navigate("/admin/login", { replace: true });
           return;
         }

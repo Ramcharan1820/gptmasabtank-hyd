@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import imageCompression from "browser-image-compression";
 import { ImagePlus, LoaderCircle, Trash2, Upload, X } from "lucide-react";
 import "./AdminImageField.css";
-import API_BASE_URL from "../apiConfig";
+import API_BASE_URL, { getAdminAuthHeaders } from "../apiConfig";
 
 const API_BASE = API_BASE_URL;
 const MAX_FILE_BYTES = 15 * 1024 * 1024;
@@ -113,7 +113,10 @@ export default function AdminImageField({
       const params = new URLSearchParams({ type: contentType });
       const response = await fetch(
         `${API_BASE}/api/media/content/assets?${params}`,
-        { credentials: "include" }
+        {
+          credentials: "include",
+          headers: { ...getAdminAuthHeaders() },
+        }
       );
       const result = await readJson(response);
       setAssets(Array.isArray(result.data) ? result.data : []);
@@ -167,7 +170,10 @@ export default function AdminImageField({
           method: "POST",
           credentials: "include",
           signal: controller.signal,
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            ...getAdminAuthHeaders(),
+          },
           body: JSON.stringify({
             contentType,
             fileSize: uploadImage.size,
@@ -189,7 +195,10 @@ export default function AdminImageField({
           method: "POST",
           credentials: "include",
           signal: controller.signal,
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            ...getAdminAuthHeaders(),
+          },
           body: JSON.stringify({ publicId: uploaded.public_id }),
         }
       );
@@ -218,7 +227,11 @@ export default function AdminImageField({
     try {
       const response = await fetch(
         `${API_BASE}/api/media/content/assets/${asset.id}`,
-        { method: "DELETE", credentials: "include" }
+        {
+          method: "DELETE",
+          credentials: "include",
+          headers: { ...getAdminAuthHeaders() },
+        }
       );
       await readJson(response);
       if (publicId === asset.public_id) onChange({ url: "", publicId: "" });

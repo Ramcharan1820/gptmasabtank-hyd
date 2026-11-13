@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 
 import "./AdminLogin.css";
-import API_BASE_URL from "../apiConfig";
+import API_BASE_URL, { setAdminToken } from "../apiConfig";
 
 const API_URL = API_BASE_URL;
 
@@ -90,6 +90,15 @@ function AdminLogin() {
       }
 
       console.log("Admin login successful.");
+
+      if (data.token) {
+        setAdminToken(data.token);
+      }
+      if (data.admin) {
+        try {
+          localStorage.setItem("admin_user", JSON.stringify(data.admin));
+        } catch (_) {}
+      }
 
       // Navigate to dashboard
       navigate("/admin/dashboard", {

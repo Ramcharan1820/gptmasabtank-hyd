@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import imageCompression from "browser-image-compression";
 import { hashFile } from "../media/hashFile";
 import { uploadToCloudinary } from "../media/cloudinaryUpload";
-import API_BASE_URL from "../apiConfig";
+import API_BASE_URL, { getAdminAuthHeaders } from "../apiConfig";
 
 const API_BASE = API_BASE_URL;
 const MAX_FILE_BYTES = 2 * 1024 * 1024 * 1024;
@@ -97,6 +97,7 @@ export default function useBulkCloudinaryUpload({ concurrency = 4 } = {}) {
             {
               credentials: "include",
               signal: job.controller.signal,
+              headers: { ...getAdminAuthHeaders() },
             }
           );
           const duplicateResult = await readJsonResponse(duplicateResponse);
@@ -121,7 +122,10 @@ export default function useBulkCloudinaryUpload({ concurrency = 4 } = {}) {
             method: "POST",
             credentials: "include",
             signal: job.controller.signal,
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              ...getAdminAuthHeaders(),
+            },
             body: JSON.stringify({
               eventId: job.eventId,
               department: job.department,
