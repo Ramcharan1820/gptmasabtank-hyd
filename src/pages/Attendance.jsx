@@ -2,7 +2,9 @@ import { useMemo, useState } from "react";
 import API_BASE_URL from "../apiConfig";
 import "./Attendance.css";
 
-const API_URL = `${API_BASE_URL}/api/attendance`;
+const API_URL = import.meta.env.PROD
+  ? "/api/attendance"
+  : `${API_BASE_URL}/api/attendance`;
 
 function Attendance() {
   const [pin, setPin] = useState("");
@@ -27,15 +29,20 @@ function Attendance() {
     setError("");
 
     try {
-      if (!API_URL) {
-        throw new Error(
-          "VITE_API_BASE_URL is missing from this frontend build. Configure it in the frontend deployment settings and redeploy."
+      let response;
+      try {
+        response = await fetch(
+          `${API_URL}?pin=${encodeURIComponent(enteredPin)}`
         );
+      } catch (err) {
+        if (API_URL !== `${API_BASE_URL}/api/attendance`) {
+          response = await fetch(
+            `${API_BASE_URL}/api/attendance?pin=${encodeURIComponent(enteredPin)}`
+          );
+        } else {
+          throw err;
+        }
       }
-
-      const response = await fetch(
-        `${API_URL}?pin=${encodeURIComponent(enteredPin)}`
-      );
 
       let result;
 

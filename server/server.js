@@ -1744,7 +1744,21 @@ app.get("/api/attendance", async (req, res) => {
     const url =
       `${SBTET_ATTENDANCE_URL}?Pin=${encodeURIComponent(pin)}`;
 
-    const result = await fetchSBTET(url);
+    let result;
+    try {
+      result = await fetchSBTET(url);
+    } catch (directError) {
+      console.warn("Direct SBTET fetch failed (possible geo-block), falling back to Vercel India proxy...", directError.message);
+      try {
+        const fallbackRes = await fetch(
+          `https://gptmasabtank-hyd.vercel.app/api/attendance?pin=${encodeURIComponent(pin)}`
+        );
+        const fallbackData = await fallbackRes.json();
+        return res.status(fallbackRes.status).json(fallbackData);
+      } catch (fallbackError) {
+        throw directError;
+      }
+    }
 
     if (!result.ok) {
       return res.status(result.status).json({
