@@ -21,16 +21,16 @@
 
 .mechanical-hero {
   width: 100%;
-  min-height: 280px;
-  background: linear-gradient(
-    135deg,
-    #6b1d1d 0%,
-    #8b2424 50%,
-    #5d1515 100%
-  );
-  border-bottom: 5px solid #e5b72f;
+  height: 340px !important;
+  min-height: 340px !important;
+  max-height: 340px !important;
+  background: var(--hero-maroon-gradient) !important;
+  border-bottom: 3.5px solid var(--gold-primary) !important;
   position: relative;
   overflow: hidden;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
 }
 
 .mechanical-hero::before {

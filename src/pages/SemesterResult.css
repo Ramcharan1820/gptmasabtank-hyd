@@ -22,7 +22,7 @@
 .semester-result-header {
   padding: 25px 28px;
 
-  background: #f8fbff;
+  background: #fdf8f8;
 
   border-bottom:
     1px solid #e4eaf2;
@@ -196,7 +196,7 @@
 .semester-total {
   font-weight: 800;
 
-  color: #1256a0 !important;
+  color: #800000 !important;
 }
 
 .semester-result-table th:nth-child(1),
@@ -220,7 +220,7 @@
 /* TOTAL */
 
 .semester-result-table tfoot td {
-  background: #f8fbff;
+  background: #fdf8f8;
 
   border-bottom: none;
 
@@ -234,7 +234,7 @@
 }
 
 .semester-grand-total {
-  color: #1256a0 !important;
+  color: #800000 !important;
 
   font-size: 15px !important;
 

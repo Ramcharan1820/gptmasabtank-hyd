@@ -21,16 +21,16 @@
 
 .civil-hero {
   width: 100%;
-  min-height: 280px;
-  background: linear-gradient(
-    135deg,
-    #174d3a 0%,
-    #236b4f 50%,
-    #123f30 100%
-  );
-  border-bottom: 5px solid #e5b72f;
+  height: 340px !important;
+  min-height: 340px !important;
+  max-height: 340px !important;
+  background: var(--hero-maroon-gradient) !important;
+  border-bottom: 3.5px solid var(--gold-primary) !important;
   position: relative;
   overflow: hidden;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
 }
 
 .civil-hero::before {
@@ -165,7 +165,7 @@
   height: 50px;
   flex-shrink: 0;
   border-radius: 13px;
-  background: #e8f4ee;
+  background: #faecec;
   color: #176044;
   display: flex;
   align-items: center;
@@ -238,7 +238,7 @@
   gap: 10px;
   background: linear-gradient(
     145deg,
-    #edf7f1,
+    #fdf5f5,
     #eef1f5
   );
 }
@@ -414,7 +414,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 12px;
-  background: #e8f4ee;
+  background: #faecec;
   color: #176044;
   margin-bottom: 15px;
 }
@@ -440,7 +440,7 @@
 .civil-vision-section {
   background: linear-gradient(
     135deg,
-    #f8fcfa,
+    #fdf8f8,
     #ffffff
   );
 }
@@ -453,10 +453,10 @@
   border-radius: 16px;
   background: linear-gradient(
     135deg,
-    #e8f4ee,
+    #faecec,
     #fff7e8
   );
-  border: 1px solid #d5e5db;
+  border: 1px solid #ebd0d2;
 }
 
 .civil-vision-icon {
@@ -578,7 +578,7 @@
   overflow: hidden;
   background: linear-gradient(
     145deg,
-    #eef5f1,
+    #faecec,
     #e5ebe8
   );
 }
@@ -599,7 +599,7 @@
   color: #176044;
   background: linear-gradient(
     145deg,
-    #edf7f1,
+    #fdf5f5,
     #eef1f5
   );
 }

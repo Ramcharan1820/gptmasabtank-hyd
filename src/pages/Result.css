@@ -9,13 +9,14 @@
 ========================= */
 
 .result-hero {
-  background: linear-gradient(
-    135deg,
-    #092c63,
-    #1456a0
-  );
-
-  padding: 55px 20px 90px;
+  height: 340px !important;
+  min-height: 340px !important;
+  max-height: 340px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 !important;
+  background: var(--hero-maroon-gradient) !important;
+  border-bottom: 3.5px solid var(--gold-primary) !important;
   color: white;
 }
 
@@ -126,7 +127,7 @@
 
   background: #eaf3ff;
 
-  color: #1256a0;
+  color: #800000;
 
   border-radius: 12px;
 
@@ -247,7 +248,7 @@
 
   border-radius: 9px;
 
-  background: #1256a0;
+  background: #800000;
 
   color: white;
 

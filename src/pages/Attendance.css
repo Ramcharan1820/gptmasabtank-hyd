@@ -549,12 +549,12 @@
    ========================================================= */
 
 .exam-considered-card {
-  border-left: 3px solid #8067b5;
+  border-left: 3px solid var(--maroon-primary, #800000);
 }
 
 .exam-considered-card .summary-icon {
-  background: #eee9fb;
-  color: #69529d;
+  background: var(--maroon-tint, #faecec);
+  color: var(--maroon-primary, #800000);
 }
 
 .exam-considered-card small {

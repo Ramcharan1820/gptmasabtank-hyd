@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef, useMemo } from "react";
 
 import {
   LayoutDashboard,
@@ -25,6 +25,7 @@ import {
   Image as ImageIcon,
   BriefcaseBusiness,
   UserRound,
+  ChevronDown,
 } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
@@ -41,6 +42,31 @@ const initialNotice = {
   description: "",
   notice_date: "",
 };
+
+const ADMIN_CATEGORIES_METADATA = [
+  { name: "Dashboard", label: "Dashboard Overview", desc: "System stats, metrics & activity", group: "General" },
+  { name: "Notices", label: "Notices & Circulars", desc: "Campus announcements & news", group: "Announcements" },
+  { name: "Events", label: "Events & Fests", desc: "Technical, cultural & sports events", group: "Campus Life" },
+  { name: "Departments", label: "Departments", desc: "Academic branch management", group: "Academics" },
+  { name: "Faculty", label: "Faculty Directory", desc: "Teaching staff & leadership", group: "Academics" },
+  { name: "Placements", label: "Training & Placements", desc: "Recruiters & placed students", group: "Career" },
+  { name: "Gallery", label: "Photo Gallery", desc: "Campus photos & laboratories", group: "Media" },
+  { name: "Contact", label: "Contact Information", desc: "Official campus address & info", group: "Info" },
+  { name: "Alumni", label: "Alumni Directory", desc: "Registered alumni database", group: "Community" },
+];
+
+const EVENT_CATEGORIES = [
+  "Technical",
+  "Cultural",
+  "Sports",
+  "Academic",
+  "Workshop",
+  "Seminar",
+  "Celebrations",
+  "Placement",
+  "Campus",
+  "Other",
+];
 
 const initialEvent = {
   title: "",
@@ -68,7 +94,22 @@ const managedContentFields = {
     { name: "faculty_code", label: "Faculty ID" },
     { name: "name", label: "Full name", required: true },
     { name: "designation", label: "Designation", required: true },
-    { name: "department", label: "Department", required: true },
+    {
+      name: "department",
+      label: "Department",
+      type: "select",
+      options: [
+        ["CSE", "Computer Science & Engineering (CSE)"],
+        ["ECE", "Electronics & Communication (ECE)"],
+        ["EEE", "Electrical & Electronics (EEE)"],
+        ["Mechanical", "Mechanical Engineering"],
+        ["Civil", "Civil Engineering"],
+        ["Automobile", "Automobile Engineering"],
+        ["Pharmacy", "Pharmacy"],
+        ["General", "General Science & Humanities"],
+      ],
+      required: true,
+    },
     { name: "qualification", label: "Qualification" },
     { name: "experience", label: "Experience" },
     { name: "specialization", label: "Specialization", type: "textarea" },
@@ -100,7 +141,22 @@ const managedContentFields = {
   ],
   Gallery: [
     { name: "title", label: "Image title", required: true },
-    { name: "category", label: "Category", required: true },
+    {
+      name: "category",
+      label: "Category",
+      type: "select",
+      options: [
+        ["Campus", "Campus"],
+        ["Laboratories", "Laboratories"],
+        ["Activities", "Activities"],
+        ["Students", "Students"],
+        ["Events", "Events"],
+        ["Celebrations", "Celebrations"],
+        ["Sports", "Sports"],
+        ["Academic", "Academic"],
+      ],
+      required: true,
+    },
     { name: "image", label: "Gallery image", type: "image", publicIdField: "image_public_id", required: true },
     { name: "description", label: "Caption", type: "textarea" },
   ],
@@ -123,7 +179,9 @@ const managedContentFields = {
 const emptyManagedForm = (section) => {
   const form = {};
   for (const field of managedContentFields[section] || []) {
-    if (field.type !== "checkbox" && field.type !== "select") {
+    if (field.type === "select" && Array.isArray(field.options) && field.options.length > 0) {
+      form[field.name] = field.options[0][0];
+    } else if (field.type !== "checkbox") {
       form[field.name] = "";
     }
     if (field.publicIdField) form[field.publicIdField] = "";
@@ -158,6 +216,34 @@ function AdminDashboard() {
   });
 
   const [search, setSearch] = useState("");
+  const [eventCategoryFilter, setEventCategoryFilter] = useState("All");
+  const [managedCategoryFilter, setManagedCategoryFilter] = useState("All");
+  const [alumniDeptFilter, setAlumniDeptFilter] = useState("All");
+  const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
+  const [categorySearch, setCategorySearch] = useState("");
+  const categoryDropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (
+        categoryDropdownRef.current &&
+        !categoryDropdownRef.current.contains(event.target)
+      ) {
+        setCategoryDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, []);
+
+  const filteredEvents =
+    eventCategoryFilter === "All"
+      ? events
+      : events.filter(
+          (e) =>
+            (e.category || "").toLowerCase() ===
+            eventCategoryFilter.toLowerCase()
+        );
 
   const [noticeForm, setNoticeForm] = useState(initialNotice);
   const [eventForm, setEventForm] = useState(initialEvent);
@@ -685,7 +771,33 @@ function AdminDashboard() {
   };
 
   const renderManagedContent = () => {
-    const items = managedContent[activeSection] || [];
+    const rawItems = managedContent[activeSection] || [];
+
+    const categoryFilterOptions = [
+      ...new Set(
+        rawItems
+          .map((item) =>
+            activeSection === "Faculty"
+              ? item.department
+              : activeSection === "Gallery"
+                ? item.category
+                : activeSection === "Placements"
+                  ? item.kind
+                  : null
+          )
+          .filter(Boolean)
+      ),
+    ];
+
+    const items =
+      managedCategoryFilter === "All"
+        ? rawItems
+        : rawItems.filter((item) => {
+            if (activeSection === "Faculty") return (item.department || "").toLowerCase() === managedCategoryFilter.toLowerCase();
+            if (activeSection === "Gallery") return (item.category || "").toLowerCase() === managedCategoryFilter.toLowerCase();
+            if (activeSection === "Placements") return (item.kind || "").toLowerCase() === managedCategoryFilter.toLowerCase();
+            return true;
+          });
     const canCreate = activeSection !== "Contact" || items.length === 0;
 
     return (
@@ -840,9 +952,28 @@ function AdminDashboard() {
         )}
 
         <div className="admin-panel-card">
-          <div className="admin-panel-heading">
-            <h3>{activeSection} ({items.length})</h3>
-            <p>Changes are saved to the database and reflected on the public page.</p>
+          <div className="admin-panel-heading admin-panel-heading-row">
+            <div>
+              <h3>{activeSection} ({items.length})</h3>
+              <p>Changes are saved to the database and reflected on the public page.</p>
+            </div>
+            {categoryFilterOptions.length > 0 && (
+              <div className="admin-filter-group">
+                <label>Filter by {activeSection === "Faculty" ? "Department" : activeSection === "Placements" ? "Item Type" : "Category"}:</label>
+                <select
+                  value={managedCategoryFilter}
+                  onChange={(e) => setManagedCategoryFilter(e.target.value)}
+                  className="admin-filter-select"
+                >
+                  <option value="All">All {activeSection === "Faculty" ? "Departments" : activeSection === "Placements" ? "Types" : "Categories"}</option>
+                  {categoryFilterOptions.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
           </div>
           {items.length === 0 ? (
             <p className="admin-empty">No {activeSection.toLowerCase()} content yet. Add the first item to publish it.</p>
@@ -904,7 +1035,13 @@ function AdminDashboard() {
   // ALUMNI DATA
   // ==================================================
 
+  const alumniDepartments = [...new Set(alumni.map((a) => a.department).filter(Boolean))];
+
   const filteredAlumni = alumni.filter((person) => {
+    const matchesDept =
+      alumniDeptFilter === "All" ||
+      (person.department || "").toLowerCase() === alumniDeptFilter.toLowerCase();
+    if (!matchesDept) return false;
     const searchText = search.toLowerCase();
 
     return (
@@ -1330,9 +1467,7 @@ function AdminDashboard() {
 
             <label>
               Category
-              <input
-                type="text"
-                placeholder="Technical / Cultural / Sports"
+              <select
                 value={eventForm.category}
                 onChange={(e) =>
                   setEventForm({
@@ -1340,7 +1475,20 @@ function AdminDashboard() {
                     category: e.target.value,
                   })
                 }
-              />
+              >
+                <option value="">-- Select Category --</option>
+                {EVENT_CATEGORIES.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+                {eventForm.category &&
+                  !EVENT_CATEGORIES.includes(eventForm.category) && (
+                    <option value={eventForm.category}>
+                      {eventForm.category}
+                    </option>
+                  )}
+              </select>
             </label>
 
             <div className="admin-image-form-field">
@@ -1407,8 +1555,27 @@ function AdminDashboard() {
       )}
 
       <div className="admin-panel-card">
-        <div className="admin-panel-heading">
-          <h3>All Events ({events.length})</h3>
+        <div className="admin-panel-heading admin-panel-heading-row">
+          <div>
+            <h3>All Events ({filteredEvents.length})</h3>
+            <p>Manage college events and publications</p>
+          </div>
+          <div className="admin-filter-group">
+            <label htmlFor="event-category-filter">Category:</label>
+            <select
+              id="event-category-filter"
+              value={eventCategoryFilter}
+              onChange={(e) => setEventCategoryFilter(e.target.value)}
+              className="admin-filter-select"
+            >
+              <option value="All">All Categories</option>
+              {EVENT_CATEGORIES.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div className="admin-table-wrapper">
@@ -1425,7 +1592,7 @@ function AdminDashboard() {
             </thead>
 
             <tbody>
-              {events.map((event) => (
+              {filteredEvents.map((event) => (
                 <tr key={event.id}>
                   <td>{event.id}</td>
                   <td className="table-strong">{event.title}</td>
@@ -1718,8 +1885,24 @@ function AdminDashboard() {
       <div className="admin-panel-card">
         <div className="admin-panel-heading alumni-heading">
           <div>
-            <h3>Registered Alumni ({alumni.length})</h3>
+            <h3>Registered Alumni ({filteredAlumni.length})</h3>
             <p>Registration records retrieved from the database.</p>
+          </div>
+
+          <div className="admin-filter-group">
+            <label>Department:</label>
+            <select
+              value={alumniDeptFilter}
+              onChange={(e) => setAlumniDeptFilter(e.target.value)}
+              className="admin-filter-select"
+            >
+              <option value="All">All Departments</option>
+              {alumniDepartments.map((dept) => (
+                <option key={dept} value={dept}>
+                  {dept}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="admin-search">
@@ -1809,6 +1992,36 @@ function AdminDashboard() {
   // ==================================================
   // MAIN LAYOUT
   // ==================================================
+
+  
+  const getCategoryIconHelper = (name) => {
+    switch (name) {
+      case "Dashboard": return <LayoutDashboard size={18} />;
+      case "Notices": return <Bell size={18} />;
+      case "Events": return <CalendarDays size={18} />;
+      case "Departments": return <Building2 size={18} />;
+      case "Faculty": return <GraduationCap size={18} />;
+      case "Placements": return <BriefcaseBusiness size={18} />;
+      case "Gallery": return <ImageIcon size={18} />;
+      case "Contact": return <Contact size={18} />;
+      case "Alumni": return <Users size={18} />;
+      default: return <LayoutDashboard size={18} />;
+    }
+  };
+
+  const getCategoryCountHelper = (name) => {
+    switch (name) {
+      case "Notices": return notices.length;
+      case "Events": return events.length;
+      case "Departments": return departments.length;
+      case "Faculty": return (managedContent.Faculty || []).length;
+      case "Placements": return (managedContent.Placements || []).length;
+      case "Gallery": return (managedContent.Gallery || []).length;
+      case "Alumni": return alumni.length;
+      case "Contact": return (managedContent.Contact || []).length > 0 ? "1" : "0";
+      default: return "Active";
+    }
+  };
 
   return (
     <div className="admin-dashboard">

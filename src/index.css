@@ -1,4 +1,46 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap');
+
+:root {
+  /* =========================================================
+     OFFICIAL MODERN MAROON DESIGN SYSTEM
+     ========================================================= */
+  --maroon-primary: #800000;
+  --maroon-dark: #620509;
+  --maroon-darker: #460204;
+  --maroon-deep: #2c0103;
+  --maroon-light: #9c1c20;
+  --maroon-lighter: #b9252a;
+  --maroon-soft: #fdf5f5;
+  --maroon-tint: #faecec;
+  --maroon-border: #f0cfd2;
+  --maroon-hover: #911519;
+
+  /* Gold Accents */
+  --gold-primary: #c59b27;
+  --gold-light: #e5be49;
+  --gold-dark: #967313;
+  --gold-soft: #fff9e6;
+  --gold-border: #f2e2ad;
+
+  /* Neutrals */
+  --bg-page: #f8fafc;
+  --bg-card: #ffffff;
+  --text-dark: #0f172a;
+  --text-body: #334155;
+  --text-muted: #64748b;
+  --text-light: #94a3b8;
+  --border-subtle: #e2e8f0;
+
+  /* Standard Unified Maroon Hero Gradient */
+  --hero-maroon-gradient: linear-gradient(
+    135deg,
+    #420204 0%,
+    #6c0b10 42%,
+    #881319 78%,
+    #500508 100%
+  );
+  --hero-gold-accent: #c59b27;
+}
 
 * {
   box-sizing: border-box;
@@ -11,73 +53,149 @@ html {
 }
 
 body {
-  font-family: "DM Sans", sans-serif;
-  background: #f6f7fb;
-  color: #202033;
+  font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg-page);
+  color: var(--text-dark);
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* PROFESSIONAL HEADINGS */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+/* HEADINGS */
+h1, h2, h3, h4, h5, h6 {
   font-family: "Plus Jakarta Sans", sans-serif;
   font-weight: 700;
-  line-height: 1.15;
-  letter-spacing: -0.8px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--text-dark);
 }
 
 h1 {
   font-weight: 800;
-  letter-spacing: -1.8px;
-}
-
-h2 {
-  font-weight: 700;
-  letter-spacing: -1px;
-}
-
-h3,
-h4,
-h5,
-h6 {
-  font-weight: 700;
-  letter-spacing: -0.4px;
-}
-
-a,
-button,
-input,
-textarea,
-select {
-  font-family: "DM Sans", sans-serif;
+  letter-spacing: -0.03em;
 }
 
 a {
   text-decoration: none;
+  color: inherit;
 }
+
+button {
+  font-family: inherit;
+}
+
+/* =========================================================
+   STANDARDIZED MODERN MAROON HERO FOR ALL PAGES
+   Uniform Height: 340px across the entire application
+   ========================================================= */
 
 .site-hero {
-  height: 380px;
-  min-height: 380px;
-  padding-block: 0;
-  display: flex;
-  align-items: center;
+  width: 100% !important;
+  height: 340px !important;
+  min-height: 340px !important;
+  max-height: 340px !important;
+  position: relative !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background:
+    radial-gradient(circle at 85% 20%, rgba(229, 190, 73, 0.16), transparent 42%),
+    radial-gradient(circle at 12% 80%, rgba(255, 255, 255, 0.04), transparent 36%),
+    var(--hero-maroon-gradient) !important;
+  border-bottom: 3.5px solid var(--hero-gold-accent) !important;
+  box-shadow: inset 0 -12px 28px rgba(0, 0, 0, 0.22) !important;
+  color: #ffffff !important;
+  box-sizing: border-box !important;
 }
 
+/* Subtle modern ambient background glow */
+.site-hero::before {
+  content: "";
+  position: absolute;
+  top: -40%;
+  right: -5%;
+  width: 480px;
+  height: 480px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(197, 155, 39, 0.14) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.site-hero::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.15);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Standardized Hero Content Containers */
 .site-hero h1,
 .site-hero .alumni-banner-title {
-  font-size: clamp(2.2rem, 4vw, 3rem);
-  line-height: 1.1;
-  letter-spacing: -0.03em;
+  color: #ffffff !important;
+  font-family: "Plus Jakarta Sans", sans-serif !important;
+  font-size: clamp(2.1rem, 3.8vw, 2.9rem) !important;
+  font-weight: 800 !important;
+  line-height: 1.15 !important;
+  letter-spacing: -0.025em !important;
+  margin-bottom: 10px !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.site-hero p {
+  color: #f7e6e7 !important;
+  font-size: clamp(14px, 1.6vw, 16px) !important;
+  line-height: 1.6 !important;
+  max-width: 760px !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+.site-hero span[class*="label"],
+.site-hero span[class*="tag"],
+.site-hero span[class*="eyebrow"] {
+  color: #f3cf73 !important;
+  font-weight: 800 !important;
+  font-size: 11.5px !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  margin-bottom: 8px !important;
+  display: inline-block !important;
+}
+
+/* Skip to content accessibility */
+.skip-to-content {
+  position: absolute;
+  top: -100px;
+  left: 20px;
+  background: var(--gold-primary);
+  color: var(--maroon-deep);
+  padding: 8px 16px;
+  font-weight: 700;
+  z-index: 99999;
+  border-radius: 6px;
+  transition: top 0.2s ease;
+}
+
+.skip-to-content:focus {
+  top: 10px;
+}
+
+::selection {
+  background: var(--maroon-primary);
+  color: #ffffff;
 }
 
 @media (max-width: 768px) {
   .site-hero {
-    height: 320px;
-    min-height: 320px;
+    height: auto !important;
+    min-height: 250px !important;
+    max-height: none !important;
+    padding: 32px 0 !important;
   }
 }

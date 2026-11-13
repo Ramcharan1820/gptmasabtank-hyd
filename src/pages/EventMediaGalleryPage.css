@@ -5,9 +5,15 @@
 }
 
 .event-media-gallery-hero {
-  padding: 58px 20px 94px;
+  height: 340px !important;
+  min-height: 340px !important;
+  max-height: 340px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 !important;
   color: #fff;
-  background: linear-gradient(130deg, #082755, #1459a4);
+  background: var(--hero-maroon-gradient) !important;
+  border-bottom: 3.5px solid var(--gold-primary) !important;
 }
 
 .event-media-gallery-hero > div,

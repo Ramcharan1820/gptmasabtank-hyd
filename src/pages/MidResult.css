@@ -22,7 +22,7 @@
 .mid-result-header {
   padding: 25px 28px;
 
-  background: #f8fbff;
+  background: #fdf8f8;
 
   border-bottom:
     1px solid #e4eaf2;
@@ -68,9 +68,9 @@
 
   border-radius: 20px;
 
-  background: #eaf3ff;
+  background: #faecec;
 
-  color: #1256a0;
+  color: #800000;
 
   font-size: 12px;
 
@@ -188,7 +188,7 @@
 .mid-marks {
   font-weight: 800;
 
-  color: #1256a0 !important;
+  color: #800000 !important;
 
   text-align: center;
 }
@@ -209,7 +209,7 @@
 /* TOTAL */
 
 .mid-result-table tfoot td {
-  background: #f8fbff;
+  background: #fdf8f8;
 
   border-bottom: none;
 
@@ -223,7 +223,7 @@
 }
 
 .mid-total-value {
-  color: #1256a0 !important;
+  color: #800000 !important;
 
   font-size: 15px !important;
 }

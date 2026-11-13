@@ -22,27 +22,24 @@
 
 .cse-hero {
   position: relative;
-  background:
-    linear-gradient(
-      135deg,
-      #7b1113 0%,
-      #991b1e 52%,
-      #6f0d10 100%
-    );
+  height: 340px !important;
+  min-height: 340px !important;
+  max-height: 340px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 !important;
+  background: var(--hero-maroon-gradient) !important;
   color: #fff;
-  border-bottom: 4px solid #e5b72f;
+  border-bottom: 3.5px solid var(--gold-primary) !important;
 }
 
 .cse-hero-inner {
   width: min(1180px, 92%);
-  min-height: 235px;
   margin: auto;
-  padding: 48px 0 42px;
-
+  padding: 0;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
-
   gap: 35px;
 }
 
@@ -167,7 +164,7 @@
 
 .cse-stat strong {
   font-size: 23px;
-  color: #1768b0;
+  color: #800000;
 }
 
 .cse-stat span {
@@ -408,7 +405,7 @@
 .cse-hod-details h3 {
   margin: 8px 0;
 
-  color: #1768b0;
+  color: #800000;
 
   font-size: 25px;
 }
@@ -471,7 +468,7 @@
 
   line-height: 0.8;
 
-  color: #1768b0;
+  color: #800000;
 }
 
 .cse-message p {
@@ -495,7 +492,7 @@
 }
 
 .cse-message-signature strong {
-  color: #1768b0;
+  color: #800000;
 }
 
 .cse-message-signature span {
@@ -538,7 +535,7 @@
 }
 
 .cse-vm-card.mission {
-  background: #f8fbff;
+  background: #fdf8f8;
 
   border-color: #d5e2f0;
 }
@@ -561,7 +558,7 @@
 }
 
 .mission .cse-vm-icon {
-  color: #1768b0;
+  color: #800000;
 
   background: #e4f0ff;
 }
@@ -591,7 +588,7 @@
 }
 
 .cse-mission-list strong {
-  color: #1768b0;
+  color: #800000;
 }
 
 
@@ -733,7 +730,7 @@
 .faculty-details h3 {
   margin: 7px 0 7px;
 
-  color: #1768b0;
+  color: #800000;
 
   font-size: 17px;
 
@@ -841,9 +838,9 @@
 
   border-radius: 12px;
 
-  color: #1768b0;
+  color: #800000;
 
-  background: #eaf3ff;
+  background: #faecec;
 
   margin-bottom: 16px;
 }
@@ -885,11 +882,11 @@
   background:
     linear-gradient(
       135deg,
-      #f5f9ff,
+      #fdf5f5,
       #ffffff
     );
 
-  border: 1px solid #d8e4f0;
+  border: 1px solid #ebd0d2;
 }
 
 .program-main-icon {
@@ -907,7 +904,7 @@
 
   color: #fff;
 
-  background: #1768b0;
+  background: #800000;
 }
 
 .program-label {
@@ -923,7 +920,7 @@
 .cse-program-card h3 {
   margin: 7px 0 8px;
 
-  color: #1768b0;
+  color: #800000;
 
   font-size: 22px;
 }

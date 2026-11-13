@@ -16,20 +16,14 @@
 .contact-hero {
   position: relative;
   overflow: hidden;
-
-  min-height: 390px;
-
-  display: flex;
-  align-items: center;
-
-  background:
-    linear-gradient(
-      135deg,
-      #8f1717 0%,
-      #a91f1f 55%,
-      #c23a2b 100%
-    );
-
+  height: 340px !important;
+  min-height: 340px !important;
+  max-height: 340px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 !important;
+  background: var(--hero-maroon-gradient) !important;
+  border-bottom: 3.5px solid var(--gold-primary) !important;
   color: #ffffff;
 }
 

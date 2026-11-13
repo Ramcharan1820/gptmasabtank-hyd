@@ -7,280 +7,52 @@ import {
   Search,
   UserRound,
   Award,
-  BookOpen
+  BookOpen,
+  RefreshCw,
+  AlertCircle
 } from "lucide-react";
 import "./Faculty.css";
 
-// Institutional Leadership
-const PRINCIPAL_DATA = {
-  name: "Dr. K. Chandra Sekhar",
-  designation: "Principal / Head of Institution",
-  qualification: "Ph.D, M.Tech (Mechanical Engg)",
-  experience: "26+ Years",
-  email: "gpthyd01@telangana.gov.in",
-  phone: "040-23395914",
-  photo: "/principal.jpg",
-  message:
-    "Government Polytechnic Masab Tank has a storied legacy of technical excellence. Our goal is to mentor students through rigorous practical lab training, skill development, and industry alignment."
-};
-
-// Department Faculty Dataset
-const FACULTY_DATA = [
- 
-  // --- COMPUTER SCIENCE & ENGINEERING (CSE) ---
-  {
-    id: "CSE001",
-    name: "Sri N. Srinivasulu ",
-    designation: "Head of Section (HOD)",
-    department: "CSE",
-    qualification: "M.Tech (CSE)",
-    experience: "18 Years",
-    specialization: "AI, Full-Stack Web Technologies & Algorithms",
-    email: "hod.cse@gptmasb.dte.telangana.gov.in",
-    photo: "/csehod.png",
-  },
-  {
-    id: "CSE002",
-    name: "Sri MD.Riaz",
-    designation: "Senior Lecturer",
-    department: "CSE",
-    qualification: "b.tech (m tech)",
-    experience: "16 Years",
-    specialization: "Relational Databases, Cloud & Cyber Security",
-    email: "sunitha.p@gptmasb.dte.telangana.gov.in",
-    photo: "/riaz.png",
-  },
-  {
-    id: "CSE003",
-    name: "Sri Srinivas",
-    designation: "Senior Lecturer",
-    department: "CSE",
-    qualification: "B.Tech (.net ,ccp )",
-    experience: "16 Years",
-    specialization: "c++ programmer",
-    email: "ramesh.t@gptmasb.dte.telangana.gov.in",
-    photo: null,
-  },
-  {
-    id: "CSE004",
-    name: "Sri Ramanarshiah",
-    designation: "Lecturer",
-    department: "CSE",
-    qualification: "B.Tech ( software engineering )",
-    experience: "8 Years",
-    specialization: "software engineer",
-    email: "ramesh.t@gptmasb.dte.telangana.gov.in",
-    photo: null,
-  },
-  {
-    id: "CSE005",
-    name: "Sri shailaja",
-    designation: "Lecturer",
-    department: "CSE",
-    qualification: "B.Tech ( cyber security )",
-    experience: "8 Years",
-    specialization: "mobile application development",
-    email: "ramesh.t@gptmasb.dte.telangana.gov.in",
-    photo: null,
-  },
-  {
-    id: "CSE006",
-    name: "Sri N. mounika",
-    designation: "Lecturer",
-    department: "CSE",
-    qualification: "B.Tech (Computer Networks)",
-    experience: "8 Years",
-    specialization: "Operating System, cloud computing ",
-    email: "ramesh.t@gptmasb.dte.telangana.gov.in",
-    photo: "/mounikan.png",
-  },
-  {
-    id: "CSE007",
-    name: "Sri N. mounika",
-    designation: "Lecturer",
-    department: "CSE",
-    qualification: "B.Tech (python )",
-    experience: "8 Years",
-    specialization: "Python & operating system",
-    email: "ramesh.t@gptmasb.dte.telangana.gov.in",
-    photo: "/mounikab.png",
-  },
- // --- MECHANICAL ENGINEERING ---
-  {
-    id: "ME001",
-    name: "Dr. G. Venkat Rao",
-    designation: "Head of Section (HOD)",
-    department: "Mechanical",
-    qualification: "Ph.D, M.Tech",
-    experience: "21 Years",
-    specialization: "CAD/CAM, Thermal Systems & Robotics",
-    email: "hod.mech@gptmasb.dte.telangana.gov.in",
-    photo: null,
-  },
-  {
-    id: "ME002",
-    name: "Smt. K. Saritha",
-    designation: "Senior Lecturer",
-    department: "Mechanical",
-    qualification: "M.Tech (Production Engg)",
-    experience: "14 Years",
-    specialization: "Advanced Manufacturing & CNC Technology",
-    email: "saritha.k@gptmasb.dte.telangana.gov.in",
-    photo: null,
-  },
-  {
-    id: "ME003",
-    name: "Sri M. Anjaneyulu",
-    designation: "Lecturer",
-    department: "Mechanical",
-    qualification: "M.Tech (Design Engg)",
-    experience: "9 Years",
-    specialization: "Kinematics & Workshop Practice",
-    email: "anjaneyulu.m@gptmasb.dte.telangana.gov.in",
-    photo: null,
-  },
-
-  // --- CIVIL ENGINEERING ---
-  {
-    id: "CE001",
-    name: "Sri V. Ramesh",
-    designation: "Head of Section (HOD)",
-    department: "Civil",
-    qualification: "M.Tech (Structural Engg)",
-    experience: "19 Years",
-    specialization: "Structural Analysis & Total Station Surveying",
-    email: "hod.civil@gptmasb.dte.telangana.gov.in",
-    photo: null,
-  },
-  {
-    id: "CE002",
-    name: "Smt. D. Aruna",
-    designation: "Lecturer",
-    department: "Civil",
-    qualification: "M.Tech (Geotechnical Engg)",
-    experience: "10 Years",
-    specialization: "Soil Mechanics & Concrete Technology",
-    email: "aruna.d@gptmasb.dte.telangana.gov.in",
-    photo: null,
-  },
-
-  // --- ELECTRICAL & ELECTRONICS ENGINEERING (EEE) ---
-  {
-    id: "EEE001",
-    name: "Sri D. Suresh Babu",
-    designation: "Head of Section (HOD)",
-    department: "EEE",
-    qualification: "M.Tech (Power Systems)",
-    experience: "20 Years",
-    specialization: "Power Distribution & Electrical Machines",
-    email: "hod.eee@gptmasb.dte.telangana.gov.in",
-    photo: null,
-  },
-  {
-    id: "EEE002",
-    name: "Smt. Ch. Latha",
-    designation: "Lecturer",
-    department: "EEE",
-    qualification: "M.Tech (Power Electronics)",
-    experience: "12 Years",
-    specialization: "Control Systems & Renewable Energy",
-    email: "latha.ch@gptmasb.dte.telangana.gov.in",
-    photo: null,
-  },
-
-  // --- ELECTRONICS & COMMUNICATION ENGINEERING (ECE) ---
-  {
-    id: "ECE001",
-    name: "Dr. B. Radhika",
-    designation: "Head of Section (HOD)",
-    department: "ECE",
-    qualification: "Ph.D, M.Tech (VLSI & Embedded)",
-    experience: "17 Years",
-    specialization: "Microcontrollers, DSP & IoT Architectures",
-    email: "hod.ece@gptmasb.dte.telangana.gov.in",
-    photo: null,
-  },
-  {
-    id: "ECE002",
-    name: "Sri K. Naresh",
-    designation: "Lecturer",
-    department: "ECE",
-    qualification: "M.Tech (Embedded Systems)",
-    experience: "9 Years",
-    specialization: "Digital Electronics & Communication Circuits",
-    email: "naresh.k@gptmasb.dte.telangana.gov.in",
-    photo: null,
-  },
-
-  // --- AUTOMOBILE ENGINEERING ---
-  {
-    id: "AUTO001",
-    name: "Sri K. Praveen Kumar",
-    designation: "Head of Section (HOD)",
-    department: "Automobile",
-    qualification: "M.Tech (Automotive Engg)",
-    experience: "15 Years",
-    specialization: "IC Engines, Chassis Design & EV Systems",
-    email: "hod.auto@gptmasb.dte.telangana.gov.in",
-    photo: null,
-  },
-
-  // --- GENERAL / APPLIED SCIENCE ---
-  {
-    id: "GEN001",
-    name: "Dr. A. Srinivas",
-    designation: "Head of General Section",
-    department: "General",
-    qualification: "Ph.D (Applied Mathematics)",
-    experience: "22 Years",
-    specialization: "Engineering Mathematics & Statistics",
-    email: "gen.math@gptmasb.dte.telangana.gov.in",
-    photo: null,
-  }
-];
-
 export default function Faculty() {
-  const [managedFaculty, setManagedFaculty] = useState(null);
+  const [facultyList, setFacultyList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [selectedDepartment, setSelectedDepartment] = useState("All Departments");
   const [searchTerm, setSearchTerm] = useState("");
 
+  const fetchFaculty = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await fetch("http://localhost:5000/api/content/faculty");
+      const result = await response.json();
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || "Unable to load faculty records.");
+      }
+      setFacultyList(Array.isArray(result.data) ? result.data : []);
+    } catch (err) {
+      console.error("Faculty content API error:", err);
+      setError(err.message || "Failed to load faculty information.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    let active = true;
-
-    fetch("http://localhost:5000/api/content/faculty")
-      .then(async (response) => {
-        const result = await response.json();
-        if (!response.ok || !result.success) {
-          throw new Error(result.message || "Unable to load faculty.");
-        }
-        return result.data;
-      })
-      .then((records) => {
-        if (!active || !Array.isArray(records)) return;
-        setManagedFaculty(records);
-      })
-      .catch((error) => {
-        console.error("Faculty content API error:", error);
-      });
-
-    return () => {
-      active = false;
-    };
+    fetchFaculty();
   }, []);
 
-  const facultyMembers = managedFaculty === null
-    ? FACULTY_DATA
-    : managedFaculty.filter((member) => !member.is_leadership);
-  const principalRecord = managedFaculty?.find((member) => member.is_leadership);
-  const principal = managedFaculty === null
-    ? PRINCIPAL_DATA
-    : principalRecord
-      ? {
-          ...PRINCIPAL_DATA,
-          ...principalRecord,
-          photo: principalRecord.photo || PRINCIPAL_DATA.photo,
-        }
-      : null;
+  // Separate institutional leadership (e.g. Principal) if present in database
+  const principal = facultyList.find(
+    (member) =>
+      Boolean(member.is_leadership) ||
+      Number(member.is_leadership) === 1 ||
+      member.department === "Principal" ||
+      (typeof member.designation === "string" &&
+        member.designation.toLowerCase().includes("principal"))
+  );
+
+  const facultyMembers = facultyList.filter((member) => member !== principal);
 
   const departments = [
     "All Departments",
@@ -300,7 +72,7 @@ export default function Faculty() {
       (faculty.designation || "").toLowerCase().includes(searchValue) ||
       (faculty.specialization || "").toLowerCase().includes(searchValue) ||
       (faculty.qualification || "").toLowerCase().includes(searchValue) ||
-      String(faculty.id || "").toLowerCase().includes(searchValue);
+      String(faculty.faculty_code || faculty.id || "").toLowerCase().includes(searchValue);
 
     return matchesDepartment && matchesSearch;
   });
@@ -322,61 +94,71 @@ export default function Faculty() {
         </div>
       </section>
 
-      {/* PRINCIPAL SPOTLIGHT */}
+      {/* PRINCIPAL SPOTLIGHT (Rendered dynamically only when present in database) */}
       {principal && (
-      <section className="faculty-section" style={{ paddingBottom: "20px" }}>
-        <div className="faculty-container">
-          <div className="faculty-heading">
-            <div>
-              <span className="faculty-section-label">INSTITUTIONAL LEADERSHIP</span>
-              <h2>Office of the Principal</h2>
-            </div>
-          </div>
-
-          <div className="faculty-principal-spotlight">
-            <div className="principal-image-wrap">
-              <img
-                src={principal.photo}
-                alt={principal.name}
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = "/principal.jpg";
-                }}
-              />
-              <span className="principal-badge">
-                <Award size={14} /> Principal
-              </span>
+        <section className="faculty-section" style={{ paddingBottom: "20px" }}>
+          <div className="faculty-container">
+            <div className="faculty-heading">
+              <div>
+                <span className="faculty-section-label">INSTITUTIONAL LEADERSHIP</span>
+                <h2>Office of the Principal</h2>
+              </div>
             </div>
 
-            <div className="principal-details">
-              <h3>{principal.name}</h3>
-              <p className="principal-sub">{principal.designation}</p>
-
-              <div className="principal-meta">
-                <span>
-                  <GraduationCap size={16} /> {principal.qualification}
-                </span>
-                <span>
-                  <BriefcaseBusiness size={16} /> {principal.experience}
+            <div className="faculty-principal-spotlight">
+              <div className="principal-image-wrap">
+                <img
+                  src={principal.photo || "/principal.jpg"}
+                  alt={principal.name || "Principal"}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = "/principal.jpg";
+                  }}
+                />
+                <span className="principal-badge">
+                  <Award size={14} /> Principal
                 </span>
               </div>
 
-              <blockquote className="principal-quote">
-                "{principal.message}"
-              </blockquote>
+              <div className="principal-details">
+                <h3>{principal.name}</h3>
+                <p className="principal-sub">{principal.designation || "Head of Institution"}</p>
 
-              <div className="principal-contact">
-                <a href={`mailto:${principal.email}`}>
-                  <Mail size={15} /> {principal.email}
-                </a>
-                <span>
-                  <Phone size={15} /> {principal.phone}
-                </span>
+                <div className="principal-meta">
+                  {principal.qualification && (
+                    <span>
+                      <GraduationCap size={16} /> {principal.qualification}
+                    </span>
+                  )}
+                  {principal.experience && (
+                    <span>
+                      <BriefcaseBusiness size={16} /> {principal.experience}
+                    </span>
+                  )}
+                </div>
+
+                {principal.message && (
+                  <blockquote className="principal-quote">
+                    "{principal.message}"
+                  </blockquote>
+                )}
+
+                <div className="principal-contact">
+                  {principal.email && (
+                    <a href={`mailto:${principal.email}`}>
+                      <Mail size={15} /> {principal.email}
+                    </a>
+                  )}
+                  {principal.phone && (
+                    <span>
+                      <Phone size={15} /> {principal.phone}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
       )}
 
       {/* TEACHING FACULTY DIRECTORY */}
@@ -399,6 +181,23 @@ export default function Faculty() {
 
           {/* CONTROLS (FILTERS & SEARCH) */}
           <div className="faculty-controls">
+            <div className="faculty-department-dropdown-wrap">
+              <label htmlFor="faculty-dept-select">Department:</label>
+              <select
+                id="faculty-dept-select"
+                className="faculty-department-select"
+                value={selectedDepartment}
+                onChange={(e) => setSelectedDepartment(e.target.value)}
+                aria-label="Filter by department"
+              >
+                {departments.map((department) => (
+                  <option key={department} value={department}>
+                    {department}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <div className="department-filters">
               {departments.map((department) => (
                 <button
@@ -427,77 +226,146 @@ export default function Faculty() {
             </div>
           </div>
 
+          {/* LOADING STATE */}
+          {loading && (
+            <div className="faculty-loading-state">
+              <RefreshCw size={36} className="events-spinner" />
+              <p>Loading faculty records from database...</p>
+            </div>
+          )}
+
+          {/* ERROR STATE */}
+          {!loading && error && (
+            <div className="faculty-empty">
+              <AlertCircle size={44} style={{ color: "#9c1c20" }} />
+              <h3>Unable to Load Faculty</h3>
+              <p>{error}</p>
+              <button
+                type="button"
+                className="faculty-retry-btn"
+                onClick={fetchFaculty}
+              >
+                Retry
+              </button>
+            </div>
+          )}
+
+          {/* NO RECORDS FOUND */}
+          {!loading && !error && facultyList.length === 0 && (
+            <div className="faculty-empty">
+              <UserRound size={52} />
+              <h3>No Faculty Records Found</h3>
+              <p>Faculty added through the Admin Dashboard will appear here automatically.</p>
+            </div>
+          )}
+
+          {/* FILTERED EMPTY */}
+          {!loading && !error && facultyList.length > 0 && filteredFaculty.length === 0 && (
+            <div className="faculty-empty">
+              <UserRound size={48} />
+              <h3>No Faculty Members Match Your Criteria</h3>
+              <p>Try switching departments or clearing your search term.</p>
+              <button
+                type="button"
+                className="faculty-retry-btn"
+                onClick={() => {
+                  setSelectedDepartment("All Departments");
+                  setSearchTerm("");
+                }}
+              >
+                Reset Filters
+              </button>
+            </div>
+          )}
+
           {/* FACULTY CARDS GRID */}
-          {filteredFaculty.length > 0 ? (
+          {!loading && !error && filteredFaculty.length > 0 && (
             <div className="faculty-grid">
               {filteredFaculty.map((faculty) => (
-                <article className="faculty-card" key={faculty.id}>
+                <article className="faculty-card" key={faculty.id || faculty.faculty_code || faculty.name}>
                   {/* PHOTO */}
                   <div className="faculty-photo">
                     {faculty.photo ? (
-                      <img src={faculty.photo} alt={faculty.name} />
-                    ) : (
-                      <div className="faculty-photo-placeholder">
-                        <UserRound size={56} />
-                        <span>{faculty.name}</span>
+                      <img
+                        src={faculty.photo}
+                        alt={faculty.name}
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                          if (e.currentTarget.nextSibling) {
+                            e.currentTarget.nextSibling.style.display = "flex";
+                          }
+                        }}
+                      />
+                    ) : null}
+                    <div
+                      className="faculty-photo-placeholder"
+                      style={{ display: faculty.photo ? "none" : "flex" }}
+                    >
+                      <UserRound size={56} />
+                      <span>{faculty.name}</span>
+                    </div>
+                    {faculty.department && (
+                      <div className="faculty-department-badge">
+                        {faculty.department}
                       </div>
                     )}
-                    <div className="faculty-department-badge">
-                      {faculty.department}
-                    </div>
                   </div>
 
                   {/* DETAILS */}
                   <div className="faculty-card-body">
-                    <span className="faculty-id">FACULTY ID: {faculty.faculty_code || faculty.id}</span>
+                    {(faculty.faculty_code || faculty.id) && (
+                      <span className="faculty-id">FACULTY ID: {faculty.faculty_code || faculty.id}</span>
+                    )}
                     <h3>{faculty.name}</h3>
                     <p className="faculty-designation">{faculty.designation}</p>
 
                     <div className="faculty-info">
-                      <div className="faculty-info-row">
-                        <GraduationCap size={16} />
-                        <div>
-                          <small>Qualification</small>
-                          <strong>{faculty.qualification}</strong>
+                      {faculty.qualification && (
+                        <div className="faculty-info-row">
+                          <GraduationCap size={16} />
+                          <div>
+                            <small>Qualification</small>
+                            <strong>{faculty.qualification}</strong>
+                          </div>
                         </div>
-                      </div>
+                      )}
 
-                      <div className="faculty-info-row">
-                        <BriefcaseBusiness size={16} />
-                        <div>
-                          <small>Experience</small>
-                          <strong>{faculty.experience}</strong>
+                      {faculty.experience && (
+                        <div className="faculty-info-row">
+                          <BriefcaseBusiness size={16} />
+                          <div>
+                            <small>Experience</small>
+                            <strong>{faculty.experience}</strong>
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
 
-                    <div className="faculty-specialization">
-                      <span>Specialization</span>
-                      <p>{faculty.specialization}</p>
-                    </div>
+                    {faculty.specialization && (
+                      <div className="faculty-specialization">
+                        <span>Specialization</span>
+                        <p>{faculty.specialization}</p>
+                      </div>
+                    )}
 
-                    <a
-                      href={`mailto:${faculty.email}`}
-                      className="faculty-profile-button"
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: "6px",
-                        textDecoration: "none"
-                      }}
-                    >
-                      <Mail size={14} /> Contact Faculty
-                    </a>
+                    {faculty.email && (
+                      <a
+                        href={`mailto:${faculty.email}`}
+                        className="faculty-profile-button"
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "6px",
+                          textDecoration: "none"
+                        }}
+                      >
+                        <Mail size={14} /> Contact Faculty
+                      </a>
+                    )}
                   </div>
                 </article>
               ))}
-            </div>
-          ) : (
-            <div className="faculty-empty">
-              <UserRound size={48} />
-              <h3>No Faculty Members Found</h3>
-              <p>Try switching departments or clearing your search term.</p>
             </div>
           )}
         </div>

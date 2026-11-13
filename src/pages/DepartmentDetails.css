@@ -6,7 +6,7 @@
 .cse-department-page {
   width: 100%;
   background: #ffffff;
-  color: #252238;
+  color: #0f172a;
 }
 
 .cse-department-page .container {
@@ -28,14 +28,14 @@
   background:
     radial-gradient(
       circle at 85% 20%,
-      rgba(105, 82, 210, 0.18),
+      rgba(229, 190, 73, 0.16),
       transparent 32%
     ),
     linear-gradient(
       135deg,
-      #11103a 0%,
-      #29205f 55%,
-      #49359b 100%
+      #420204 0%,
+      #6c0b10 55%,
+      #881319 100%
     );
 
   color: #ffffff;
@@ -115,7 +115,7 @@
 
   margin-bottom: 13px;
 
-  color: #c9baff;
+  color: #f3cf73;
 
   font-size: 12px;
   font-weight: 800;
@@ -136,7 +136,7 @@
 .cse-hero h1 span {
   display: block;
 
-  color: #d5caff;
+  color: #f7e6e7;
 }
 
 .cse-hero-content > p {
@@ -214,7 +214,7 @@
 .cse-visual-circle svg {
   margin-bottom: 15px;
 
-  color: #d8ceff;
+  color: #f3cf73;
 }
 
 .cse-visual-circle strong {
@@ -258,7 +258,7 @@
 
   margin-bottom: 14px;
 
-  color: #654ac9;
+  color: #800000;
 
   font-size: 11px;
   font-weight: 800;
@@ -271,7 +271,7 @@
 
   max-width: 420px;
 
-  color: #242036;
+  color: #0f172a;
 
   font-size: clamp(32px, 4vw, 48px);
   line-height: 1.1;
@@ -286,7 +286,7 @@
 .cse-introduction p {
   margin: 0 0 18px;
 
-  color: #686375;
+  color: #475569;
 
   font-size: 16px;
   line-height: 1.8;
@@ -314,7 +314,7 @@
 
   margin-bottom: 10px;
 
-  color: #654ac9;
+  color: #800000;
 
   font-size: 11px;
   font-weight: 800;
@@ -325,7 +325,7 @@
 .cse-section-heading h2 {
   margin: 0;
 
-  color: #242036;
+  color: #0f172a;
 
   font-size: clamp(30px, 4vw, 46px);
   line-height: 1.1;
@@ -336,7 +336,7 @@
 .cse-section-heading p {
   margin: 16px auto 0;
 
-  color: #716d7c;
+  color: #64748b;
 
   font-size: 15px;
   line-height: 1.7;
@@ -350,7 +350,7 @@
 .cse-vision-section {
   padding: 90px 0;
 
-  background: #f7f5fc;
+  background: #fdf5f5;
 }
 
 .vision-mission-grid {
@@ -366,12 +366,12 @@
 
   padding: 34px;
 
-  border: 1px solid #e8e3f2;
+  border: 1px solid #f0cfd2;
   border-radius: 18px;
 
   background: #ffffff;
 
-  box-shadow: 0 10px 35px rgba(42, 30, 80, 0.05);
+  box-shadow: 0 10px 35px rgba(128, 0, 0, 0.05);
 }
 
 .vision-icon {
@@ -386,8 +386,8 @@
 
   border-radius: 13px;
 
-  background: #eee9ff;
-  color: #6047c6;
+  background: #faecec;
+  color: #800000;
 }
 
 .vision-card > span,
@@ -396,7 +396,7 @@
 
   margin-bottom: 10px;
 
-  color: #654ac9;
+  color: #800000;
 
   font-size: 11px;
   font-weight: 800;
@@ -409,7 +409,7 @@
 
   margin: 0 0 17px;
 
-  color: #28233b;
+  color: #0f172a;
 
   font-size: 26px;
   line-height: 1.25;
@@ -418,7 +418,7 @@
 .vision-card p {
   margin: 0;
 
-  color: #6e6979;
+  color: #64748b;
 
   font-size: 15px;
   line-height: 1.75;
@@ -442,7 +442,7 @@
 
   gap: 10px;
 
-  color: #625d6e;
+  color: #475569;
 
   font-size: 14px;
   line-height: 1.55;
@@ -453,7 +453,7 @@
 
   margin-top: 2px;
 
-  color: #6a4fd0;
+  color: #800000;
 }
 
 
@@ -473,12 +473,12 @@
 
   overflow: hidden;
 
-  border: 1px solid #e7e2f0;
+  border: 1px solid #f0cfd2;
   border-radius: 20px;
 
-  background: #faf9fd;
+  background: #fdf5f5;
 
-  box-shadow: 0 12px 40px rgba(42, 30, 80, 0.06);
+  box-shadow: 0 12px 40px rgba(128, 0, 0, 0.06);
 }
 
 .hod-photo-placeholder {
@@ -491,15 +491,15 @@
 
   gap: 10px;
 
-  background: #eeeaff;
-  color: #715bd0;
+  background: #faecec;
+  color: #800000;
 }
 
 .hod-photo-placeholder span {
   font-size: 12px;
   font-weight: 600;
 
-  color: #756d8d;
+  color: #64748b;
 }
 
 .hod-information {
@@ -511,7 +511,7 @@
 
   margin-bottom: 10px;
 
-  color: #654ac9;
+  color: #800000;
 
   font-size: 11px;
   font-weight: 800;
@@ -522,7 +522,7 @@
 .hod-information h3 {
   margin: 0;
 
-  color: #29243b;
+  color: #0f172a;
 
   font-size: 32px;
 }
@@ -530,7 +530,7 @@
 .hod-designation {
   margin: 7px 0 28px;
 
-  color: #716b7e;
+  color: #64748b;
 
   font-size: 15px;
 }
@@ -545,7 +545,7 @@
 .hod-details > div {
   padding: 18px;
 
-  border: 1px solid #e9e5f1;
+  border: 1px solid #f0cfd2;
   border-radius: 12px;
 
   background: #ffffff;
@@ -556,13 +556,13 @@
 
   margin-bottom: 6px;
 
-  color: #3b354b;
+  color: #334155;
 
   font-size: 12px;
 }
 
 .hod-details span {
-  color: #777181;
+  color: #64748b;
 
   font-size: 13px;
   line-height: 1.5;
@@ -576,7 +576,7 @@
 .cse-faculty-section {
   padding: 90px 0;
 
-  background: #f7f5fc;
+  background: #fdf5f5;
 }
 
 .faculty-placeholder-grid {
@@ -589,7 +589,7 @@
 .faculty-placeholder-card {
   padding: 27px;
 
-  border: 1px solid #e6e1ef;
+  border: 1px solid #f0cfd2;
   border-radius: 17px;
 
   background: #ffffff;
@@ -604,7 +604,7 @@
 .faculty-placeholder-card:hover {
   transform: translateY(-5px);
 
-  box-shadow: 0 18px 40px rgba(42, 30, 80, 0.09);
+  box-shadow: 0 18px 40px rgba(128, 0, 0, 0.09);
 }
 
 .faculty-placeholder-photo {
@@ -619,20 +619,20 @@
 
   border-radius: 50%;
 
-  background: #eee9ff;
-  color: #6a50cb;
+  background: #faecec;
+  color: #800000;
 }
 
 .faculty-placeholder-card h3 {
   margin: 0 0 5px;
 
-  color: #2c273c;
+  color: #0f172a;
 
   font-size: 18px;
 }
 
 .faculty-placeholder-card > span {
-  color: #654ac9;
+  color: #800000;
 
   font-size: 12px;
   font-weight: 700;
@@ -643,7 +643,7 @@
 
   margin: 14px 0 18px;
 
-  color: #777181;
+  color: #64748b;
 
   font-size: 13px;
   line-height: 1.6;
@@ -654,11 +654,11 @@
 
   min-height: 40px;
 
-  border: 1px solid #ddd6f3;
+  border: 1px solid #f0cfd2;
   border-radius: 8px;
 
-  background: #f5f2ff;
-  color: #5f46c5;
+  background: #faecec;
+  color: #800000;
 
   font-family: inherit;
 
@@ -673,7 +673,7 @@
 }
 
 .faculty-placeholder-card button:hover {
-  background: #654ac9;
+  background: #800000;
   color: #ffffff;
 }
 
@@ -698,12 +698,12 @@
 .lab-card {
   padding: 27px;
 
-  border: 1px solid #e7e3ee;
+  border: 1px solid #f0cfd2;
   border-radius: 16px;
 
   background: #ffffff;
 
-  box-shadow: 0 7px 25px rgba(42, 30, 80, 0.04);
+  box-shadow: 0 7px 25px rgba(128, 0, 0, 0.04);
 
   transition:
     transform 0.25s ease,
@@ -714,9 +714,9 @@
 .lab-card:hover {
   transform: translateY(-5px);
 
-  border-color: #d8cff4;
+  border-color: #d8a4a6;
 
-  box-shadow: 0 16px 35px rgba(42, 30, 80, 0.08);
+  box-shadow: 0 16px 35px rgba(128, 0, 0, 0.08);
 }
 
 .lab-icon {
@@ -731,14 +731,14 @@
 
   border-radius: 12px;
 
-  background: #eee9ff;
-  color: #624ac7;
+  background: #faecec;
+  color: #800000;
 }
 
 .lab-card h3 {
   margin: 0 0 9px;
 
-  color: #2d283e;
+  color: #0f172a;
 
   font-size: 17px;
 }
@@ -746,7 +746,7 @@
 .lab-card p {
   margin: 0;
 
-  color: #767080;
+  color: #64748b;
 
   font-size: 13px;
   line-height: 1.65;

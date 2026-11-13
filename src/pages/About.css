@@ -19,55 +19,33 @@
 
 .gptm-page-header {
   position: relative;
-
-  min-height: 155px;
-
+  height: 340px !important;
+  min-height: 340px !important;
+  max-height: 340px !important;
   display: flex;
   align-items: center;
-
   overflow: hidden;
-
-  background:
-    linear-gradient(
-      100deg,
-      #082f63 0%,
-      #0b478d 55%,
-      #123f75 100%
-    );
+  background: var(--hero-maroon-gradient) !important;
+  border-bottom: 3.5px solid var(--gold-primary) !important;
 }
-
-
-/* subtle academic pattern */
 
 .gptm-page-header::after {
   content: "";
-
   position: absolute;
-
   width: 450px;
   height: 450px;
-
   right: -150px;
   top: -230px;
-
   border-radius: 50%;
-
   background: rgba(255, 255, 255, 0.05);
-
   pointer-events: none;
 }
-
 
 .gptm-header-overlay {
   position: absolute;
   inset: 0;
-
-  background:
-    linear-gradient(
-      90deg,
-      rgba(3, 28, 60, 0.45),
-      transparent
-    );
+  background: radial-gradient(circle at 85% 20%, rgba(229, 190, 73, 0.16), transparent 45%);
+  pointer-events: none;
 }
 
 
@@ -260,7 +238,7 @@
 
   border-radius: 50%;
 
-  color: #155db5;
+  color: #800000;
 
   background: #eaf3ff;
 }
@@ -415,7 +393,7 @@
 .gptm-image-label svg {
   flex-shrink: 0;
 
-  color: #acd3ff;
+  color: #f3cf73;
 }
 
 
@@ -435,7 +413,7 @@
 
   font-size: 11px;
 
-  color: #c7d9ed;
+  color: #f7e6e7;
 }
 
 
@@ -485,7 +463,7 @@
 .gptm-info-card:hover {
   transform: translateY(-3px);
 
-  border-color: #b8d0eb;
+  border-color: #d8a4a6;
 
   box-shadow:
     0 9px 24px rgba(18, 55, 96, 0.08);
@@ -497,7 +475,7 @@
 
   line-height: 1;
 
-  color: #0b438a;
+  color: #800000;
 }
 
 
@@ -540,7 +518,7 @@
 
   flex-shrink: 0;
 
-  background: #155db5;
+  background: #800000;
 
   border-radius: 1px;
 }
@@ -661,9 +639,9 @@
 .gptm-department-card:hover {
   transform: translateY(-2px);
 
-  background: #f8fbff;
+  background: #fdf8f8;
 
-  border-color: #7eaddb;
+  border-color: #9c1c20;
 
   box-shadow:
     0 6px 16px rgba(16, 55, 96, 0.08);
@@ -694,9 +672,9 @@
 
   justify-content: center;
 
-  color: #155db5;
+  color: #800000;
 
-  background: #edf5ff;
+  background: #faecec;
 
   border-radius: 8px;
 }
@@ -711,7 +689,7 @@
 
   font-weight: 600;
 
-  color: #24476f;
+  color: #620509;
 }
 
 
@@ -752,9 +730,9 @@
 
   font-weight: 800;
 
-  color: #155db5;
+  color: #800000;
 
-  background: #edf5ff;
+  background: #faecec;
 }
 
 

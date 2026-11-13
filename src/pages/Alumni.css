@@ -47,12 +47,15 @@
 .alumni-page-banner {
   position: relative;
   isolation: isolate;
-  display: flex;
-  align-items: center;
-  min-height: 340px;
-  padding: 70px 0;
+  display: flex !important;
+  align-items: center !important;
+  height: 340px !important;
+  min-height: 340px !important;
+  max-height: 340px !important;
+  padding: 0 !important;
   overflow: hidden;
-  background: linear-gradient(120deg, #09264d, #123f78 65%, #1c4c83);
+  background: var(--hero-maroon-gradient) !important;
+  border-bottom: 3.5px solid var(--gold-primary) !important;
   color: #ffffff;
 }
 
@@ -123,7 +126,7 @@
 .alumni-banner-description {
   max-width: 700px;
   margin: 20px 0 25px;
-  color: #dce8f7;
+  color: #f7e6e7;
   font-size: 16px;
   line-height: 1.9;
 }
@@ -133,7 +136,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 10px;
-  color: #dce8f7;
+  color: #f7e6e7;
   font-size: 13px;
 }
 
@@ -213,12 +216,12 @@
 
 .alumni-sidebar-link:hover {
   transform: translateX(3px);
-  color: #174d89;
-  background: #edf4fc;
+  color: #800000;
+  background: #faecec;
 }
 
 .alumni-sidebar-link:hover svg {
-  color: #174d89;
+  color: #800000;
 }
 
 /* SIDEBAR CALL TO ACTION */
@@ -226,7 +229,7 @@
 .alumni-sidebar-cta {
   margin-top: 25px;
   padding: 22px 18px;
-  background: linear-gradient(145deg, #0b2d5c, #174d89);
+  background: linear-gradient(145deg, #460204, #800000);
   border-radius: 10px;
   color: #ffffff;
 }
@@ -252,7 +255,7 @@
 
 .alumni-sidebar-cta p {
   margin: 0 0 18px;
-  color: #d6e3f3;
+  color: #f7e6e7;
   font-size: 13px;
   line-height: 1.8;
 }
@@ -278,7 +281,7 @@
 
 .alumni-sidebar-button:hover {
   transform: translateY(-2px);
-  background: #edf4fc;
+  background: #faecec;
 }
 
 /* =====================================================
@@ -370,7 +373,7 @@
   width: 45px;
   height: 45px;
   background: #e0ebf9;
-  color: #174d89;
+  color: #800000;
   border-radius: 9px;
 }
 
@@ -439,8 +442,8 @@
   align-items: start;
   gap: 23px;
   padding: 28px;
-  background: linear-gradient(135deg, #f1f6fd, #ffffff);
-  border: 1px solid #dce7f4;
+  background: linear-gradient(135deg, #fdf5f5, #ffffff);
+  border: 1px solid #ebd0d2;
   border-radius: 12px;
 }
 
@@ -451,7 +454,7 @@
   width: 75px;
   height: 75px;
   color: #ffffff;
-  background: linear-gradient(145deg, #0b2d5c, #2762a1);
+  background: linear-gradient(145deg, #460204, #9c1c20);
   border-radius: 15px;
 }
 
@@ -503,8 +506,8 @@
   min-height: 46px;
   padding: 12px 20px;
   color: #ffffff;
-  background: #174d89;
-  border: 1px solid #174d89;
+  background: #800000;
+  border: 1px solid #800000;
   border-radius: 7px;
   font-family: inherit;
   font-size: 13px;
@@ -566,7 +569,7 @@
   margin-bottom: 16px;
   background: #eaf1fb;
   border-radius: 10px;
-  color: #174d89;
+  color: #800000;
 }
 
 .alumni-page .alumni-information-card h3 {
@@ -618,7 +621,7 @@
   justify-content: center;
   width: 48px;
   height: 48px;
-  color: #174d89;
+  color: #800000;
   background: #edf3fb;
   border-radius: 10px;
 }
@@ -659,7 +662,7 @@
   justify-content: center;
   width: 53px;
   height: 53px;
-  color: #174d89;
+  color: #800000;
   background: #e6eef9;
   border-radius: 11px;
 }
@@ -720,7 +723,7 @@
   align-items: center;
   gap: 25px;
   padding: 32px;
-  background: linear-gradient(125deg, #0b2d5c, #174d89);
+  background: linear-gradient(125deg, #460204, #800000);
   border-radius: 14px;
   color: #ffffff;
 }
@@ -752,7 +755,7 @@
 
 .alumni-bottom-cta-text p {
   margin: 0;
-  color: #d6e3f3;
+  color: #f7e6e7;
   font-size: 13px;
   line-height: 1.8;
 }
@@ -778,7 +781,7 @@
 
 .alumni-bottom-cta-button:hover {
   transform: translateY(-2px);
-  background: #edf4fc;
+  background: #faecec;
 }
 
 /* =====================================================

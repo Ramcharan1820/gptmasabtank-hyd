@@ -1,5 +1,5 @@
 .pharm-page {
-  color: #29283a;
+  color: #0f172a;
   background: #fff;
 }
 
@@ -11,17 +11,23 @@
 /* HERO */
 
 .pharm-hero {
-  padding: 85px 0;
+  height: 340px !important;
+  min-height: 340px !important;
+  max-height: 340px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 !important;
   color: #fff;
-  background: linear-gradient(135deg, #064e3b, #059669);
+  background: var(--hero-maroon-gradient) !important;
+  border-bottom: 3.5px solid var(--gold-primary) !important;
 }
 
 .pharm-back {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  margin-bottom: 28px;
-  color: #a7f3d0;
+  margin-bottom: 12px;
+  color: #f6d778;
   font-size: 13px;
   text-decoration: none;
 }
@@ -32,8 +38,8 @@
 .pharm-details span,
 .pharm-cta span {
   display: block;
-  margin-bottom: 12px;
-  color: #059669;
+  margin-bottom: 8px;
+  color: #800000;
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 2px;
@@ -41,26 +47,26 @@
 
 .pharm-hero span,
 .pharm-cta span {
-  color: #a7f3d0;
+  color: #f6d778;
 }
 
 .pharm-hero h1 {
   max-width: 800px;
-  margin: 0;
-  font-size: clamp(40px, 6vw, 68px);
-  line-height: 1.05;
-  letter-spacing: -2px;
+  margin: 0 0 8px;
+  font-size: clamp(32px, 4.5vw, 48px);
+  line-height: 1.1;
+  letter-spacing: -1px;
 }
 
 .pharm-hero h1 strong {
   display: block;
-  color: #a7f3d0;
+  color: #f6d778;
 }
 
 .pharm-hero p {
   max-width: 680px;
   margin: 24px 0 0;
-  color: #d1fae5;
+  color: #faecec;
   font-size: 16px;
   line-height: 1.8;
 }
@@ -73,7 +79,7 @@
 }
 
 .pharm-light-section {
-  background: #ecfdf5;
+  background: #fdf5f5;
 }
 
 /* ABOUT */
@@ -120,13 +126,13 @@
 
 .pharm-two-column article {
   padding: 30px;
-  border: 1px solid #a7f3d0;
+  border: 1px solid #f3cf73;
   border-radius: 16px;
   background: #fff;
 }
 
 .pharm-two-column svg {
-  color: #059669;
+  color: #800000;
 }
 
 .pharm-two-column h3 {
@@ -155,7 +161,7 @@
 
 .pharm-card {
   padding: 27px;
-  border: 1px solid #d1fae5;
+  border: 1px solid #faecec;
   border-radius: 15px;
   background: #fff;
   transition: 0.25s ease;
@@ -175,8 +181,8 @@
   justify-content: center;
   margin-bottom: 18px;
   border-radius: 11px;
-  background: #ecfdf5;
-  color: #059669;
+  background: #fdf5f5;
+  color: #800000;
 }
 
 .pharm-card h3 {
@@ -201,7 +207,7 @@
 
 .pharm-labs div {
   padding: 20px;
-  border: 1px solid #a7f3d0;
+  border: 1px solid #f3cf73;
   border-radius: 12px;
   background: #fff;
   color: #555b60;
@@ -212,7 +218,7 @@
 
 .pharm-labs div:hover {
   transform: translateY(-3px);
-  color: #059669;
+  color: #800000;
 }
 
 /* DETAILS */
@@ -247,7 +253,7 @@
 .pharm-cta {
   padding: 65px 0;
   color: #fff;
-  background: linear-gradient(135deg, #064e3b, #059669);
+  background: linear-gradient(135deg, #620509, #800000);
 }
 
 .pharm-cta .container {
@@ -270,7 +276,7 @@
   padding: 14px 20px;
   border-radius: 9px;
   background: #fff;
-  color: #059669;
+  color: #800000;
   font-size: 13px;
   font-weight: 800;
   text-decoration: none;

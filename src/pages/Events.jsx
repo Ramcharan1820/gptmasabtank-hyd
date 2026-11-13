@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   CalendarDays,
   MapPin,
@@ -16,6 +16,21 @@ function Events() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const categories = useMemo(() => {
+    return [
+      "All",
+      ...new Set(events.map((e) => e.category).filter(Boolean)),
+    ];
+  }, [events]);
+
+  const filteredEvents = useMemo(() => {
+    if (selectedCategory === "All") return events;
+    return events.filter(
+      (e) => (e.category || "").toLowerCase() === selectedCategory.toLowerCase()
+    );
+  }, [events, selectedCategory]);
 
   useEffect(() => {
     fetchEvents();
@@ -149,6 +164,32 @@ function Events() {
 
         </div>
 
+        <div className="events-controls-bar">
+          <div className="events-category-dropdown-wrap">
+            <label htmlFor="events-category-select">Filter by Category:</label>
+            <select
+              id="events-category-select"
+              className="events-category-select"
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+            >
+              <option value="All">All Categories ({events.length})</option>
+              {categories
+                .filter((c) => c !== "All")
+                .map((cat) => {
+                  const count = events.filter(
+                    (e) => (e.category || "").toLowerCase() === cat.toLowerCase()
+                  ).length;
+                  return (
+                    <option key={cat} value={cat}>
+                      {cat} ({count})
+                    </option>
+                  );
+                })}
+            </select>
+          </div>
+        </div>
+
         {/* LOADING */}
 
         {loading && (
@@ -200,14 +241,34 @@ function Events() {
         {/* EVENTS GRID */}
 
         {!loading && !error && events.length > 0 && (
-
-          <div className="events-grid">
-
-            {events.map((event) => {
-
-              const upcoming = isUpcoming(event.event_date);
-
-              return (
+          <>
+            {filteredEvents.length === 0 ? (
+              <div className="events-message">
+                <CalendarDays size={45} />
+                <h3>No Events in "{selectedCategory}"</h3>
+                <p>Try selecting another category or "All Categories".</p>
+                <button
+                  onClick={() => setSelectedCategory("All")}
+                  style={{
+                    padding: "8px 16px",
+                    background: "var(--maroon-primary, #800000)",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "6px",
+                    cursor: "pointer",
+                    fontSize: "13px",
+                    fontWeight: "600",
+                    marginTop: "10px",
+                  }}
+                >
+                  View All Events
+                </button>
+              </div>
+            ) : (
+              <div className="events-grid">
+                {filteredEvents.map((event) => {
+                  const upcoming = isUpcoming(event.event_date);
+                  return (
 
                 <article
                   className="event-card"
@@ -298,7 +359,8 @@ function Events() {
             })}
 
           </div>
-
+            )}
+          </>
         )}
 
       </section>

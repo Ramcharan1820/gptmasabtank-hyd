@@ -1,6 +1,6 @@
 .placements-page {
   background: #fff;
-  color: #29283a;
+  color: var(--text-dark, #0f172a);
 }
 
 .placements-container {
@@ -13,17 +13,23 @@
 ========================= */
 
 .placements-hero {
-  padding: 90px 0;
+  height: 340px !important;
+  min-height: 340px !important;
+  max-height: 340px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 !important;
   color: #fff;
-  background: linear-gradient(135deg, #172554, #4338a8);
+  background: var(--hero-maroon-gradient) !important;
+  border-bottom: 3.5px solid var(--gold-primary) !important;
 }
 
 .placements-hero span,
 .placements-section-title span,
 .placements-cta span {
   display: block;
-  margin-bottom: 12px;
-  color: #8f9cff;
+  margin-bottom: 8px;
+  color: #800000;
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 2px;
@@ -31,26 +37,26 @@
 
 .placements-hero span,
 .placements-cta span {
-  color: #c7d2fe;
+  color: #f6d778;
 }
 
 .placements-hero h1 {
   max-width: 850px;
-  margin: 0;
-  font-size: clamp(42px, 6vw, 70px);
+  margin: 0 0 10px;
+  font-size: clamp(34px, 5vw, 54px);
   line-height: 1.05;
   letter-spacing: -2px;
 }
 
 .placements-hero h1 strong {
   display: block;
-  color: #c7d2fe;
+  color: #f3cf73;
 }
 
 .placements-hero p {
   max-width: 680px;
   margin: 25px 0 0;
-  color: #e0e7ff;
+  color: #f7e6e7;
   font-size: 16px;
   line-height: 1.8;
 }
@@ -67,7 +73,7 @@
 }
 
 .recruiters-section {
-  background: #f7f8ff;
+  background: var(--maroon-soft, #fdf5f5);
 }
 
 .students-section {
@@ -125,8 +131,8 @@
 
 .placement-features article:hover {
   transform: translateY(-5px);
-  border-color: #b8bff5;
-  box-shadow: 0 15px 35px rgba(67, 56, 168, .08);
+  border-color: #d8a4a6;
+  box-shadow: 0 15px 35px rgba(128, 0, 0, .08);
 }
 
 .placement-feature-icon {
@@ -137,8 +143,8 @@
   justify-content: center;
   margin-bottom: 20px;
   border-radius: 12px;
-  background: #eef0ff;
-  color: #4338a8;
+  background: #faecec;
+  color: #800000;
 }
 
 .placement-features h3 {
@@ -180,8 +186,8 @@
 
 .recruiter-card:hover {
   transform: translateY(-4px);
-  border-color: #aeb7f0;
-  box-shadow: 0 12px 30px rgba(67, 56, 168, .08);
+  border-color: #d8a4a6;
+  box-shadow: 0 12px 30px rgba(128, 0, 0, .08);
 }
 
 .recruiter-logo {
@@ -191,14 +197,14 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: #eef0ff;
-  color: #4338a8;
+  background: #faecec;
+  color: #800000;
   font-size: 20px;
   font-weight: 800;
 }
 
 .recruiter-card span {
-  color: #3d3b46;
+  color: #1e293b;
   font-size: 14px;
   font-weight: 700;
   text-align: center;
@@ -235,8 +241,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #eef0ff;
-  color: #6b63bd;
+  background: #faecec;
+  color: #9c1c20;
 }
 
 .student-photo img {
@@ -251,7 +257,7 @@
 }
 
 .student-label {
-  color: #4338a8;
+  color: #800000;
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 1.5px;
@@ -279,7 +285,7 @@
 }
 
 .student-company svg {
-  color: #4338a8;
+  color: #800000;
 }
 
 .student-package {
@@ -287,8 +293,8 @@
   margin-top: 15px;
   padding: 7px 10px;
   border-radius: 7px;
-  background: #eef0ff;
-  color: #4338a8;
+  background: #faecec;
+  color: #800000;
   font-size: 11px;
   font-weight: 800;
 }
@@ -301,7 +307,7 @@
 .placements-cta {
   padding: 65px 0;
   color: #fff;
-  background: linear-gradient(135deg, #172554, #4338a8);
+  background: linear-gradient(135deg, #460204, #800000);
 }
 
 .placements-cta .placements-container {
@@ -314,6 +320,7 @@
 .placements-cta h2 {
   max-width: 650px;
   margin: 0;
+  color: #ffffff;
   font-size: clamp(28px, 4vw, 42px);
   line-height: 1.15;
 }
@@ -326,7 +333,7 @@
   padding: 14px 20px;
   border-radius: 9px;
   background: #fff;
-  color: #4338a8;
+  color: #800000;
   font-size: 13px;
   font-weight: 800;
   text-decoration: none;
@@ -416,4 +423,54 @@
   .recruiter-card {
     min-height: 105px;
   }
+}
+
+/* PLACEMENT EMPTY & LOADING STATES */
+.placements-loading-state,
+.students-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 55px 20px;
+  text-align: center;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px dashed var(--maroon-border, #f0cfd2);
+  color: var(--maroon-primary, #800000);
+}
+
+.students-empty h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.students-empty p {
+  margin: 0;
+  max-width: 480px;
+  font-size: 14.5px;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.placements-retry-btn {
+  margin-top: 10px;
+  padding: 9px 20px;
+  border-radius: 8px;
+  border: none;
+  background: var(--hero-maroon-gradient, linear-gradient(135deg, #800000, #9c1c20));
+  color: #ffffff;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(128, 0, 0, 0.18);
+  transition: all 0.2s ease;
+}
+
+.placements-retry-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(128, 0, 0, 0.28);
 }

@@ -39,7 +39,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #174d89;
+  color: #800000;
   text-decoration: none;
   font-size: 14px;
   font-weight: 700;
@@ -108,7 +108,7 @@
   height: 42px;
   border-radius: 9px;
   background: #e3eef9;
-  color: #174d89;
+  color: #800000;
 }
 
 .authentication-status strong {
@@ -334,7 +334,7 @@
   width: 16px;
   height: 16px;
   margin: 3px 0 0;
-  accent-color: #174d89;
+  accent-color: #800000;
   cursor: pointer;
 }
 
@@ -372,7 +372,7 @@
   padding: 12px 22px;
   border: none;
   border-radius: 7px;
-  background: #174d89;
+  background: #800000;
   color: #ffffff;
   font-family: inherit;
   font-size: 13px;
@@ -456,7 +456,7 @@
   min-height: 44px;
   padding: 12px 20px;
   border-radius: 7px;
-  background: #174d89;
+  background: #800000;
   color: #ffffff;
   text-decoration: none;
   font-size: 13px;
