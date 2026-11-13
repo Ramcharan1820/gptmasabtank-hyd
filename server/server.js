@@ -197,38 +197,79 @@ function isValidDateOnly(value) {
   return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
 }
 
+const https = require("https");
+const http = require("http");
+
 function sbtetHeaders() {
   return {
     Accept: "application/json, text/plain, */*",
-    "User-Agent": "Mozilla/5.0",
+    "User-Agent":
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
     Referer: "https://www.sbtet.telangana.gov.in/",
+    Origin: "https://www.sbtet.telangana.gov.in",
   };
 }
 
-async function fetchSBTET(url, options = {}) {
-  const response = await fetch(url, {
-    ...options,
-    headers: {
-      ...sbtetHeaders(),
-      ...(options.headers || {}),
-    },
+function fetchSBTET(url, options = {}) {
+  return new Promise((resolve, reject) => {
+    try {
+      const parsedUrl = new URL(url);
+      const isHttps = parsedUrl.protocol === "https:";
+      const transport = isHttps ? https : http;
+
+      const reqOptions = {
+        protocol: parsedUrl.protocol,
+        hostname: parsedUrl.hostname,
+        port: parsedUrl.port || (isHttps ? 443 : 80),
+        path: `${parsedUrl.pathname}${parsedUrl.search}`,
+        method: options.method || "GET",
+        family: 4,
+        rejectUnauthorized: false,
+        timeout: 20000,
+        headers: {
+          ...sbtetHeaders(),
+          ...(options.headers || {}),
+        },
+      };
+
+      const req = transport.request(reqOptions, (res) => {
+        let rawData = "";
+        res.setEncoding("utf8");
+        res.on("data", (chunk) => {
+          rawData += chunk;
+        });
+        res.on("end", () => {
+          let data;
+          try {
+            data = JSON.parse(rawData);
+          } catch {
+            data = rawData;
+          }
+          resolve({
+            ok: res.statusCode >= 200 && res.statusCode < 300,
+            status: res.statusCode,
+            data,
+          });
+        });
+      });
+
+      req.on("error", (err) => {
+        reject(err);
+      });
+
+      req.on("timeout", () => {
+        req.destroy(new Error(`SBTET request timed out for ${url}`));
+      });
+
+      if (options.body) {
+        req.write(options.body);
+      }
+
+      req.end();
+    } catch (err) {
+      reject(err);
+    }
   });
-
-  const text = await response.text();
-
-  let data;
-
-  try {
-    data = JSON.parse(text);
-  } catch {
-    data = text;
-  }
-
-  return {
-    ok: response.ok,
-    status: response.status,
-    data,
-  };
 }
 
 // =========================================================
@@ -1751,7 +1792,10 @@ app.get("/api/attendance", async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message: "Failed to fetch attendance.",
+      message: error.message && error.message.includes("timed out")
+        ? "The SBTET server took too long to respond. Please try again."
+        : "Failed to fetch attendance from SBTET.",
+      detail: error.message,
     });
   }
 });
