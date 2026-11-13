@@ -234,7 +234,7 @@ export default function Header({ showNavigation = true }) {
             <Link to="/contact" className={location.pathname === "/contact" ? "nav-link-active" : ""}>
               Contact
             </Link>
-            <Link to="/alumni" className={location.pathname === "/alumni" ? "nav-link-active" : ""}>
+            <Link to="/alumni" className={location.pathname.startsWith("/alumni") ? "nav-link-active" : ""}>
               Alumni
             </Link>
             <Link to="/student-portal" className="student-btn">
@@ -381,7 +381,7 @@ export default function Header({ showNavigation = true }) {
 
                 <Link
                   to="/alumni"
-                  className={`mobile-drawer-link ${location.pathname === "/alumni" ? "active" : ""}`}
+                  className={`mobile-drawer-link ${location.pathname.startsWith("/alumni") ? "active" : ""}`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Alumni
