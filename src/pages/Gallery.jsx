@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 
 import "./Gallery.css";
+import API_BASE_URL from "../apiConfig";
 
 function Gallery() {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -22,7 +23,7 @@ function Gallery() {
       setLoading(true);
       setError(null);
 
-      const response = await fetch("http://localhost:5000/api/content/gallery");
+      const response = await fetch(`${API_BASE_URL}/api/content/gallery`);
       const result = await response.json();
 
       if (!response.ok || !result.success) {

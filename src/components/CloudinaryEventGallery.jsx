@@ -4,9 +4,10 @@ import { Cloudinary } from "@cloudinary/url-gen";
 import { fill } from "@cloudinary/url-gen/actions/resize";
 import { Download, Heart, Image as ImageIcon, LoaderCircle, Search } from "lucide-react";
 import { Masonry } from "masonic";
+import API_BASE_URL from "../apiConfig";
 import "./CloudinaryEventGallery.css";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL?.replace(/\/+$/, "") || "";
+const API_BASE = API_BASE_URL;
 const EMPTY_FAVORITES = new Set();
 
 function getFavoritesKey(eventId) {

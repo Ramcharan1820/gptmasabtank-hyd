@@ -9,8 +9,9 @@ import {
 } from "lucide-react";
 
 import "./Events.css";
+import API_BASE_URL from "../apiConfig";
 
-const API_URL = "http://localhost:5000/api/events";
+const API_URL = `${API_BASE_URL}/api/events`;
 
 function Events() {
   const [events, setEvents] = useState([]);
@@ -287,7 +288,7 @@ function Events() {
                             ? event.image
                             : event.image.startsWith("/")
                               ? event.image
-                              : `http://localhost:5000/${event.image.replace(/^\/+/, "")}`
+                              : `${API_BASE_URL}/${event.image.replace(/^\/+/, "")}`
                         }
                         alt={event.title}
                         onError={(e) => {

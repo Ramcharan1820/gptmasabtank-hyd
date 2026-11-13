@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import "./Departments.css";
+import API_BASE_URL from "../apiConfig";
 
 const departments = [
   {
@@ -71,7 +72,7 @@ function Departments() {
   useEffect(() => {
     let active = true;
 
-    fetch("http://localhost:5000/api/departments")
+    fetch(`${API_BASE_URL}/api/departments`)
       .then(async (response) => {
         const result = await response.json();
         if (!response.ok || !result.success) {

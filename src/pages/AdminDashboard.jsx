@@ -30,12 +30,10 @@ import {
 
 import { useNavigate } from "react-router-dom";
 import AdminImageField from "../components/AdminImageField";
+import API_BASE_URL from "../apiConfig";
 import "./AdminDashboard.css";
 
-const API_BASE = `${
-  import.meta.env.VITE_API_BASE_URL?.replace(/\/+$/, "") ||
-  "http://localhost:5000"
-}/api`;
+const API_BASE = `${API_BASE_URL}/api`;
 
 const initialNotice = {
   title: "",

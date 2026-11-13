@@ -9,8 +9,7 @@ import {
 } from "lucide-react";
 
 import "./AlumniRegistration.css";
-
-const API_BASE_URL = "http://localhost:5000";
+import API_BASE_URL from "../apiConfig";
 
 const departments = [
   "Computer Science & Engineering",
@@ -175,7 +174,7 @@ function AlumniRegistration() {
 
       if (error instanceof TypeError) {
         setRegistrationError(
-          "Cannot connect to the college server. Please make sure the backend is running at http://localhost:5000."
+          "Cannot connect to the college server. Please try again later."
         );
       } else {
         setRegistrationError(

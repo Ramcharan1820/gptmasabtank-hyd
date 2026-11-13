@@ -13,10 +13,9 @@ import {
 } from "lucide-react";
 
 import "./AdminLogin.css";
+import API_BASE_URL from "../apiConfig";
 
-const API_URL =
-  import.meta.env.VITE_API_BASE_URL?.replace(/\/+$/, "") ||
-  "http://localhost:5000";
+const API_URL = API_BASE_URL;
 
 function AdminLogin() {
   const navigate = useNavigate();

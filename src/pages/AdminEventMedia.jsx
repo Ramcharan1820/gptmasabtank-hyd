@@ -15,9 +15,10 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import CloudinaryEventGallery from "../components/CloudinaryEventGallery";
 import useBulkCloudinaryUpload from "../hooks/useBulkCloudinaryUpload";
+import API_BASE_URL from "../apiConfig";
 import "./AdminEventMedia.css";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL?.replace(/\/+$/, "") || "";
+const API_BASE = API_BASE_URL;
 const DEPARTMENTS = [
   ["college-wide", "College-wide"],
   ["automobile", "Automobile Engineering"],

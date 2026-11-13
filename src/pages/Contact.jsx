@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 
 import "./Contact.css";
+import API_BASE_URL from "../apiConfig";
 
 export default function Contact() {
   const [details, setDetails] = useState(null);
@@ -20,7 +21,7 @@ export default function Contact() {
   useEffect(() => {
     let active = true;
 
-    fetch("http://localhost:5000/api/content/contact")
+    fetch(`${API_BASE_URL}/api/content/contact`)
       .then(async (response) => {
         const result = await response.json();
         if (!response.ok || !result.success) {

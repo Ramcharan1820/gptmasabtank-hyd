@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import API_BASE_URL from "../apiConfig";
 import "./Home.css";
 
 const heroSlides = [
@@ -84,7 +85,7 @@ export default function Home() {
     const fetchNotices = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/notices"
+          `${API_BASE_URL}/api/notices`
         );
 
         const data = await response.json();

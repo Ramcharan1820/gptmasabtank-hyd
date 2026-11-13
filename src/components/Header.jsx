@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import API_BASE_URL from "../apiConfig";
 import {
   Car,
   HardHat,
@@ -64,7 +65,7 @@ export default function Header({ showNavigation = true }) {
   useEffect(() => {
     let active = true;
 
-    fetch("http://localhost:5000/api/content/contact")
+    fetch(`${API_BASE_URL}/api/content/contact`)
       .then(async (response) => {
         const result = await response.json();
         if (!response.ok || !result.success) {

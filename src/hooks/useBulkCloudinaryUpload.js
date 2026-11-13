@@ -2,8 +2,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import imageCompression from "browser-image-compression";
 import { hashFile } from "../media/hashFile";
 import { uploadToCloudinary } from "../media/cloudinaryUpload";
+import API_BASE_URL from "../apiConfig";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL?.replace(/\/+$/, "") || "";
+const API_BASE = API_BASE_URL;
 const MAX_FILE_BYTES = 2 * 1024 * 1024 * 1024;
 const DEFAULT_THRESHOLD_BYTES = 20 * 1024 * 1024;
 const DEFAULT_CHUNK_BYTES = 8 * 1024 * 1024;

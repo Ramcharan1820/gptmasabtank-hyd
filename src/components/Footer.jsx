@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { MapPin, Phone, Mail, GraduationCap } from "lucide-react";
+import API_BASE_URL from "../apiConfig";
 import "./Footer.css";
 
 function Footer() {
@@ -9,7 +10,7 @@ function Footer() {
   useEffect(() => {
     let active = true;
 
-    fetch("http://localhost:5000/api/content/contact")
+    fetch(`${API_BASE_URL}/api/content/contact`)
       .then(async (response) => {
         const result = await response.json();
         if (!response.ok || !result.success) {

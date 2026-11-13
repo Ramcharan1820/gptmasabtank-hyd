@@ -12,6 +12,7 @@ import {
   AlertCircle
 } from "lucide-react";
 import "./Faculty.css";
+import API_BASE_URL from "../apiConfig";
 
 export default function Faculty() {
   const [facultyList, setFacultyList] = useState([]);
@@ -24,7 +25,7 @@ export default function Faculty() {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch("http://localhost:5000/api/content/faculty");
+      const response = await fetch(`${API_BASE_URL}/api/content/faculty`);
       const result = await response.json();
       if (!response.ok || !result.success) {
         throw new Error(result.message || "Unable to load faculty records.");

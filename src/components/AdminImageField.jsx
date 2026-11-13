@@ -2,10 +2,9 @@ import { useRef, useState } from "react";
 import imageCompression from "browser-image-compression";
 import { ImagePlus, LoaderCircle, Trash2, Upload, X } from "lucide-react";
 import "./AdminImageField.css";
+import API_BASE_URL from "../apiConfig";
 
-const API_BASE =
-  import.meta.env.VITE_API_BASE_URL?.replace(/\/+$/, "") ||
-  "http://localhost:5000";
+const API_BASE = API_BASE_URL;
 const MAX_FILE_BYTES = 15 * 1024 * 1024;
 const ACCEPTED_TYPES = new Set([
   "image/jpeg",

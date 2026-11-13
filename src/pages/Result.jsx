@@ -1,4 +1,5 @@
 import { useState } from "react";
+import API_BASE_URL from "../apiConfig";
 import "./Result.css";
 import MidResult from "./MidResult";
 import SemesterResult from "./SemesterResult";
@@ -91,7 +92,7 @@ function Result() {
       );
 
       const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/result?${params.toString()}`
+        `${API_BASE_URL}/api/result?${params.toString()}`
       );
 
       const data = await response.json();

@@ -6,10 +6,8 @@ import {
   ShieldCheck,
   GraduationCap,
 } from "lucide-react";
+import API_BASE_URL from "../apiConfig";
 import "./AlumniAuth.css";
-
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
 function AlumniAuth() {
   const navigate = useNavigate();

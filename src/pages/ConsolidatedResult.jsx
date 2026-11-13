@@ -8,6 +8,7 @@ import {
   Search,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import API_BASE_URL from "../apiConfig";
 import "./ConsolidatedResult.css";
 
 const SCHEMES = [
@@ -165,7 +166,7 @@ function ConsolidatedResult() {
 
     try {
       const params = new URLSearchParams({ pin: enteredPin, scheme });
-      const apiBase = import.meta.env.VITE_API_BASE_URL?.replace(/\/+$/, "") || "";
+      const apiBase = API_BASE_URL;
       const response = await fetch(
         `${apiBase}/api/consolidated-result?${params.toString()}`
       );
