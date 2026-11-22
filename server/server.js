@@ -44,6 +44,7 @@ const allowedOrigins = new Set([
   "http://localhost:3000",
   "http://127.0.0.1:5173",
   "https://gptmasabtank-hyd.vercel.app",
+  "https://gptmasabtank.in",
   ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL.replace(/\/+$/, "")] : []),
   ...(process.env.FRONTEND_ORIGINS || "")
     .split(",")
@@ -441,9 +442,8 @@ app.post("/api/admin/login", async (req, res) => {
       return res.status(403).json({
         success: false,
         status: "rejected",
-        message: `Your administrator registration was declined.${
-          admin.rejection_reason ? " Reason: " + admin.rejection_reason : ""
-        }`,
+        message: `Your administrator registration was declined.${admin.rejection_reason ? " Reason: " + admin.rejection_reason : ""
+          }`,
       });
     }
 
@@ -578,7 +578,7 @@ app.get("/api/admin/me", async (req, res) => {
       Number(rows[0].is_active) !== 1
     ) {
       if (req.session && typeof req.session.destroy === "function") {
-        req.session.destroy(() => {});
+        req.session.destroy(() => { });
       }
       return res.status(403).json({
         success: false,
@@ -1237,7 +1237,7 @@ app.post("/api/admin/logout", requireAdmin, (req, res) => {
     : rawAuth?.trim() || req.sessionID;
 
   if (token) {
-    sessionStore.destroy(token, () => {});
+    sessionStore.destroy(token, () => { });
   }
 
   const clearCookieOptions = {
@@ -3470,7 +3470,7 @@ app.get("/api/auth/google", (req, res) => {
       try {
         const parsed = new URL(returnTo);
         returnOrigin = parsed.origin;
-      } catch (_) {}
+      } catch (_) { }
     }
 
     const intent = (req.query.intent || "alumni").trim();
