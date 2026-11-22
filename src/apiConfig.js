@@ -1,5 +1,18 @@
-export const API_BASE_URL =
-  (import.meta.env.VITE_API_BASE_URL || "http://localhost:5000").replace(/\/+$/, "");
+const getEnvVar = (key, fallback = "") => {
+  try {
+    if (typeof import.meta !== "undefined" && import.meta.env && import.meta.env[key] !== undefined) {
+      return import.meta.env[key];
+    }
+  } catch {}
+  try {
+    if (typeof process !== "undefined" && process.env && process.env[key] !== undefined) {
+      return process.env[key];
+    }
+  } catch {}
+  return fallback;
+};
+
+export const API_BASE_URL = (getEnvVar("VITE_API_BASE_URL", "http://localhost:5000")).replace(/\/+$/, "");
 
 export const getApiUrl = (endpoint = "") => {
   const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
@@ -44,12 +57,13 @@ export async function safeFetchJson(endpoint, options = {}) {
 
   // Build candidate URLs in order of preference
   const candidateUrls = [];
-  const hasCustomBase = Boolean(import.meta.env.VITE_API_BASE_URL);
+  const customBase = getEnvVar("VITE_API_BASE_URL", "");
+  const isProd = getEnvVar("PROD", false) || getEnvVar("NODE_ENV", "") === "production";
 
-  if (hasCustomBase && API_BASE_URL) {
+  if (customBase && API_BASE_URL) {
     candidateUrls.push(`${API_BASE_URL}${cleanEndpoint}`);
     candidateUrls.push(cleanEndpoint);
-  } else if (!import.meta.env.PROD) {
+  } else if (!isProd) {
     // Local dev: express backend on port 5000 is primary
     if (API_BASE_URL) candidateUrls.push(`${API_BASE_URL}${cleanEndpoint}`);
     candidateUrls.push(cleanEndpoint);
@@ -68,7 +82,11 @@ export async function safeFetchJson(endpoint, options = {}) {
 
   for (const url of uniqueUrls) {
     try {
-      const response = await fetch(url, options);
+      const targetUrl =
+        url.startsWith("/") && typeof window === "undefined"
+          ? `${API_BASE_URL || "http://localhost:5000"}${url}`
+          : url;
+      const response = await fetch(targetUrl, options);
 
       const contentType = response.headers.get("content-type") || "";
       const text = await response.text();
