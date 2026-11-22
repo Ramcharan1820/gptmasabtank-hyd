@@ -1170,3 +1170,33 @@
     flex-basis: 65px;
   }
 }
+
+
+.eee-faculty-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: auto;
+}
+
+.eee-faculty-email-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  border: 1px solid #dce2e9;
+  color: #64748b;
+  background: #f8fafc;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.eee-faculty-email-btn:hover {
+  background: #fdf2f2;
+  color: #800000;
+  border-color: #fca5a5;
+  transform: translateY(-1px);
+}

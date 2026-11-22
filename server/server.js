@@ -2210,7 +2210,7 @@ app.delete("/api/notices/:id", requireAdmin, async (req, res) => {
 app.get("/api/departments", async (req, res) => {
   try {
     const [departments] = await db.query(
-      "SELECT * FROM departments ORDER BY id DESC"
+      "SELECT * FROM departments ORDER BY id ASC"
     );
 
     res.json({

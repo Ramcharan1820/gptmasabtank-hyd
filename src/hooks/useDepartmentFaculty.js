@@ -60,7 +60,7 @@ export default function useDepartmentFaculty(departmentCode, initialFallback = [
                 image: photoUrl,
                 photo: photoUrl,
                 email: f.email || "gpthyd01@gmail.com",
-                profile: f.profile || (f.email ? `mailto:${f.email}` : "#"),
+                profile: f.profile && !f.profile.startsWith("mailto:") ? f.profile : "",
                 employeeId: f.faculty_code || f.employeeId || "",
                 specialization: f.specialization || "",
               };

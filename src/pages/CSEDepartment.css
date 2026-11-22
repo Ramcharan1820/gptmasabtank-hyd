@@ -759,38 +759,54 @@
   font-size: 12px;
 }
 
-.faculty-profile-btn {
+.faculty-actions-row {
   margin-top: auto;
-
-  display: inline-flex;
-
+  display: flex;
   align-items: center;
+  gap: 8px;
+  width: 100%;
+}
 
+.faculty-profile-btn {
+  display: inline-flex;
+  align-items: center;
   gap: 7px;
-
   padding: 7px 12px;
-
   border: 1px solid #a7191d;
-
   border-radius: 5px;
-
   color: #a7191d;
-
   background: #fff;
-
   font-size: 12px;
-
   font-weight: 700;
-
   text-decoration: none;
-
+  cursor: pointer;
   transition: 0.2s ease;
 }
 
 .faculty-profile-btn:hover {
   color: #fff;
-
   background: #a7191d;
+}
+
+.faculty-email-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid #dce2e9;
+  color: #64748b;
+  background: #f8fafc;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.faculty-email-icon-btn:hover {
+  background: #fdf2f2;
+  color: #800000;
+  border-color: #fca5a5;
+  transform: translateY(-1px);
 }
 
 

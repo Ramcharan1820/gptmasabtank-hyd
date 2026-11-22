@@ -45,9 +45,9 @@ export default function Contact() {
 
   const address = details?.address || "Government Polytechnic College, Masab Tank, Hyderabad, Telangana, India.";
   const location = details?.location || "Masab Tank, Hyderabad, Telangana, India.";
-  const phone = details?.phone || "040-23395914, 9912342001";
+  const phone = details?.phone || "040-23393246, 9912342001";
   const email = details?.email || "gpthyd01@gmail.com";
-  const workingHours = details?.working_hours || "Monday to Saturday: 09:30 AM to 04:00 PM (Second Saturdays & Public Holidays Closed)";
+  const workingHours = details?.working_hours || "College: 09:00 AM to 04:00 PM (Mon – Sat, 2nd Saturday Closed)";
   const mapUrl = details?.map_url || "https://www.google.com/maps/search/?api=1&query=Government+Polytechnic+College+Masab+Tank+Hyderabad";
   const mapEmbedUrl = details?.map_embed_url || "https://www.google.com/maps?q=Government%20Polytechnic%20College%20Masab%20Tank%20Hyderabad&output=embed";
 
@@ -126,7 +126,7 @@ export default function Contact() {
               <h3>Phone</h3>
 
               <p>
-                <a href="tel:04023395914">040-23395914</a>
+                <a href="tel:04023393246">040-23393246</a>
                 {" • "}
                 <a href="tel:9912342001">+91 9912342001</a>
               </p>

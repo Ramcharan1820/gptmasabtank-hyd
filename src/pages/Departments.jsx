@@ -72,27 +72,33 @@ function Departments() {
   useEffect(() => {
     let active = true;
 
-    fetch(`${API_BASE_URL}/api/departments`)
-      .then(async (response) => {
-        const result = await response.json();
-        if (!response.ok || !result.success) {
-          throw new Error(result.message || "Unable to load departments.");
-        }
-        return result.departments;
-      })
-      .then((records) => {
-        if (active && Array.isArray(records)) {
-          setDepartmentRecords(
-            records.filter((department) => department.is_active !== false && Number(department.is_active) !== 0)
-          );
-        }
-      })
-      .catch((error) => {
-        console.error("Department content API error:", error);
-      });
+    function loadDepartments() {
+      fetch(`${API_BASE_URL}/api/departments`)
+        .then(async (response) => {
+          const result = await response.json();
+          if (!response.ok || !result.success) {
+            throw new Error(result.message || "Unable to load departments.");
+          }
+          return result.departments;
+        })
+        .then((records) => {
+          if (active && Array.isArray(records) && records.length > 0) {
+            setDepartmentRecords(
+              records.filter((department) => department.is_active !== false && Number(department.is_active) !== 0)
+            );
+          }
+        })
+        .catch((error) => {
+          console.error("Department content API error:", error);
+        });
+    }
+
+    loadDepartments();
+    window.addEventListener("departments-updated", loadDepartments);
 
     return () => {
       active = false;
+      window.removeEventListener("departments-updated", loadDepartments);
     };
   }, []);
 
@@ -130,7 +136,9 @@ function Departments() {
       title: department.department_name || department.title,
       text: department.description || department.text || "Explore the academic department, facilities and course information.",
       icon: iconByCode[normalizedCode] || Building2,
-      link: pathByCode[normalizedCode],
+      link:
+        pathByCode[normalizedCode] ||
+        `/departments/${encodeURIComponent(String(code).toLowerCase().trim())}`,
       image: department.image,
       hodName: department.hod_name,
       intake: department.intake,

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Info,
@@ -6,6 +6,7 @@ import {
   Users,
   UserRound,
   Eye,
+  Mail,
   Building2,
   Target,
   Lightbulb,
@@ -19,6 +20,7 @@ import {
 
 import "./CSEDepartment.css";
 import useDepartmentFaculty from "../hooks/useDepartmentFaculty";
+import FacultyProfileModal from "../components/FacultyProfileModal";
 
 /* =========================================================
    FACULTY DATA
@@ -26,13 +28,38 @@ import useDepartmentFaculty from "../hooks/useDepartmentFaculty";
 
 const initialFaculty = [
   {
-    name: "Ram",
+    name: "Sri N. Srinivasulu",
     designation: "Head of Section (HOD)",
+    qualification: "M.Tech (CSE)",
+    joined: "28 Years Experience",
+    experience: "28 years of teaching experience as Lecturer, Senior Lecturer and Head of Department in Government Polytechnic Colleges.",
+    image: "/csehod.png",
+    photo: "/csehod.png",
+    email: "hod.cse@gptmasb.dte.telangana.gov.in",
+    profile: "",
+    specialization: "AI, Full-Stack Web Technologies & Algorithms",
+    message: "The Department of Computer Science and Engineering is committed to providing students with quality technical education, practical exposure and opportunities for continuous learning.",
+  },
+  {
+    name: "Sri MD. Riaz",
+    designation: "Senior Lecturer",
+    qualification: "B.Tech, M.Tech",
+    joined: "16 Years Experience",
+    experience: "16 Years",
+    image: "/riaz.png",
+    photo: "/riaz.png",
+    email: "sunitha.p@gptmasb.dte.telangana.gov.in",
+    profile: "",
+    specialization: "Relational Databases, Cloud & Cyber Security",
+  },
+  {
+    name: "Ram",
+    designation: "Lecturer",
     qualification: "M.Tech in Computer Science & Engineering",
     joined: "18 Years Experience",
     image: "https://drive.google.com/uc?export=view&id=1aGCDbCch0O5w1bLwNmTw-Xl2LCtiTUFb",
     email: "tejayadavnani@gmail.com",
-    profile: "mailto:tejayadavnani@gmail.com",
+    profile: "",
   },
   {
     name: "N. MOUNIKA",
@@ -41,7 +68,7 @@ const initialFaculty = [
     joined: "7 August 2025",
     image: "https://drive.google.com/uc?export=view&id=1vTUCT3ZEXIKvLzZV92ZR8FMd66VV-oRX",
     email: "manaswimiryala@gmail.com",
-    profile: "mailto:manaswimiryala@gmail.com",
+    profile: "",
   },
   {
     name: "B. MOUNIKA",
@@ -50,7 +77,7 @@ const initialFaculty = [
     joined: "7 August 2025",
     image: "https://drive.google.com/uc?export=view&id=1DtsKV4uUlOKoRlCB-sNkVWRMSjRXtrKo",
     email: "mounika.maligireddy14@gmail.com",
-    profile: "mailto:mounika.maligireddy14@gmail.com",
+    profile: "",
   },
   {
     name: "S. SRINIVAS",
@@ -59,7 +86,7 @@ const initialFaculty = [
     joined: "16 Years Experience",
     image: "https://drive.google.com/uc?export=view&id=1PP44BawT2MaR1Fct1XtyE1m7mqewfcEl",
     email: "srinivas8126@gmail.com",
-    profile: "mailto:srinivas8126@gmail.com",
+    profile: "",
   },
   {
     name: "SAILAJA THUMMALA",
@@ -68,7 +95,7 @@ const initialFaculty = [
     joined: "13 Years Experience",
     image: "https://drive.google.com/uc?export=view&id=14QKK9jtV4YwHGIeja1I3LqNwRdJW06Df",
     email: "sailaja.thummala@gmail.com",
-    profile: "mailto:sailaja.thummala@gmail.com",
+    profile: "",
   },
   {
     name: "MD RIAZ",
@@ -136,6 +163,21 @@ function SectionTitle({ icon: Icon, children }) {
 
 export default function CSEDepartment() {
   const { faculty } = useDepartmentFaculty("CSE", initialFaculty);
+  const [selectedFaculty, setSelectedFaculty] = useState(null);
+
+  const isHod = (member) => {
+    if (!member || !member.designation) return false;
+    const desig = member.designation.toLowerCase();
+    return (
+      desig.includes("hod") ||
+      desig.includes("head of section") ||
+      desig.includes("head of department") ||
+      desig.includes("head of the department")
+    );
+  };
+
+  const activeHod = faculty.find(isHod) || initialFaculty[0];
+  const hodPhotoUrl = activeHod.photo || activeHod.image || "/csehod.png";
 
   return (
     <main className="cse-page">
@@ -351,16 +393,17 @@ export default function CSEDepartment() {
           <div className="cse-hod-photo">
 
             <img
-              src="/images/departments/cse/hod.jpg"
-              alt="Head of Department"
+              src={hodPhotoUrl}
+              alt={activeHod.name || "Head of Department"}
               onError={(e) => {
-
+                if (e.currentTarget.src !== window.location.origin + "/csehod.png") {
+                  e.currentTarget.src = "/csehod.png";
+                  return;
+                }
                 e.currentTarget.style.display = "none";
-
                 e.currentTarget.parentElement.classList.add(
                   "cse-image-placeholder"
                 );
-
               }}
             />
 
@@ -384,46 +427,41 @@ export default function CSEDepartment() {
             </span>
 
             <h3>
-              Sri. NANNAM SREENIVASULU, M.Tech
+              {activeHod.name}
             </h3>
 
             <p className="cse-hod-role">
-              Head of Department — Computer Science & Engineering
+              {activeHod.designation || "Head of Section (HOD)"} — Computer Science & Engineering
             </p>
 
             <div className="cse-hod-info">
 
-              <p>
-                <strong>
-                  Experience:
-                </strong>{" "}
-                28 years of teaching experience as Lecturer,
-                Senior Lecturer and Head of Department in Government
-                Polytechnic Colleges.
-              </p>
+              {activeHod.experience && (
+                <p>
+                  <strong>Experience:</strong> {activeHod.experience}
+                </p>
+              )}
 
-              <p>
-                <strong>
-                  Academic Qualifications:
-                </strong>
-              </p>
+              {activeHod.qualification && (
+                <p>
+                  <strong>Academic Qualifications:</strong> {activeHod.qualification}
+                </p>
+              )}
 
-              <ul>
+              {activeHod.specialization && (
+                <p>
+                  <strong>Areas of Specialization:</strong> {activeHod.specialization}
+                </p>
+              )}
 
-                <li>
-                  Bachelor of Technology in Computer Science
-                  Engineering — Sri Krishnadevaraya University, 1996
-                </li>
-
-                <li>
-                  Master of Technology (DSCE) — JNTUH, Hyderabad, 2011
-                </li>
-
-                <li>
-                  Master of Technology (CSE) — JNTUH, Hyderabad, 2014
-                </li>
-
-              </ul>
+              {activeHod.email && (
+                <p>
+                  <strong>Official Email:</strong>{" "}
+                  <a href={`mailto:${activeHod.email}`} style={{ color: "#a7191d", textDecoration: "none", fontWeight: "600" }}>
+                    {activeHod.email}
+                  </a>
+                </p>
+              )}
 
             </div>
 
@@ -453,27 +491,18 @@ export default function CSEDepartment() {
           <div>
 
             <p>
-              The Department of Computer Science and Engineering is
-              committed to providing students with quality technical
-              education, practical exposure and opportunities for
-              continuous learning.
-            </p>
-
-            <p>
-              The department encourages students to develop technical
-              competence, professional values, creativity and
-              problem-solving skills so that they can confidently meet
-              the requirements of higher education and industry.
+              {activeHod.message ||
+                "The Department of Computer Science and Engineering is committed to providing students with quality technical education, practical exposure and opportunities for continuous learning. The department encourages students to develop technical competence, professional values, creativity and problem-solving skills so that they can confidently meet the requirements of higher education and industry."}
             </p>
 
             <div className="cse-message-signature">
 
               <strong>
-                — Head of the Department
+                — {activeHod.name}
               </strong>
 
               <span>
-                Computer Science & Engineering
+                {activeHod.designation || "Head of Section"}, Computer Science & Engineering
               </span>
 
             </div>
@@ -660,18 +689,27 @@ export default function CSEDepartment() {
 
                 </div>
 
-                <a
-                  href={member.profile}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="faculty-profile-btn"
-                >
+                <div className="faculty-actions-row">
+                  <button
+                    type="button"
+                    className="faculty-profile-btn"
+                    onClick={() => setSelectedFaculty(member)}
+                  >
+                    <Eye size={15} />
+                    View Profile
+                  </button>
 
-                  <Eye size={16} />
-
-                  View Official Profile
-
-                </a>
+                  {member.email && (
+                    <a
+                      href={`mailto:${member.email}`}
+                      className="faculty-email-icon-btn"
+                      title={`Send email to ${member.name} (${member.email})`}
+                      aria-label={`Email ${member.name}`}
+                    >
+                      <Mail size={15} />
+                    </a>
+                  )}
+                </div>
 
               </div>
 
@@ -794,6 +832,13 @@ export default function CSEDepartment() {
         </div>
 
       </section>
+
+      {selectedFaculty && (
+        <FacultyProfileModal
+          faculty={selectedFaculty}
+          onClose={() => setSelectedFaculty(null)}
+        />
+      )}
 
     </main>
   );

@@ -1024,3 +1024,32 @@
     flex-direction: column;
   }
 }
+
+
+.mechanical-faculty-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.mechanical-profile-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: #ffffff;
+  border: 1px solid #800000;
+  color: #800000;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mechanical-profile-btn:hover {
+  background: #800000;
+  color: #ffffff;
+}

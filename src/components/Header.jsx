@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, Fragment } from "react";
 import { Link, useLocation } from "react-router-dom";
 import API_BASE_URL from "../apiConfig";
 import {
@@ -14,6 +14,11 @@ import {
   ChevronDown,
   GraduationCap,
   Lock,
+  Building2,
+  Sparkles,
+  FlaskConical,
+  Radio,
+  Layers,
 } from "lucide-react";
 import "./Header.css";
 
@@ -38,22 +43,103 @@ function InstagramIcon({ size = 17 }) {
   );
 }
 
-const departmentLinks = [
-  { name: "Computer Science & Engineering", path: "/departments/cse", icon: Laptop },
-  { name: "Electronics & Communication Engineering", path: "/departments/ece", icon: Cpu },
-  { name: "Electrical & Electronics Engineering", path: "/departments/eee", icon: Zap },
-  { name: "Mechanical Engineering", path: "/departments/mechanical", icon: Cog },
-  { name: "Civil Engineering", path: "/departments/civil", icon: HardHat },
-  { name: "Automobile Engineering", path: "/departments/automobile", icon: Car },
-  { name: "Pharmacy", path: "/departments/pharmacy", icon: Pill },
+const defaultDepartmentLinks = [
+  { code: "CSE", name: "Computer Science & Engineering", path: "/departments/cse", icon: Laptop },
+  { code: "ECE", name: "Electronics & Communication Engineering", path: "/departments/ece", icon: Cpu },
+  { code: "EEE", name: "Electrical & Electronics Engineering", path: "/departments/eee", icon: Zap },
+  { code: "ME", name: "Mechanical Engineering", path: "/departments/mechanical", icon: Cog },
+  { code: "CE", name: "Civil Engineering", path: "/departments/civil", icon: HardHat },
+  { code: "AE", name: "Automobile Engineering", path: "/departments/automobile", icon: Car },
+  { code: "PHARMACY", name: "Pharmacy", path: "/departments/pharmacy", icon: Pill },
 ];
+
+function resolveDepartmentIcon(code, name) {
+  const text = `${code || ""} ${name || ""}`.toLowerCase();
+  if (text.includes("comp") || text.includes("cse") || text.includes("software")) return Laptop;
+  if (text.includes("ai") || text.includes("data") || text.includes("intel") || text.includes("machine")) return Sparkles;
+  if (text.includes("comm") || text.includes("ece") || text.includes("electronic")) return Cpu;
+  if (text.includes("elect") || text.includes("eee") || text.includes("power")) return Zap;
+  if (text.includes("mech") || text.includes("robot") || text.includes("production")) return Cog;
+  if (text.includes("civil") || text.includes("const") || text.includes("struct")) return HardHat;
+  if (text.includes("auto") || text.includes("vehicle") || text.includes("motor")) return Car;
+  if (text.includes("pharm") || text.includes("drug") || text.includes("medic")) return Pill;
+  if (text.includes("chem") || text.includes("bio")) return FlaskConical;
+  if (text.includes("mine") || text.includes("metall")) return Layers;
+  return Building2;
+}
+
+function resolveDepartmentPath(code) {
+  const c = String(code || "").toUpperCase().trim();
+  const builtInMap = {
+    CSE: "/departments/cse",
+    ECE: "/departments/ece",
+    EEE: "/departments/eee",
+    ME: "/departments/mechanical",
+    MECH: "/departments/mechanical",
+    MECHANICAL: "/departments/mechanical",
+    CE: "/departments/civil",
+    CIVIL: "/departments/civil",
+    AE: "/departments/automobile",
+    AUTO: "/departments/automobile",
+    AUTOMOBILE: "/departments/automobile",
+    "D.PHARM": "/departments/pharmacy",
+    PHARMACY: "/departments/pharmacy",
+  };
+  return builtInMap[c] || `/departments/${encodeURIComponent(String(code).toLowerCase().trim())}`;
+}
 
 export default function Header({ showNavigation = true }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [departmentsOpen, setDepartmentsOpen] = useState(false);
   const [mobileDeptOpen, setMobileDeptOpen] = useState(false);
   const [contactDetails, setContactDetails] = useState(null);
+  const [departmentLinks, setDepartmentLinks] = useState(defaultDepartmentLinks);
   const location = useLocation();
+
+  const fetchDepartments = useCallback(async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/departments`);
+      if (!response.ok) return;
+      const result = await response.json();
+      if (result.success && Array.isArray(result.departments) && result.departments.length > 0) {
+        const activeDepts = result.departments.filter(
+          (d) => d.is_active !== false && Number(d.is_active) !== 0
+        );
+
+        if (activeDepts.length > 0) {
+          const mapped = activeDepts.map((d) => {
+            const code = d.department_code || d.code || "";
+            const name = d.department_name || d.name || code;
+            return {
+              code,
+              name,
+              path: resolveDepartmentPath(code),
+              icon: resolveDepartmentIcon(code, name),
+            };
+          });
+          setDepartmentLinks(mapped);
+        }
+      }
+    } catch (err) {
+      console.warn("Header dynamic departments fetch failed:", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchDepartments();
+
+    const handleDepartmentsUpdated = () => {
+      fetchDepartments();
+    };
+
+    window.addEventListener("departments-updated", handleDepartmentsUpdated);
+    window.addEventListener("storage", handleDepartmentsUpdated);
+
+    return () => {
+      window.removeEventListener("departments-updated", handleDepartmentsUpdated);
+      window.removeEventListener("storage", handleDepartmentsUpdated);
+    };
+  }, [fetchDepartments]);
 
   // Close mobile drawer on route change
   useEffect(() => {
@@ -169,13 +255,22 @@ export default function Header({ showNavigation = true }) {
 
           <div className="contact-item">
             <span className="contact-icon">☎</span>
-            <a href={`tel:${contactDetails?.phone || "9912342001"}`}>
-              {contactDetails?.phone || "9912342001"}
-            </a>
+            {(() => {
+              const rawPhone = contactDetails?.phone || "040-23393246, 9912342001";
+              const numbers = rawPhone.split(/[,/]+/).map((n) => n.trim()).filter(Boolean);
+              return numbers.map((num, i) => (
+                <React.Fragment key={num}>
+                  {i > 0 && <span className="contact-sep" style={{ margin: "0 3px", opacity: 0.7 }}>/</span>}
+                  <a href={`tel:${num.replace(/[^0-9+]/g, "")}`} title={`Call ${num}`}>
+                    {num}
+                  </a>
+                </React.Fragment>
+              ));
+            })()}
           </div>
 
-          <div className="working-hours">
-            {contactDetails?.working_hours || "All Working Days: 09:30 AM to 04:00 PM"}
+          <div className="working-hours" title="College Working Hours: 09:00 AM - 04:00 PM">
+            {contactDetails?.working_hours || "College: 09:00 AM – 04:00 PM (Mon – Sat)"}
           </div>
 
           <div className="social-links">
@@ -448,12 +543,21 @@ export default function Header({ showNavigation = true }) {
                 </div>
                 <div className="drawer-contact-row">
                   <span className="drawer-contact-icon">☎</span>
-                  <a href={`tel:${contactDetails?.phone || "9912342001"}`}>
-                    {contactDetails?.phone || "9912342001"}
-                  </a>
+                  {(() => {
+                    const rawPhone = contactDetails?.phone || "040-23393246, 9912342001";
+                    const numbers = rawPhone.split(/[,/]+/).map((n) => n.trim()).filter(Boolean);
+                    return numbers.map((num, i) => (
+                      <React.Fragment key={num}>
+                        {i > 0 && <span style={{ margin: "0 3px", opacity: 0.7 }}>/</span>}
+                        <a href={`tel:${num.replace(/[^0-9+]/g, "")}`}>
+                          {num}
+                        </a>
+                      </React.Fragment>
+                    ));
+                  })()}
                 </div>
                 <p className="drawer-timing">
-                  {contactDetails?.working_hours || "Working Days: 09:30 AM to 04:00 PM"}
+                  {contactDetails?.working_hours || "College: 09:00 AM – 04:00 PM (Mon – Sat)"}
                 </p>
               </div>
             </div>

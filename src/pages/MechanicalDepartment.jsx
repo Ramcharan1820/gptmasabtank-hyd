@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Info,
   UserRound,
@@ -21,6 +21,7 @@ import {
 
 import "./MechanicalDepartment.css";
 import useDepartmentFaculty from "../hooks/useDepartmentFaculty";
+import FacultyProfileModal from "../components/FacultyProfileModal";
 
 const initialMechanicalFaculty = [
   {
@@ -63,6 +64,29 @@ const initialMechanicalFaculty = [
 
 const MechanicalDepartment = () => {
   const { faculty: mechanicalFaculty } = useDepartmentFaculty("Mechanical", initialMechanicalFaculty);
+  const [selectedFaculty, setSelectedFaculty] = useState(null);
+
+  const isHod = (member) => {
+    if (!member || !member.designation) return false;
+    const desig = member.designation.toLowerCase();
+    return (
+      desig.includes("hod") ||
+      desig.includes("head of section") ||
+      desig.includes("head of department") ||
+      desig.includes("head of the department")
+    );
+  };
+
+  const defaultHod = {
+    name: "Smt. N. Rajitha Rani",
+    designation: "Head of the Department - Mechanical Engineering",
+    experience: "Appointed as Lecturer on 28th July 1999. Over 25 years of extensive teaching and technical leadership in Government Polytechnic institutions under the Department of Technical Education.",
+    qualification: "Bachelor of Technology (B.Tech) & M.Tech in Mechanical Engineering",
+    photo: "/images/departments/mechanical/hod.jpg",
+  };
+
+  const activeHod = mechanicalFaculty.find(isHod) || defaultHod;
+  const hodPhotoUrl = activeHod.photo || activeHod.image || "/images/departments/mechanical/hod.jpg";
 
   return (
     <div className="mechanical-page">
@@ -145,8 +169,8 @@ const MechanicalDepartment = () => {
               <div className="mechanical-hod-image">
 
                 <img
-                  src="/images/departments/mechanical/hod.jpg"
-                  alt="Smt. N. Rajitha Rani"
+                  src={hodPhotoUrl}
+                  alt={activeHod.name || "Head of Department"}
                   onError={(e) => {
                     e.currentTarget.style.display = "none";
                     e.currentTarget.nextElementSibling.style.display = "flex";
@@ -172,36 +196,40 @@ const MechanicalDepartment = () => {
             <div className="mechanical-hod-content">
 
               <h3>
-                Smt. N. Rajitha Rani
+                {activeHod.name}
               </h3>
 
               <p className="mechanical-hod-designation">
-                Head of the Department - Mechanical Engineering
+                {activeHod.designation || "Head of Department"} — Mechanical Engineering
               </p>
 
-              <p>
-                She was appointed as <strong>Lecturer in the
-                Department of Mechanical Engineering</strong> in the
-                <strong> Department of Technical Education</strong> on
-                <strong> 28th July 1999</strong>. Since her appointment,
-                she has been actively involved in teaching and academic
-                activities in the field of Mechanical Engineering.
-              </p>
+              <div className="mechanical-hod-info">
+                {activeHod.experience && (
+                  <p>
+                    <strong>Experience:</strong> {activeHod.experience}
+                  </p>
+                )}
 
-              <p>
-                Over the years, she has gained extensive teaching
-                experience in Government Polytechnic institutions
-                under the Department of Technical Education. She has
-                been dedicated to guiding students, strengthening
-                their technical knowledge, and contributing to
-                academic and institutional development.
-              </p>
+                {activeHod.qualification && (
+                  <p>
+                    <strong>Academic Qualifications:</strong> {activeHod.qualification}
+                  </p>
+                )}
 
-              <p>
-                At present, she is serving as the
-                <strong> Head of the Department (HOD) -
-                Mechanical Engineering.</strong>
-              </p>
+                {activeHod.specialization && (
+                  <p>
+                    <strong>Areas of Specialization:</strong> {activeHod.specialization}
+                  </p>
+                )}
+
+                {activeHod.message ? (
+                  <p>{activeHod.message}</p>
+                ) : (
+                  <p>
+                    Overseeing the Mechanical Engineering department with a focus on advanced manufacturing techniques, CAD/CAM design, thermodynamics, robotics, and industrial safety compliance.
+                  </p>
+                )}
+              </div>
 
 
               {/* QUALIFICATIONS */}
@@ -656,11 +684,21 @@ const MechanicalDepartment = () => {
                     </p>
                   )}
 
-                  {member.email && (
-                    <a href={`mailto:${member.email}`} className="mechanical-faculty-email">
-                      <Mail size={14} /> {member.email}
-                    </a>
-                  )}
+                  <div className="mechanical-faculty-actions">
+                    <button
+                      type="button"
+                      className="mechanical-profile-btn"
+                      onClick={() => setSelectedFaculty(member)}
+                    >
+                      <Eye size={14} /> View Profile
+                    </button>
+
+                    {member.email && (
+                      <a href={`mailto:${member.email}`} className="mechanical-faculty-email">
+                        <Mail size={14} /> {member.email}
+                      </a>
+                    )}
+                  </div>
                 </div>
               </article>
             ))}
@@ -679,6 +717,13 @@ const MechanicalDepartment = () => {
             Polytechnic College, Masab Tank
           </span>
         </div>
+
+        {selectedFaculty && (
+          <FacultyProfileModal
+            faculty={selectedFaculty}
+            onClose={() => setSelectedFaculty(null)}
+          />
+        )}
 
       </main>
 

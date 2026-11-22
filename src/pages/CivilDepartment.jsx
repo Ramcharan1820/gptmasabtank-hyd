@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Info,
@@ -18,6 +18,7 @@ import {
 
 import "./CivilDepartment.css";
 import useDepartmentFaculty from "../hooks/useDepartmentFaculty";
+import FacultyProfileModal from "../components/FacultyProfileModal";
 
 const initialFaculty = [
   {
@@ -54,6 +55,29 @@ const initialFaculty = [
 
 const CivilDepartment = () => {
   const { faculty } = useDepartmentFaculty("Civil", initialFaculty);
+  const [selectedFaculty, setSelectedFaculty] = useState(null);
+
+  const isHod = (member) => {
+    if (!member || !member.designation) return false;
+    const desig = member.designation.toLowerCase();
+    return (
+      desig.includes("hod") ||
+      desig.includes("head of section") ||
+      desig.includes("head of department") ||
+      desig.includes("head of the department")
+    );
+  };
+
+  const defaultHod = {
+    name: "Dr. C. V. V. PRASAD, Ph.D",
+    designation: "Head of the Department - Civil Engineering",
+    experience: "Serving in technical education since 10th March 1987 with over 37 years of dedicated teaching, research, and institutional guidance.",
+    qualification: "Doctor of Philosophy (Ph.D) in Civil Engineering, M.Tech",
+    photo: "/images/departments/civil/hod.jpg",
+  };
+
+  const activeHod = faculty.find(isHod) || defaultHod;
+  const hodPhotoUrl = activeHod.photo || activeHod.image || "/images/departments/civil/hod.jpg";
 
   return (
     <div className="civil-page">
@@ -149,8 +173,8 @@ const CivilDepartment = () => {
               <div className="civil-hod-image">
 
                 <img
-                  src="/images/departments/civil/hod.jpg"
-                  alt="Dr. C. V. V. Prasad"
+                  src={hodPhotoUrl}
+                  alt={activeHod.name || "Head of Department"}
                   onError={(e) => {
                     e.currentTarget.style.display = "none";
 
@@ -194,45 +218,40 @@ const CivilDepartment = () => {
             <div className="civil-hod-content">
 
               <h3>
-                Dr. C. V. V. PRASAD, Ph.D
+                {activeHod.name}
               </h3>
 
               <p className="civil-hod-designation">
-                Head of the Department - Civil Engineering
+                {activeHod.designation || "Head of Department"} — Civil Engineering
               </p>
 
+              <div className="civil-hod-info">
+                {activeHod.experience && (
+                  <p>
+                    <strong>Experience:</strong> {activeHod.experience}
+                  </p>
+                )}
 
-              <p>
-                He was appointed as{" "}
-                <strong>Lecturer</strong> in the{" "}
-                <strong>
-                  Department of Technical Education
-                </strong>{" "}
-                on <strong>10th March 1987</strong>. He has
-                been serving in the field of technical education
-                for several decades and has contributed
-                significantly to teaching and academic
-                development.
-              </p>
+                {activeHod.qualification && (
+                  <p>
+                    <strong>Academic Qualifications:</strong> {activeHod.qualification}
+                  </p>
+                )}
 
+                {activeHod.specialization && (
+                  <p>
+                    <strong>Areas of Specialization:</strong> {activeHod.specialization}
+                  </p>
+                )}
 
-              <p>
-                Over the years, he has worked in various
-                academic positions and has gained vast
-                experience in engineering education. He has
-                rich teaching experience and has served in
-                different capacities in Government Polytechnic
-                colleges under the Department of Technical
-                Education, Telangana.
-              </p>
-
-
-              <p>
-                Through his long academic career, he has been
-                actively involved in teaching, mentoring
-                students, and supporting institutional
-                development.
-              </p>
+                {activeHod.message ? (
+                  <p>{activeHod.message}</p>
+                ) : (
+                  <p>
+                    Providing visionary leadership to the Civil Engineering department with decades of experience in structural engineering, concrete technology, surveying, and infrastructure development.
+                  </p>
+                )}
+              </div>
 
 
               {/* EDUCATIONAL QUALIFICATIONS */}
@@ -729,12 +748,34 @@ const CivilDepartment = () => {
                 <div className="civil-faculty-content">
 
                   <span className="civil-faculty-number">
-                    FACULTY {String(index + 1).padStart(2, "0")}
+                    {member.designation || `FACULTY ${String(index + 1).padStart(2, "0")}`}
                   </span>
 
                   <h3>
                     {member.name}
                   </h3>
+
+                  <button
+                    type="button"
+                    className="civil-profile-btn"
+                    onClick={() => setSelectedFaculty(member)}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      marginTop: "10px",
+                      padding: "6px 12px",
+                      fontSize: "12px",
+                      fontWeight: "700",
+                      color: "#800000",
+                      background: "#fff",
+                      border: "1px solid #800000",
+                      borderRadius: "6px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <Eye size={14} /> View Profile
+                  </button>
 
                 </div>
 
@@ -879,6 +920,13 @@ const CivilDepartment = () => {
           </span>
 
         </div>
+
+        {selectedFaculty && (
+          <FacultyProfileModal
+            faculty={selectedFaculty}
+            onClose={() => setSelectedFaculty(null)}
+          />
+        )}
 
       </main>
 

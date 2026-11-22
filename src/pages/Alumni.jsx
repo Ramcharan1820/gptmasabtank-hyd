@@ -696,7 +696,7 @@ function Alumni() {
                       <Clock size={18} className="sec-icon" />
                       <div>
                         <strong>Office Timings:</strong>
-                        <p>Monday to Saturday: 09:30 AM to 04:30 PM (Except State Holidays)</p>
+                        <p>Monday to Saturday: 09:00 AM to 04:00 PM (Except State Holidays)</p>
                       </div>
                     </div>
                   </div>

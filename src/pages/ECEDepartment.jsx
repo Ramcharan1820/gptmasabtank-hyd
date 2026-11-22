@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Info,
@@ -6,6 +6,7 @@ import {
   Users,
   UserRound,
   Eye,
+  Mail,
   Building2,
   Target,
   Lightbulb,
@@ -21,6 +22,7 @@ import {
 
 import "./ECEDepartment.css";
 import useDepartmentFaculty from "../hooks/useDepartmentFaculty";
+import FacultyProfileModal from "../components/FacultyProfileModal";
 
 /* =========================================================
    ECE FACULTY
@@ -117,6 +119,29 @@ function SectionTitle({ icon: Icon, children }) {
 
 export default function ECEDepartment() {
   const { faculty } = useDepartmentFaculty("ECE", initialFaculty);
+  const [selectedFaculty, setSelectedFaculty] = useState(null);
+
+  const isHod = (member) => {
+    if (!member || !member.designation) return false;
+    const desig = member.designation.toLowerCase();
+    return (
+      desig.includes("hod") ||
+      desig.includes("head of section") ||
+      desig.includes("head of department") ||
+      desig.includes("head of the department")
+    );
+  };
+
+  const activeHod = faculty.find(isHod) || {
+    name: "Sri Boda Raja",
+    designation: "Head of Section (HOD)",
+    qualification: "M.Tech (ECE)",
+    experience: "28+ Years Experience in Government Technical Education",
+    image: "/images/faculty/faculty-placeholder.png",
+    photo: "/images/faculty/faculty-placeholder.png",
+    email: "hod.ece@gptmasb.dte.telangana.gov.in",
+    message: "Electronics and Communication Engineering drives modern computing, telecommunications, and smart systems. We mentor diploma engineers in hands-on circuit design, embedded programming, and signal processing.",
+  };
 
   return (
     <main className="ece-page">
@@ -344,8 +369,8 @@ export default function ECEDepartment() {
           <div className="ece-hod-photo">
 
             <img
-              src="/images/departments/ece/hod.jpg"
-              alt="Sri Boda Raja"
+              src={activeHod.photo || activeHod.image || "/images/faculty/faculty-placeholder.png"}
+              alt={activeHod.name || "Head of Department"}
               onError={(e) => {
 
                 e.currentTarget.style.display = "none";
@@ -379,54 +404,43 @@ export default function ECEDepartment() {
 
 
             <h3>
-              Sri Boda Raja
+              {activeHod.name}
             </h3>
 
 
             <p className="ece-hod-role">
-              Head of Department — Electronics & Communication Engineering
+              {activeHod.designation || "Head of Department"} — Electronics & Communication Engineering
             </p>
 
 
             <div className="ece-hod-info">
 
-              <p>
-                He was appointed as{" "}
-                <strong>
-                  Lecturer in the Department of Electronics and
-                  Communication Engineering (ECE)
-                </strong>{" "}
-                in the Department of Technical Education on{" "}
-                <strong>
-                  22nd March 1996
-                </strong>.
-              </p>
+              {activeHod.experience && (
+                <p>
+                  <strong>Experience:</strong> {activeHod.experience}
+                </p>
+              )}
 
+              {activeHod.qualification && (
+                <p>
+                  <strong>Qualifications:</strong> {activeHod.qualification}
+                </p>
+              )}
 
-              <p>
-                Since his appointment, he has been actively involved
-                in teaching and academic activities in the field of
-                Electronics and Communication Engineering.
-              </p>
+              {activeHod.specialization && (
+                <p>
+                  <strong>Specialization:</strong> {activeHod.specialization}
+                </p>
+              )}
 
-
-              <p>
-                Over the years, he has gained extensive teaching
-                experience in Government Polytechnic institutions
-                under the Department of Technical Education. He has
-                contributed to the academic development of students
-                by imparting technical knowledge and guiding them in
-                their studies.
-              </p>
-
-
-              <p>
-                At present, he is serving as the{" "}
-                <strong>
-                  Head of the Department (HOD) – Electronics and
-                  Communication Engineering (ECE).
-                </strong>
-              </p>
+              {activeHod.email && (
+                <p>
+                  <strong>Official Email:</strong>{" "}
+                  <a href={`mailto:${activeHod.email}`} style={{ color: "#a7191d", textDecoration: "none", fontWeight: "600" }}>
+                    {activeHod.email}
+                  </a>
+                </p>
+              )}
 
             </div>
 
@@ -774,24 +788,27 @@ export default function ECEDepartment() {
                 </div>
 
 
-                <button
-                  type="button"
-                  className="ece-profile-btn"
-                  onClick={() => {
-                    document
-                      .getElementById("ece-faculty-profile-note")
-                      ?.scrollIntoView({
-                        behavior: "smooth",
-                        block: "center",
-                      });
-                  }}
-                >
+                <div className="ece-faculty-actions">
+                  <button
+                    type="button"
+                    className="ece-profile-btn"
+                    onClick={() => setSelectedFaculty(member)}
+                  >
+                    <Eye size={15} />
+                    View Profile
+                  </button>
 
-                  <Eye size={16} />
-
-                  Faculty Profile
-
-                </button>
+                  {member.email && (
+                    <a
+                      href={`mailto:${member.email}`}
+                      className="ece-faculty-email-btn"
+                      title={`Send email to ${member.name} (${member.email})`}
+                      aria-label={`Email ${member.name}`}
+                    >
+                      <Mail size={15} />
+                    </a>
+                  )}
+                </div>
 
               </div>
 
@@ -917,6 +934,13 @@ export default function ECEDepartment() {
         </div>
 
       </section>
+
+      {selectedFaculty && (
+        <FacultyProfileModal
+          faculty={selectedFaculty}
+          onClose={() => setSelectedFaculty(null)}
+        />
+      )}
 
     </main>
   );

@@ -397,7 +397,7 @@ export default function Home() {
             <Clock size={18} className="timings-icon" />
             <div>
               <strong>College Working Hours:</strong>
-              <span> 09:30 AM to 04:30 PM (All Working Days)</span>
+              <span> 09:00 AM to 04:00 PM (Mon – Sat)</span>
             </div>
           </div>
 
@@ -407,9 +407,14 @@ export default function Home() {
               <span>gpthyd01@gmail.com</span>
             </a>
 
-            <a href="tel:04023395914" className="home-timings-link" title="Call GPT Masab Tank office">
+            <a href="tel:04023393246" className="home-timings-link" title="Call GPT Masab Tank Landline">
               <Phone size={16} />
-              <span>040-23395914</span>
+              <span>040-23393246</span>
+            </a>
+
+            <a href="tel:9912342001" className="home-timings-link" title="Call GPT Masab Tank Mobile">
+              <Phone size={16} />
+              <span>9912342001</span>
             </a>
           </div>
         </div>

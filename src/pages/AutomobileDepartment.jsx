@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Info,
@@ -22,6 +22,7 @@ import {
 
 import "./AutomobileDepartment.css";
 import useDepartmentFaculty from "../hooks/useDepartmentFaculty";
+import FacultyProfileModal from "../components/FacultyProfileModal";
 
 
 /* =========================================================
@@ -123,6 +124,29 @@ function SectionTitle({ icon: Icon, children }) {
 
 export default function AutomobileDepartment() {
   const { faculty } = useDepartmentFaculty("Automobile", initialFaculty);
+  const [selectedFaculty, setSelectedFaculty] = useState(null);
+
+  const isHod = (member) => {
+    if (!member || !member.designation) return false;
+    const desig = member.designation.toLowerCase();
+    return (
+      desig.includes("hod") ||
+      desig.includes("head of section") ||
+      desig.includes("head of department") ||
+      desig.includes("head of the department")
+    );
+  };
+
+  const defaultHod = {
+    name: "Sri K. Hari Krishna",
+    designation: "Head of Department (HOD)",
+    experience: "Appointed as Lecturer in the Department of Automobile Engineering on 13th March 1997. Over 28 years of dedicated teaching, student mentorship, and academic leadership in Government Polytechnic institutions.",
+    qualification: "B.Tech / M.Tech in Automobile / Mechanical Engineering",
+    photo: "/images/departments/automobile/hod.jpg",
+  };
+
+  const activeHod = faculty.find(isHod) || defaultHod;
+  const hodPhotoUrl = activeHod.photo || activeHod.image || "/images/departments/automobile/hod.jpg";
 
   return (
     <main className="auto-page">
@@ -343,32 +367,22 @@ export default function AutomobileDepartment() {
           <div className="auto-hod-photo">
 
             <img
-              src="/images/departments/automobile/hod.jpg"
-              alt="Sri K. Hari Krishna"
+              src={hodPhotoUrl}
+              alt={activeHod.name || "Head of Department"}
               onError={(e) => {
-
                 e.currentTarget.style.display = "none";
-
                 e.currentTarget.parentElement.classList.add(
                   "auto-image-placeholder"
                 );
-
               }}
             />
 
-
             <div className="auto-hod-placeholder">
-
               <UserRound size={48} />
-
-              <span>
-                HOD
-              </span>
-
+              <span>HOD</span>
             </div>
 
           </div>
-
 
           <div className="auto-hod-details">
 
@@ -376,60 +390,40 @@ export default function AutomobileDepartment() {
               HEAD OF DEPARTMENT
             </span>
 
-
             <h3>
-              Sri K. Hari Krishna
+              {activeHod.name}
             </h3>
 
-
             <p className="auto-hod-role">
-              Head of Department — Automobile Engineering
+              {activeHod.designation || "Head of Department"} — Automobile Engineering
             </p>
 
-
             <div className="auto-hod-info">
+              {activeHod.experience && (
+                <p>
+                  <strong>Experience:</strong> {activeHod.experience}
+                </p>
+              )}
 
-              <p>
-                He was appointed as{" "}
-                <strong>
-                  Lecturer in the Department of Automobile Engineering
-                </strong>{" "}
-                in the Department of Technical Education on{" "}
-                <strong>
-                  13th March 1997
-                </strong>.
-              </p>
+              {activeHod.qualification && (
+                <p>
+                  <strong>Academic Qualifications:</strong> {activeHod.qualification}
+                </p>
+              )}
 
+              {activeHod.specialization && (
+                <p>
+                  <strong>Areas of Specialization:</strong> {activeHod.specialization}
+                </p>
+              )}
 
-              <p>
-                Since his appointment, he has been actively involved
-                in teaching and academic activities in the field of
-                Automobile Engineering.
-              </p>
-
-
-              <p>
-                Over the years, he has gained extensive teaching
-                experience in Government Polytechnic institutions
-                under the Department of Technical Education. He has
-                played an important role in guiding students and
-                contributing to the development of technical education.
-              </p>
-
-
-              <p>
-                Through his dedication and service, he has supported
-                various academic and institutional activities.
-              </p>
-
-
-              <p>
-                At present, he is serving as the{" "}
-                <strong>
-                  Head of the Department (HOD) – Automobile Engineering.
-                </strong>
-              </p>
-
+              {activeHod.message ? (
+                <p>{activeHod.message}</p>
+              ) : (
+                <p>
+                  He has been actively involved in teaching, student mentorship, and leading laboratory advancements in automotive engineering, powertrain diagnostics, and modern vehicle technologies.
+                </p>
+              )}
             </div>
 
           </div>
@@ -743,21 +737,27 @@ export default function AutomobileDepartment() {
                 </div>
 
 
-                <button
-                  type="button"
-                  className="auto-profile-btn"
-                  onClick={() => {
-                    document
-                      .getElementById("auto-faculty-profile-note")
-                      ?.scrollIntoView({
-                        behavior: "smooth",
-                        block: "center",
-                      });
-                  }}
-                >
-                  <Eye size={16} />
-                  Faculty Profile
-                </button>
+                <div className="auto-faculty-actions">
+                  <button
+                    type="button"
+                    className="auto-profile-btn"
+                    onClick={() => setSelectedFaculty(member)}
+                  >
+                    <Eye size={15} />
+                    View Profile
+                  </button>
+
+                  {member.email && (
+                    <a
+                      href={`mailto:${member.email}`}
+                      className="auto-faculty-email-btn"
+                      title={`Send email to ${member.name} (${member.email})`}
+                      aria-label={`Email ${member.name}`}
+                    >
+                      <Mail size={15} />
+                    </a>
+                  )}
+                </div>
 
               </div>
 
@@ -902,8 +902,12 @@ export default function AutomobileDepartment() {
 
       </section>
 
-
-     
+      {selectedFaculty && (
+        <FacultyProfileModal
+          faculty={selectedFaculty}
+          onClose={() => setSelectedFaculty(null)}
+        />
+      )}
 
     </main>
   );

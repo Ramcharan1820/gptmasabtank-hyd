@@ -1,0 +1,365 @@
+.faculty-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: facultyFadeIn 0.22s ease-out;
+}
+
+@keyframes facultyFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.faculty-modal-dialog {
+  position: relative;
+  width: 100%;
+  max-width: 680px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  animation: facultySlideUp 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes facultySlideUp {
+  from {
+    transform: translateY(20px) scale(0.97);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.faculty-modal-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 10;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.faculty-modal-close:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+  transform: rotate(90deg);
+}
+
+.faculty-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 32px 32px 24px;
+  border-bottom: 1px solid #f1f5f9;
+  background: linear-gradient(180deg, #fdf6f6 0%, #ffffff 100%);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.faculty-modal-photo-wrap {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 3px solid #800000;
+  box-shadow: 0 8px 16px rgba(128, 0, 0, 0.15);
+  background: #fff;
+}
+
+.faculty-modal-photo {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.faculty-modal-photo-placeholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.faculty-modal-badge {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #800000;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 12px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 2px 6px rgba(128, 0, 0, 0.3);
+}
+
+.faculty-modal-primary-info {
+  flex: 1;
+}
+
+.faculty-modal-dept-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #800000;
+  background: #fbecec;
+  padding: 4px 10px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.faculty-modal-primary-info h2 {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 4px;
+  line-height: 1.25;
+}
+
+.faculty-modal-designation {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #475569;
+  margin: 0 0 8px;
+}
+
+.faculty-modal-empid {
+  font-size: 12px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.faculty-modal-empid strong {
+  color: #0f172a;
+  font-family: monospace;
+  background: #f1f5f9;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.faculty-modal-body {
+  padding: 24px 32px;
+}
+
+.faculty-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.faculty-modal-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.faculty-card-span-2 {
+  grid-column: span 2;
+}
+
+.faculty-card-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: #fdf2f2;
+  color: #800000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.faculty-modal-card h4 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+  color: #64748b;
+  margin: 0 0 4px;
+}
+
+.faculty-modal-card p {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.faculty-modal-message-box {
+  margin-top: 18px;
+  background: #fdf5f5;
+  border-left: 4px solid #800000;
+  border-radius: 8px;
+  padding: 14px 18px;
+}
+
+.faculty-message-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #800000;
+  margin-bottom: 6px;
+}
+
+.faculty-modal-message-box p {
+  margin: 0;
+  font-size: 13.5px;
+  font-style: italic;
+  color: #334155;
+  line-height: 1.6;
+}
+
+.faculty-modal-footer {
+  padding: 18px 32px 28px;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.faculty-modal-email-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  background: #800000;
+  color: #ffffff;
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(128, 0, 0, 0.25);
+}
+
+.faculty-modal-email-btn:hover {
+  background: #5e0508;
+  transform: translateY(-1px);
+}
+
+.faculty-modal-external-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  color: #1e293b;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid #cbd5e1;
+  transition: all 0.2s ease;
+}
+
+.faculty-modal-external-btn:hover {
+  background: #e2e8f0;
+}
+
+.faculty-modal-dismiss-btn {
+  padding: 10px 18px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.faculty-modal-dismiss-btn:hover {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+@media (max-width: 640px) {
+  .faculty-modal-header {
+    flex-direction: column;
+    text-align: center;
+    padding: 24px 20px 18px;
+  }
+
+  .faculty-modal-badge {
+    position: static;
+    transform: none;
+    margin-top: 6px;
+    display: inline-flex;
+  }
+
+  .faculty-modal-body {
+    padding: 18px 20px;
+  }
+
+  .faculty-modal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .faculty-card-span-2 {
+    grid-column: span 1;
+  }
+
+  .faculty-modal-footer {
+    padding: 16px 20px 24px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .faculty-modal-email-btn,
+  .faculty-modal-external-btn,
+  .faculty-modal-dismiss-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+

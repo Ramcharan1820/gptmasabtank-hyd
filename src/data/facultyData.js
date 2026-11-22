@@ -5,7 +5,7 @@ export const principalData = {
   qualification: "Ph.D, M.Tech",
   experience: "25+ Years",
   email: "gpthyd01@gmail.com",
-  phone: "040-23395914",
+  phone: "040-23393246, 9912342001",
   image: "/principal.jpg",
   message: "Empowering young technicians and engineers with practical skill sets, ethics, and industry-oriented technical education since 1923."
 };

@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Info,
   CalendarDays,
   Users,
   UserRound,
   Eye,
+  Mail,
   Target,
   Lightbulb,
   FlaskConical,
@@ -18,6 +19,7 @@ import {
 
 import "./EEEDepartment.css";
 import useDepartmentFaculty from "../hooks/useDepartmentFaculty";
+import FacultyProfileModal from "../components/FacultyProfileModal";
 
 
 /* =========================================================
@@ -96,6 +98,29 @@ function SectionTitle({ icon: Icon, children }) {
 
 export default function EEEDepartment() {
   const { faculty } = useDepartmentFaculty("EEE", initialFaculty);
+  const [selectedFaculty, setSelectedFaculty] = useState(null);
+
+  const isHod = (member) => {
+    if (!member || !member.designation) return false;
+    const desig = member.designation.toLowerCase();
+    return (
+      desig.includes("hod") ||
+      desig.includes("head of section") ||
+      desig.includes("head of department") ||
+      desig.includes("head of the department")
+    );
+  };
+
+  const defaultHod = {
+    name: "Sri N. Srinivasa Rao",
+    designation: "Head of Department (HOD)",
+    experience: "Appointed as Lecturer in the Department of Electrical and Electronics Engineering on 12th July 1995. Over 29 years of distinguished teaching experience in Government Polytechnic institutions under the Department of Technical Education.",
+    qualification: "B.Tech / M.Tech in Electrical & Electronics Engineering",
+    photo: "/images/departments/eee/hod.jpg",
+  };
+
+  const activeHod = faculty.find(isHod) || defaultHod;
+  const hodPhotoUrl = activeHod.photo || activeHod.image || "/images/departments/eee/hod.jpg";
 
   return (
     <main className="eee-page">
@@ -297,8 +322,8 @@ export default function EEEDepartment() {
           <div className="eee-hod-photo">
 
             <img
-              src="/images/departments/eee/hod.jpg"
-              alt="Sri N. Srinivasa Rao"
+              src={hodPhotoUrl}
+              alt={activeHod.name || "Head of Department"}
               onError={(e) => {
                 e.currentTarget.style.display = "none";
 
@@ -327,56 +352,41 @@ export default function EEEDepartment() {
 
 
             <h3>
-              Sri N. Srinivasa Rao
+              {activeHod.name}
             </h3>
 
 
             <p className="eee-hod-role">
-              Head of Department — Electrical & Electronics Engineering
+              {activeHod.designation || "Head of Department"} — Electrical & Electronics Engineering
             </p>
 
 
             <div className="eee-hod-info">
+              {activeHod.experience && (
+                <p>
+                  <strong>Experience:</strong> {activeHod.experience}
+                </p>
+              )}
 
-              <p>
-                He was appointed as{" "}
-                <strong>
-                  Lecturer in the Department of Electrical and
-                  Electronics Engineering (EEE)
-                </strong>{" "}
-                in the{" "}
-                <strong>
-                  Department of Technical Education
-                </strong>{" "}
-                on{" "}
-                <strong>
-                  12th July 1995
-                </strong>.
-              </p>
+              {activeHod.qualification && (
+                <p>
+                  <strong>Academic Qualifications:</strong> {activeHod.qualification}
+                </p>
+              )}
 
+              {activeHod.specialization && (
+                <p>
+                  <strong>Areas of Specialization:</strong> {activeHod.specialization}
+                </p>
+              )}
 
-              <p>
-                Since his appointment, he has been actively involved
-                in teaching and academic activities in the field of
-                Electrical and Electronics Engineering.
-              </p>
-
-
-              <p>
-                He has been serving in Government Polytechnic
-                institutions under the Department of Technical
-                Education and has gained extensive experience in
-                technical teaching and student guidance.
-              </p>
-
-
-              <p>
-                Over the years, he has contributed to the development
-                of students by imparting technical knowledge and
-                supporting various academic programs in Electrical
-                Engineering.
-              </p>
-
+              {activeHod.message ? (
+                <p>{activeHod.message}</p>
+              ) : (
+                <p>
+                  Directing the Department of Electrical & Electronics Engineering with a strong focus on power systems, renewable energy integration, industrial drives, and safety standards.
+                </p>
+              )}
             </div>
 
           </div>
@@ -699,24 +709,28 @@ export default function EEEDepartment() {
                 </div>
 
 
-                <button
-                  type="button"
-                  className="eee-profile-btn"
-                  onClick={() => {
-                    document
-                      .getElementById("eee-faculty-profile-note")
-                      ?.scrollIntoView({
-                        behavior: "smooth",
-                        block: "center",
-                      });
-                  }}
-                >
+                <div className="eee-faculty-actions">
+                  <button
+                    type="button"
+                    className="eee-profile-btn"
+                    onClick={() => setSelectedFaculty(member)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <Eye size={15} />
+                    View Profile
+                  </button>
 
-                  <Eye size={16} />
-
-                  Faculty Profile
-
-                </button>
+                  {member.email && (
+                    <a
+                      href={`mailto:${member.email}`}
+                      className="eee-faculty-email-btn"
+                      title={`Send email to ${member.name} (${member.email})`}
+                      aria-label={`Email ${member.name}`}
+                    >
+                      <Mail size={15} />
+                    </a>
+                  )}
+                </div>
 
               </div>
 
@@ -843,6 +857,13 @@ export default function EEEDepartment() {
         </div>
 
       </section>
+
+      {selectedFaculty && (
+        <FacultyProfileModal
+          faculty={selectedFaculty}
+          onClose={() => setSelectedFaculty(null)}
+        />
+      )}
 
     </main>
   );

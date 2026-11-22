@@ -307,6 +307,8 @@ function AdminDashboard() {
   const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
   const [categorySearch, setCategorySearch] = useState("");
   const categoryDropdownRef = useRef(null);
+  const formRef = useRef(null);
+  const scrollTimeoutRef = useRef(null);
 
   // Categories Management System State
   const [categories, setCategories] = useState([]);
@@ -394,6 +396,48 @@ function AdminDashboard() {
   const [showEventForm, setShowEventForm] = useState(false);
   const [showDepartmentForm, setShowDepartmentForm] = useState(false);
   const [showManagedForm, setShowManagedForm] = useState(false);
+
+  // Smooth scroll up to form on edit or open
+  const scrollToForm = useCallback(() => {
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+    scrollTimeoutRef.current = setTimeout(() => {
+      const targetElement =
+        formRef.current || document.querySelector(".admin-form-card");
+      if (targetElement) {
+        const yOffset = -28;
+        const y =
+          targetElement.getBoundingClientRect().top +
+          window.pageYOffset +
+          yOffset;
+        window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+
+        const firstInput = targetElement.querySelector(
+          "input:not([type=hidden]):not([readonly]):not([disabled]), textarea:not([readonly]):not([disabled]), select:not([disabled])"
+        );
+        if (firstInput) {
+          firstInput.focus({ preventScroll: true });
+        }
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }, 60);
+  }, []);
+
+  useEffect(() => {
+    if (editingId) {
+      scrollToForm();
+    }
+  }, [editingId, scrollToForm]);
+
+  useEffect(() => {
+    return () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Super Admin - Admin Management & Approvals
   const [adminUsers, setAdminUsers] = useState([]);
@@ -1015,6 +1059,7 @@ function AdminDashboard() {
     setShowNoticeForm(true);
     setError("");
     setSuccess("");
+    scrollToForm();
   };
 
   const deleteNotice = async (id) => {
@@ -1095,6 +1140,7 @@ function AdminDashboard() {
     setShowEventForm(true);
     setError("");
     setSuccess("");
+    scrollToForm();
   };
 
   const deleteEvent = async (id) => {
@@ -1154,6 +1200,7 @@ function AdminDashboard() {
       setShowDepartmentForm(false);
 
       await fetchAllData();
+      window.dispatchEvent(new Event("departments-updated"));
     } catch (error) {
       setError(error.message);
     } finally {
@@ -1177,6 +1224,7 @@ function AdminDashboard() {
     setShowDepartmentForm(true);
     setError("");
     setSuccess("");
+    scrollToForm();
   };
 
   const deleteDepartment = async (id) => {
@@ -1195,6 +1243,7 @@ function AdminDashboard() {
 
       setSuccess("Department deleted successfully.");
       await fetchAllData();
+      window.dispatchEvent(new Event("departments-updated"));
     } catch (error) {
       setError(error.message);
     }
@@ -1227,6 +1276,7 @@ function AdminDashboard() {
     setShowManagedForm(true);
     setError("");
     setSuccess("");
+    scrollToForm();
   };
 
   const startManagedEdit = (item) => {
@@ -1249,6 +1299,7 @@ function AdminDashboard() {
     setShowManagedForm(true);
     setError("");
     setSuccess("");
+    scrollToForm();
   };
 
   const handleManagedSubmit = async (event) => {
@@ -1376,13 +1427,25 @@ function AdminDashboard() {
         )}
 
         {showManagedForm && (
-          <form className="admin-form-card" onSubmit={handleManagedSubmit}>
+          <form
+            ref={formRef}
+            className={`admin-form-card ${editingId ? "is-editing" : ""}`}
+            onSubmit={handleManagedSubmit}
+          >
             <div className="admin-form-title">
-              <h3>{editingId ? `Edit ${activeSection}` : `Add ${activeSection}`}</h3>
+              <h3>
+                {editingId ? `Edit ${activeSection}` : `Add ${activeSection}`}
+                {editingId && (
+                  <span className="admin-editing-tag">Editing ID #{editingId}</span>
+                )}
+              </h3>
               <button
                 type="button"
                 className="admin-icon-btn"
-                onClick={() => setShowManagedForm(false)}
+                onClick={() => {
+                  setShowManagedForm(false);
+                  setEditingId(null);
+                }}
                 aria-label="Close form"
               >
                 <X />
@@ -1496,7 +1559,10 @@ function AdminDashboard() {
               <button
                 type="button"
                 className="admin-cancel-btn"
-                onClick={() => setShowManagedForm(false)}
+                onClick={() => {
+                  setShowManagedForm(false);
+                  setEditingId(null);
+                }}
               >
                 Cancel
               </button>
@@ -1922,14 +1988,26 @@ function AdminDashboard() {
       )}
 
       {showNoticeForm && (
-        <form className="admin-form-card" onSubmit={handleNoticeSubmit}>
+        <form
+          ref={formRef}
+          className={`admin-form-card ${editingId ? "is-editing" : ""}`}
+          onSubmit={handleNoticeSubmit}
+        >
           <div className="admin-form-title">
-            <h3>{editingId ? "Edit Notice" : "Add New Notice"}</h3>
+            <h3>
+              {editingId ? "Edit Notice" : "Add New Notice"}
+              {editingId && (
+                <span className="admin-editing-tag">Editing ID #{editingId}</span>
+              )}
+            </h3>
 
             <button
               type="button"
               className="admin-icon-btn"
-              onClick={() => setShowNoticeForm(false)}
+              onClick={() => {
+                setShowNoticeForm(false);
+                setEditingId(null);
+              }}
             >
               <X />
             </button>
@@ -2028,7 +2106,10 @@ function AdminDashboard() {
             <button
               type="button"
               className="admin-cancel-btn"
-              onClick={() => setShowNoticeForm(false)}
+              onClick={() => {
+                setShowNoticeForm(false);
+                setEditingId(null);
+              }}
             >
               Cancel
             </button>
@@ -2160,14 +2241,26 @@ function AdminDashboard() {
       )}
 
       {showEventForm && (
-        <form className="admin-form-card" onSubmit={handleEventSubmit}>
+        <form
+          ref={formRef}
+          className={`admin-form-card ${editingId ? "is-editing" : ""}`}
+          onSubmit={handleEventSubmit}
+        >
           <div className="admin-form-title">
-            <h3>{editingId ? "Edit Event" : "Add New Event"}</h3>
+            <h3>
+              {editingId ? "Edit Event" : "Add New Event"}
+              {editingId && (
+                <span className="admin-editing-tag">Editing ID #{editingId}</span>
+              )}
+            </h3>
 
             <button
               type="button"
               className="admin-icon-btn"
-              onClick={() => setShowEventForm(false)}
+              onClick={() => {
+                setShowEventForm(false);
+                setEditingId(null);
+              }}
             >
               <X />
             </button>
@@ -2299,7 +2392,10 @@ function AdminDashboard() {
             <button
               type="button"
               className="admin-cancel-btn"
-              onClick={() => setShowEventForm(false)}
+              onClick={() => {
+                setShowEventForm(false);
+                setEditingId(null);
+              }}
             >
               Cancel
             </button>
@@ -2446,18 +2542,25 @@ function AdminDashboard() {
 
       {showDepartmentForm && (
         <form
-          className="admin-form-card"
+          ref={formRef}
+          className={`admin-form-card ${editingId ? "is-editing" : ""}`}
           onSubmit={handleDepartmentSubmit}
         >
           <div className="admin-form-title">
             <h3>
               {editingId ? "Edit Department" : "Add New Department"}
+              {editingId && (
+                <span className="admin-editing-tag">Editing ID #{editingId}</span>
+              )}
             </h3>
 
             <button
               type="button"
               className="admin-icon-btn"
-              onClick={() => setShowDepartmentForm(false)}
+              onClick={() => {
+                setShowDepartmentForm(false);
+                setEditingId(null);
+              }}
             >
               <X />
             </button>
@@ -2578,7 +2681,10 @@ function AdminDashboard() {
             <button
               type="button"
               className="admin-cancel-btn"
-              onClick={() => setShowDepartmentForm(false)}
+              onClick={() => {
+                setShowDepartmentForm(false);
+                setEditingId(null);
+              }}
             >
               Cancel
             </button>
@@ -3072,19 +3178,7 @@ function AdminDashboard() {
       <div className="admin-cat-container">
         {sectionHeader(
           "Categories Management System",
-          "Master taxonomies, tags, badges and dynamic filtering across all college website pages.",
-          "Add Category",
-          () => {
-            setEditingCategory(null);
-            setCategoryForm({
-              ...initialCategoryForm,
-              target_page: categoryPageTab === "all" ? "events" : categoryPageTab,
-              sort_order: categories.filter((c) => categoryPageTab === "all" || c.target_page === categoryPageTab).length + 1,
-            });
-            setShowCategoryModal(true);
-            setError("");
-            setSuccess("");
-          }
+          "Master taxonomies, tags, badges and dynamic filtering across all college website pages."
         )}
 
         {/* Target Module Filter Tabs */}

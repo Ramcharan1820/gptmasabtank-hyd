@@ -90,9 +90,18 @@ function Footer() {
 
           <p>
             <Phone size={16} />
-            <a href={`tel:${contactDetails?.phone || "040-23395914"}`}>
-              {contactDetails?.phone || "040-23395914"}
-            </a>
+            {(() => {
+              const rawPhone = contactDetails?.phone || "040-23393246, 9912342001";
+              const numbers = rawPhone.split(/[,/]+/).map((n) => n.trim()).filter(Boolean);
+              return numbers.map((num, i) => (
+                <React.Fragment key={num}>
+                  {i > 0 && <span style={{ margin: "0 3px", opacity: 0.7 }}>/</span>}
+                  <a href={`tel:${num.replace(/[^0-9+]/g, "")}`}>
+                    {num}
+                  </a>
+                </React.Fragment>
+              ));
+            })()}
           </p>
 
           <p>

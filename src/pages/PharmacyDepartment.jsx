@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Pill,
@@ -18,10 +18,12 @@ import {
   CalendarDays,
   ShieldCheck,
   Building,
+  Eye,
 } from "lucide-react";
 
 import "./PharmacyDepartment.css";
 import useDepartmentFaculty from "../hooks/useDepartmentFaculty";
+import FacultyProfileModal from "../components/FacultyProfileModal";
 
 const stats = [
   { label: "Established Year", value: "1978", sub: "Decades of Excellence" },
@@ -122,6 +124,21 @@ const careers = [
 
 function PharmacyDepartment() {
   const { faculty: pharmacyFaculty } = useDepartmentFaculty("Pharmacy", initialPharmacyFaculty);
+  const [selectedFaculty, setSelectedFaculty] = useState(null);
+
+  const isHod = (member) => {
+    if (!member || !member.designation) return false;
+    const desig = member.designation.toLowerCase();
+    return (
+      desig.includes("hod") ||
+      desig.includes("head of section") ||
+      desig.includes("head of department") ||
+      desig.includes("head of the department")
+    );
+  };
+
+  const activeHod = pharmacyFaculty.find(isHod) || hodData;
+  const hodPhotoUrl = activeHod.photo || activeHod.image || "";
 
   return (
     <main className="pharm-page">
@@ -196,7 +213,23 @@ function PharmacyDepartment() {
           <div className="pharm-hod-card">
             <div className="pharm-hod-photo-wrap">
               <div className="pharm-hod-photo">
-                <UserRound size={64} className="pharm-hod-icon" />
+                {hodPhotoUrl ? (
+                  <img
+                    src={hodPhotoUrl}
+                    alt={activeHod.name || "Head of Section"}
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      if (e.currentTarget.nextElementSibling) {
+                        e.currentTarget.nextElementSibling.style.display = "block";
+                      }
+                    }}
+                  />
+                ) : null}
+                <UserRound
+                  size={64}
+                  className="pharm-hod-icon"
+                  style={{ display: hodPhotoUrl ? "none" : "block" }}
+                />
               </div>
               <span className="pharm-hod-badge">
                 <Award size={14} /> Head of Section
@@ -204,26 +237,32 @@ function PharmacyDepartment() {
             </div>
 
             <div className="pharm-hod-info">
-              <h3>{hodData.name}</h3>
-              <p className="pharm-hod-title">{hodData.designation}</p>
+              <h3>{activeHod.name}</h3>
+              <p className="pharm-hod-title">{activeHod.designation}</p>
 
               <div className="pharm-hod-meta">
-                <span>
-                  <GraduationCap size={16} /> {hodData.qualification}
-                </span>
-                <span>
-                  <Briefcase size={16} /> {hodData.experience} Teaching & Research
-                </span>
-                {hodData.email && (
-                  <a href={`mailto:${hodData.email}`} className="pharm-hod-email">
-                    <Mail size={16} /> {hodData.email}
+                {activeHod.qualification && (
+                  <span>
+                    <GraduationCap size={16} /> {activeHod.qualification}
+                  </span>
+                )}
+                {activeHod.experience && (
+                  <span>
+                    <Briefcase size={16} /> {activeHod.experience} Teaching & Research
+                  </span>
+                )}
+                {activeHod.email && (
+                  <a href={`mailto:${activeHod.email}`} className="pharm-hod-email">
+                    <Mail size={16} /> {activeHod.email}
                   </a>
                 )}
               </div>
 
-              <blockquote className="pharm-hod-quote">
-                "{hodData.message}"
-              </blockquote>
+              {activeHod.message && (
+                <blockquote className="pharm-hod-quote">
+                  "{activeHod.message}"
+                </blockquote>
+              )}
             </div>
           </div>
         </div>
@@ -344,11 +383,21 @@ function PharmacyDepartment() {
                     </p>
                   )}
 
-                  {member.email && (
-                    <a href={`mailto:${member.email}`} className="pharm-faculty-email">
-                      <Mail size={14} /> {member.email}
-                    </a>
-                  )}
+                  <div className="pharm-faculty-actions">
+                    <button
+                      type="button"
+                      className="pharm-profile-btn"
+                      onClick={() => setSelectedFaculty(member)}
+                    >
+                      <Eye size={14} /> View Profile
+                    </button>
+
+                    {member.email && (
+                      <a href={`mailto:${member.email}`} className="pharm-faculty-email">
+                        <Mail size={14} /> {member.email}
+                      </a>
+                    )}
+                  </div>
                 </div>
               </article>
             ))}
@@ -446,6 +495,13 @@ function PharmacyDepartment() {
           </Link>
         </div>
       </section>
+
+      {selectedFaculty && (
+        <FacultyProfileModal
+          faculty={selectedFaculty}
+          onClose={() => setSelectedFaculty(null)}
+        />
+      )}
     </main>
   );
 }
