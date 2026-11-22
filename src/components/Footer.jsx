@@ -39,7 +39,13 @@ function Footer() {
 
         {/* COLLEGE */}
         <div className="footer-about">
-          <div className="footer-logo">GPT</div>
+          <div className="footer-logo-box">
+            <img
+              src="/college-logo.jpg"
+              alt="Government Polytechnic College Logo"
+              className="footer-logo-img"
+            />
+          </div>
 
           <h3>Government Polytechnic College</h3>
 
