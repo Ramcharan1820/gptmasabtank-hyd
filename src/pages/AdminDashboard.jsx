@@ -26,6 +26,10 @@ import {
   BriefcaseBusiness,
   UserRound,
   ChevronDown,
+  Check,
+  Clock,
+  UserCheck,
+  UserX,
 } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
@@ -51,6 +55,7 @@ const ADMIN_CATEGORIES_METADATA = [
   { name: "Gallery", label: "Photo Gallery", desc: "Campus photos & laboratories", group: "Media" },
   { name: "Contact", label: "Contact Information", desc: "Official campus address & info", group: "Info" },
   { name: "Alumni", label: "Alumni Directory", desc: "Registered alumni database", group: "Community" },
+  { name: "Admin Approvals", label: "Admin Access & Approvals", desc: "Manage admins & approve registration requests", group: "Administration" },
 ];
 
 const EVENT_CATEGORIES = [
@@ -256,6 +261,28 @@ function AdminDashboard() {
   const [showDepartmentForm, setShowDepartmentForm] = useState(false);
   const [showManagedForm, setShowManagedForm] = useState(false);
 
+  // Super Admin - Admin Management & Approvals
+  const [adminUsers, setAdminUsers] = useState([]);
+  const [adminUsersCounts, setAdminUsersCounts] = useState({
+    total: 0,
+    pending: 0,
+    approved: 0,
+    rejected: 0,
+    suspended: 0,
+  });
+  const [pendingAdminCount, setPendingAdminCount] = useState(0);
+  const [adminStatusFilter, setAdminStatusFilter] = useState("all");
+  const [adminUserSearch, setAdminUserSearch] = useState("");
+  const [loadingAdmins, setLoadingAdmins] = useState(false);
+  const [rejectModal, setRejectModal] = useState({
+    open: false,
+    adminId: null,
+    adminName: "",
+    reason: "",
+  });
+
+  const isSuper = admin?.role === "superadmin";
+
   const menuItems = [
     {
       name: "Dashboard",
@@ -281,6 +308,7 @@ function AdminDashboard() {
     { name: "Placements", icon: BriefcaseBusiness },
     { name: "Gallery", icon: ImageIcon },
     { name: "Contact", icon: Contact },
+    ...(isSuper ? [{ name: "Admin Approvals", icon: ShieldCheck }] : []),
   ];
 
   const adminSectionTabs = [
@@ -293,6 +321,7 @@ function AdminDashboard() {
     "Gallery",
     "Contact",
     "Alumni",
+    ...(isSuper ? ["Admin Approvals"] : []),
   ];
 
   const dashboardHomeNav = [
@@ -353,6 +382,13 @@ function AdminDashboard() {
   useEffect(() => {
     const verifyAdmin = async () => {
       try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlToken = urlParams.get("token");
+        if (urlToken) {
+          setAdminToken(urlToken);
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
         const response = await apiRequest("/admin/me");
 
         if (!response.authenticated) {
@@ -372,6 +408,151 @@ function AdminDashboard() {
 
     verifyAdmin();
   }, [navigate]);
+
+  // ==================================================
+  // SUPERADMIN - ADMIN APPROVALS & USER MANAGEMENT
+  // ==================================================
+
+  const fetchAdminUsers = useCallback(async () => {
+    if (!admin || admin.role !== "superadmin") return;
+    setLoadingAdmins(true);
+    try {
+      const query = new URLSearchParams();
+      if (adminStatusFilter && adminStatusFilter !== "all") {
+        query.set("status", adminStatusFilter);
+      }
+      if (adminUserSearch.trim()) {
+        query.set("search", adminUserSearch.trim());
+      }
+      const res = await apiRequest(`/admin/users?${query.toString()}`);
+      if (res.success) {
+        setAdminUsers(res.admins || []);
+        if (res.counts) {
+          setAdminUsersCounts(res.counts);
+          setPendingAdminCount(Number(res.counts.pending || 0));
+        }
+      }
+    } catch (err) {
+      console.error("Failed to fetch admin users:", err);
+    } finally {
+      setLoadingAdmins(false);
+    }
+  }, [admin, adminStatusFilter, adminUserSearch]);
+
+  const fetchPendingCount = useCallback(async () => {
+    try {
+      const res = await apiRequest("/admin/pending-count");
+      if (res.success) {
+        setPendingAdminCount(Number(res.count || 0));
+      }
+    } catch (_) {}
+  }, []);
+
+  useEffect(() => {
+    if (admin && admin.role === "superadmin") {
+      fetchAdminUsers();
+    }
+  }, [admin, adminStatusFilter, adminUserSearch, fetchAdminUsers]);
+
+  const handleApproveAdmin = async (id, name) => {
+    try {
+      setError("");
+      const res = await apiRequest(`/admin/users/${id}/approve`, {
+        method: "POST",
+      });
+      if (!res.success) throw new Error(res.message);
+      setSuccess(`Administrator account for "${name}" has been approved and activated!`);
+      fetchAdminUsers();
+      fetchPendingCount();
+    } catch (err) {
+      setError(err.message || "Failed to approve administrator.");
+    }
+  };
+
+  const handleOpenRejectModal = (adminItem) => {
+    setRejectModal({
+      open: true,
+      adminId: adminItem.id,
+      adminName: adminItem.name,
+      reason: "",
+    });
+  };
+
+  const handleConfirmReject = async () => {
+    if (!rejectModal.adminId) return;
+    try {
+      setError("");
+      const res = await apiRequest(`/admin/users/${rejectModal.adminId}/reject`, {
+        method: "POST",
+        body: JSON.stringify({ reason: rejectModal.reason || "Declined by Main Administrator" }),
+      });
+      if (!res.success) throw new Error(res.message);
+      setSuccess(`Registration request for "${rejectModal.adminName}" was rejected.`);
+      setRejectModal({ open: false, adminId: null, adminName: "", reason: "" });
+      fetchAdminUsers();
+      fetchPendingCount();
+    } catch (err) {
+      setError(err.message || "Failed to decline registration.");
+    }
+  };
+
+  const handleToggleAdminStatus = async (id, currentActive, name) => {
+    try {
+      setError("");
+      const res = await apiRequest(`/admin/users/${id}/toggle-status`, {
+        method: "POST",
+      });
+      if (!res.success) throw new Error(res.message);
+      setSuccess(res.message || `Status updated for "${name}".`);
+      fetchAdminUsers();
+    } catch (err) {
+      setError(err.message || "Failed to toggle account status.");
+    }
+  };
+
+  const handleUpdateAdminRole = async (id, currentRole, name) => {
+    const targetRole = currentRole === "superadmin" ? "admin" : "superadmin";
+    const confirmMsg =
+      targetRole === "superadmin"
+        ? `Promote "${name}" to Main Administrator (Superadmin)? They will have full privileges to approve and manage other administrators.`
+        : `Demote "${name}" from Main Administrator to standard Admin?`;
+    if (!window.confirm(confirmMsg)) return;
+
+    try {
+      setError("");
+      const res = await apiRequest(`/admin/users/${id}/role`, {
+        method: "POST",
+        body: JSON.stringify({ role: targetRole }),
+      });
+      if (!res.success) throw new Error(res.message);
+      setSuccess(res.message);
+      fetchAdminUsers();
+    } catch (err) {
+      setError(err.message || "Failed to update role.");
+    }
+  };
+
+  const handleDeleteAdmin = async (id, name) => {
+    if (
+      !window.confirm(
+        `Permanently remove administrator record for "${name}"? This action cannot be undone.`
+      )
+    ) {
+      return;
+    }
+    try {
+      setError("");
+      const res = await apiRequest(`/admin/users/${id}`, {
+        method: "DELETE",
+      });
+      if (!res.success) throw new Error(res.message);
+      setSuccess(res.message || "Admin account deleted.");
+      fetchAdminUsers();
+      fetchPendingCount();
+    } catch (err) {
+      setError(err.message || "Failed to delete admin.");
+    }
+  };
 
   // ==================================================
   // FETCH ALL DATA
@@ -412,10 +593,12 @@ function AdminDashboard() {
           ])
         )
       );
+
+      fetchPendingCount();
     } catch (error) {
       setError(error.message || "Unable to load dashboard data.");
     }
-  }, []);
+  }, [fetchPendingCount]);
 
   useEffect(() => {
     if (admin) {
@@ -1139,21 +1322,56 @@ function AdminDashboard() {
   const renderDashboard = () => (
     <>
       <div className="admin-welcome">
-        <div>
-          <span className="admin-eyebrow">
-            <ShieldCheck size={15} />
-            ADMINISTRATION PANEL
-          </span>
+        <div className="admin-welcome-text">
+          <div className="admin-eyebrow">
+            <ShieldCheck size={16} />
+            <span>COLLEGE ADMINISTRATION PANEL</span>
+            <span className="admin-welcome-tag">
+              {admin?.role === "superadmin" ? "MAIN ADMINISTRATOR" : "ADMINISTRATOR"}
+            </span>
+          </div>
 
-          <h1>Welcome, {admin.name || "Administrator"}</h1>
+          <h1 className="admin-welcome-title">
+            Welcome, {admin?.name || (isSuper ? "Main Administrator" : "Administrator")}
+          </h1>
 
-          <p>
-            Manage college website information and monitor registrations.
+          <p className="admin-welcome-subtitle">
+            Signed in as <strong>@{admin?.username || "gpthyd_admin"}</strong> ({admin?.email || "gpthyd.dte.telangana@gmail.com"}) &bull; Government Polytechnic College Masab Tank
           </p>
         </div>
 
-        <GraduationCap size={54} />
+        <div className="admin-welcome-icon-box">
+          <GraduationCap size={56} />
+        </div>
       </div>
+
+      {isSuper && pendingAdminCount > 0 && (
+        <div className="admin-approval-alert-banner">
+          <div className="admin-approval-alert-left">
+            <div className="admin-approval-alert-icon">
+              <ShieldCheck size={24} />
+            </div>
+            <div>
+              <div className="admin-approval-alert-title">
+                {pendingAdminCount} Administrator Registration Request{pendingAdminCount > 1 ? "s" : ""} Awaiting Review
+              </div>
+              <div className="admin-approval-alert-desc">
+                New faculty or staff members have registered and are waiting for your approval as the Main Administrator.
+              </div>
+            </div>
+          </div>
+          <button
+            type="button"
+            className="admin-approval-alert-btn"
+            onClick={() => {
+              setActiveSection("Admin Approvals");
+              setAdminStatusFilter("pending");
+            }}
+          >
+            Review Requests &rarr;
+          </button>
+        </div>
+      )}
 
       <div className="admin-stats-grid">
         <div className="admin-stat-card">
@@ -1195,6 +1413,29 @@ function AdminDashboard() {
             <h2>{alumni.length}</h2>
           </div>
         </div>
+
+        {isSuper && (
+          <div
+            className="admin-stat-card"
+            style={{ cursor: "pointer" }}
+            onClick={() => setActiveSection("Admin Approvals")}
+          >
+            <div className="stat-icon" style={{ background: "#fef3c7", color: "#b45309" }}>
+              <ShieldCheck />
+            </div>
+            <div>
+              <span>Admin Accounts</span>
+              <h2>
+                {adminUsersCounts.approved || 1}
+                {pendingAdminCount > 0 && (
+                  <span style={{ fontSize: "12px", color: "#d97706", marginLeft: "6px", fontWeight: "700" }}>
+                    ({pendingAdminCount} pending)
+                  </span>
+                )}
+              </h2>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="admin-panel-card">
@@ -1966,6 +2207,327 @@ function AdminDashboard() {
   );
 
   // ==================================================
+  // SUPERADMIN - ADMIN MANAGEMENT & APPROVALS PANEL
+  // ==================================================
+
+  const renderAdminApprovals = () => {
+    if (!isSuper) {
+      return (
+        <div className="admin-panel-card">
+          <div className="admin-alert error">
+            <AlertCircle size={20} />
+            <span>Main Administrator authorization is required to access administrator approval controls.</span>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="admin-panel-card">
+        <div className="admin-panel-heading">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "10px" }}>
+            <div>
+              <h3>Administrator Approvals & User Directory</h3>
+              <p>Verify registration credentials, approve or decline new administrator access, and manage administrative privileges.</p>
+            </div>
+            <button
+              type="button"
+              className="admin-refresh-btn"
+              onClick={fetchAdminUsers}
+              disabled={loadingAdmins}
+            >
+              <RefreshCw size={15} className={loadingAdmins ? "spin" : ""} />
+              Refresh Directory
+            </button>
+          </div>
+        </div>
+
+        {/* Toolbar: Filters & Search */}
+        <div className="admin-approvals-toolbar">
+          <div className="admin-approvals-filter-group">
+            {[
+              { id: "all", label: "All Accounts", count: adminUsersCounts.total },
+              { id: "pending", label: "Pending Approvals", count: adminUsersCounts.pending, isPending: true },
+              { id: "approved", label: "Active & Approved", count: adminUsersCounts.approved },
+              { id: "rejected", label: "Declined", count: adminUsersCounts.rejected },
+              { id: "suspended", label: "Suspended", count: adminUsersCounts.suspended },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                className={`admin-approval-filter-btn ${adminStatusFilter === tab.id ? "active" : ""}`}
+                onClick={() => setAdminStatusFilter(tab.id)}
+              >
+                <span>{tab.label}</span>
+                <span className={`filter-count ${tab.isPending && tab.count > 0 ? "pending" : ""}`}>
+                  {tab.count || 0}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          <div style={{ position: "relative", minWidth: "220px" }}>
+            <Search size={16} style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "#94a3b8" }} />
+            <input
+              type="text"
+              placeholder="Search by name, email, dept..."
+              value={adminUserSearch}
+              onChange={(e) => setAdminUserSearch(e.target.value)}
+              className="admin-search-input"
+              style={{ width: "100%", paddingLeft: "32px", height: "36px", fontSize: "12.5px" }}
+            />
+          </div>
+        </div>
+
+        {/* Table */}
+        {loadingAdmins ? (
+          <div style={{ textAlign: "center", padding: "40px", color: "#64748b" }}>
+            <RefreshCw size={28} className="spin" style={{ margin: "0 auto 10px" }} />
+            <p>Loading administrator accounts...</p>
+          </div>
+        ) : adminUsers.length === 0 ? (
+          <div className="admin-empty" style={{ textAlign: "center", padding: "40px" }}>
+            <ShieldCheck size={40} style={{ color: "#94a3b8", margin: "0 auto 10px" }} />
+            <h4>No administrator records found</h4>
+            <p style={{ color: "#64748b", fontSize: "13px" }}>
+              {adminStatusFilter === "pending"
+                ? "No applications are currently awaiting approval. Everything is up to date!"
+                : "No accounts match the selected status filter."}
+            </p>
+          </div>
+        ) : (
+          <div className="admin-table-wrapper">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Administrator Profile</th>
+                  <th>Department & Designation</th>
+                  <th>Status</th>
+                  <th>Role</th>
+                  <th>Registered</th>
+                  <th style={{ textAlign: "right" }}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {adminUsers.map((item) => {
+                  const isCurrentAdmin = item.id === admin?.id;
+                  const isPending = item.status === "pending";
+
+                  return (
+                    <tr key={item.id}>
+                      <td>
+                        <div className="admin-user-cell">
+                          {item.avatar_url ? (
+                            <img src={item.avatar_url} alt={item.name} className="admin-user-avatar" />
+                          ) : (
+                            <div className="admin-user-avatar-fallback">
+                              {(item.name || "A").charAt(0).toUpperCase()}
+                            </div>
+                          )}
+                          <div className="admin-user-names">
+                            <span className="admin-user-name">
+                              {item.name} {isCurrentAdmin && <small style={{ color: "#0284c7" }}>(You)</small>}
+                            </span>
+                            <span className="admin-user-handle">
+                              {item.username ? `@${item.username}` : item.email}
+                            </span>
+                            <div className="admin-badge-provider">
+                              {item.auth_provider === "google" ? (
+                                <span>Google OAuth</span>
+                              ) : (
+                                <span>Local Password</span>
+                              )}
+                              <span>&bull; {item.email}</span>
+                            </div>
+                            {item.request_reason && (
+                              <div className="admin-user-reason-quote" title={item.request_reason}>
+                                <em>"{item.request_reason}"</em>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+
+                      <td>
+                        <div style={{ fontWeight: "600", color: "#1e293b", fontSize: "13px" }}>
+                          {item.department || "General"}
+                        </div>
+                        <div style={{ fontSize: "12px", color: "#64748b" }}>
+                          {item.designation || "Not specified"}
+                          {item.phone && <span> &bull; {item.phone}</span>}
+                        </div>
+                      </td>
+
+                      <td>
+                        <span className={`admin-badge-status ${item.status || "approved"}`}>
+                          {item.status === "pending" && <Clock size={12} />}
+                          {item.status === "approved" && <Check size={12} />}
+                          {item.status === "rejected" && <X size={12} />}
+                          {item.status || "approved"}
+                        </span>
+                        {item.status === "rejected" && item.rejection_reason && (
+                          <div style={{ fontSize: "11px", color: "#dc2626", marginTop: "3px" }}>
+                            {item.rejection_reason}
+                          </div>
+                        )}
+                        {item.approved_by_name && (
+                          <div style={{ fontSize: "10.5px", color: "#64748b", marginTop: "3px" }}>
+                            Approved by: {item.approved_by_name}
+                          </div>
+                        )}
+                      </td>
+
+                      <td>
+                        <span className={`admin-badge-role ${item.role}`}>
+                          {item.role === "superadmin" ? "Main Administrator" : "Admin"}
+                        </span>
+                      </td>
+
+                      <td style={{ fontSize: "12px", color: "#64748b", whiteSpace: "nowrap" }}>
+                        <div>{item.created_at ? new Date(item.created_at).toLocaleDateString() : "—"}</div>
+                        {item.last_login_at && (
+                          <div style={{ fontSize: "10.5px", color: "#94a3b8" }}>
+                            Last login: {new Date(item.last_login_at).toLocaleDateString()}
+                          </div>
+                        )}
+                      </td>
+
+                      <td>
+                        <div className="admin-btn-action-group" style={{ justifyContent: "flex-end" }}>
+                          {/* Pending actions */}
+                          {isPending && (
+                            <>
+                              <button
+                                type="button"
+                                className="admin-btn-approve"
+                                onClick={() => handleApproveAdmin(item.id, item.name)}
+                                title="Approve registration request"
+                              >
+                                <Check size={14} /> Approve
+                              </button>
+                              <button
+                                type="button"
+                                className="admin-btn-reject"
+                                onClick={() => handleOpenRejectModal(item)}
+                                title="Reject registration request"
+                              >
+                                <X size={14} /> Decline
+                              </button>
+                            </>
+                          )}
+
+                          {/* Approved actions */}
+                          {!isPending && !isCurrentAdmin && (
+                            <>
+                              <button
+                                type="button"
+                                className="admin-btn-outline"
+                                onClick={() => handleToggleAdminStatus(item.id, item.is_active, item.name)}
+                                title={item.is_active ? "Suspend account" : "Re-activate account"}
+                              >
+                                {item.is_active ? "Suspend" : "Activate"}
+                              </button>
+
+                              <button
+                                type="button"
+                                className="admin-btn-outline"
+                                onClick={() => handleUpdateAdminRole(item.id, item.role, item.name)}
+                                title={item.role === "superadmin" ? "Demote to admin" : "Promote to Main Administrator"}
+                              >
+                                {item.role === "superadmin" ? "Demote" : "Make Superadmin"}
+                              </button>
+
+                              <button
+                                type="button"
+                                className="admin-btn-outline danger"
+                                onClick={() => handleDeleteAdmin(item.id, item.name)}
+                                title="Delete administrator record"
+                              >
+                                <Trash2 size={13} />
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Reject Reason Modal */}
+        {rejectModal.open && (
+          <div className="admin-reject-modal-overlay">
+            <div className="admin-reject-modal-card">
+              <div className="admin-reject-modal-header">
+                <h3>Decline Administrator Application</h3>
+                <button
+                  type="button"
+                  style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b" }}
+                  onClick={() => setRejectModal({ open: false, adminId: null, adminName: "", reason: "" })}
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              <div className="admin-reject-modal-body">
+                <p>
+                  You are declining the registration request from <strong>{rejectModal.adminName}</strong>.
+                  Please specify a reason for the institutional record:
+                </p>
+
+                <div className="admin-reject-preset-btns">
+                  {[
+                    "Unverified college credentials",
+                    "Department already has an active coordinator",
+                    "Duplicate account submission",
+                    "Administrative verification failed",
+                  ].map((preset) => (
+                    <button
+                      key={preset}
+                      type="button"
+                      className="admin-reject-preset-btn"
+                      onClick={() => setRejectModal((prev) => ({ ...prev, reason: preset }))}
+                    >
+                      {preset}
+                    </button>
+                  ))}
+                </div>
+
+                <textarea
+                  className="admin-reject-textarea"
+                  placeholder="Enter rejection reason or select a preset above..."
+                  value={rejectModal.reason}
+                  onChange={(e) => setRejectModal((prev) => ({ ...prev, reason: e.target.value }))}
+                />
+              </div>
+
+              <div className="admin-reject-modal-footer">
+                <button
+                  type="button"
+                  className="admin-btn-outline"
+                  onClick={() => setRejectModal({ open: false, adminId: null, adminName: "", reason: "" })}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="admin-btn-reject"
+                  onClick={handleConfirmReject}
+                >
+                  Confirm Decline
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // ==================================================
   // ACTIVE CONTENT
   // ==================================================
 
@@ -1989,6 +2551,9 @@ function AdminDashboard() {
       case "Alumni":
         return renderAlumni();
 
+      case "Admin Approvals":
+        return renderAdminApprovals();
+
       default:
         return renderDashboard();
     }
@@ -2010,6 +2575,7 @@ function AdminDashboard() {
       case "Gallery": return <ImageIcon size={18} />;
       case "Contact": return <Contact size={18} />;
       case "Alumni": return <Users size={18} />;
+      case "Admin Approvals": return <ShieldCheck size={18} />;
       default: return <LayoutDashboard size={18} />;
     }
   };
@@ -2024,6 +2590,7 @@ function AdminDashboard() {
       case "Gallery": return (managedContent.Gallery || []).length;
       case "Alumni": return alumni.length;
       case "Contact": return (managedContent.Contact || []).length > 0 ? "1" : "0";
+      case "Admin Approvals": return pendingAdminCount > 0 ? `${pendingAdminCount} Pending` : `${adminUsersCounts.approved || 1} Active`;
       default: return "Active";
     }
   };
@@ -2050,6 +2617,21 @@ function AdminDashboard() {
               }}
             >
               {item}
+              {item === "Admin Approvals" && pendingAdminCount > 0 && (
+                <span
+                  style={{
+                    marginLeft: "6px",
+                    background: "#f59e0b",
+                    color: "#ffffff",
+                    borderRadius: "999px",
+                    padding: "1px 6px",
+                    fontSize: "10.5px",
+                    fontWeight: "800",
+                  }}
+                >
+                  {pendingAdminCount}
+                </span>
+              )}
             </button>
           ))}
         </div>
@@ -2061,6 +2643,25 @@ function AdminDashboard() {
                 <h2>{activeSection}</h2>
                 <p>Government Polytechnic College, Masab Tank</p>
               </div>
+            </div>
+
+            <div className="admin-topbar-user-badge">
+              <div className="admin-topbar-user-avatar">
+                {admin?.avatar_url ? (
+                  <img src={admin.avatar_url} alt={admin.name} />
+                ) : (
+                  <span>{(admin?.name || "M").charAt(0).toUpperCase()}</span>
+                )}
+              </div>
+              <div className="admin-topbar-user-details">
+                <span className="admin-topbar-welcome-text">Welcome,</span>
+                <strong className="admin-topbar-name">
+                  {admin?.name || (isSuper ? "Main Administrator" : "Administrator")}
+                </strong>
+              </div>
+              <span className={`admin-topbar-role ${admin?.role || "admin"}`}>
+                {admin?.role === "superadmin" ? "Main Admin" : "Admin"}
+              </span>
             </div>
 
             <div className="admin-topbar-actions">

@@ -3,6 +3,7 @@ import { Routes, Route, useLocation } from "react-router-dom";
 
 /*admin login*/
 import AdminLogin from "./pages/AdminLogin";
+import AdminRegister from "./pages/AdminRegister";
 import AdminDashboard from "./pages/AdminDashboard";
 
 /* Layout */
@@ -46,6 +47,8 @@ function App() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
   const isAdminLoginRoute = location.pathname === "/admin/login";
+  const isAdminRegisterRoute = location.pathname === "/admin/register";
+  const isAdminAuthRoute = isAdminLoginRoute || isAdminRegisterRoute;
   const isAdminDashboardRoute = location.pathname === "/admin/dashboard";
   const isAdminMediaRoute = location.pathname === "/admin/media";
 
@@ -53,7 +56,7 @@ function App() {
     <>
       <ScrollToTop />
 
-      {!isAdminLoginRoute && (
+      {!isAdminAuthRoute && (
         <Header showNavigation={!isAdminDashboardRoute && !isAdminMediaRoute} />
       )}
 
@@ -88,6 +91,7 @@ function App() {
 
         {/* Admin Pages */}
         <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/register" element={<AdminRegister />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/media" element={<AdminEventMedia />} />
 

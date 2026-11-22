@@ -188,12 +188,24 @@
   text-decoration: none;
   font-size: 15px;
   font-weight: 800;
-  transition: 0.2s ease;
+  transition: all 0.25s ease;
 }
 
 .social-links a:hover {
   transform: translateY(-2px);
   background: #0969a9;
+}
+
+.social-links a.instagram-link {
+  background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285aeb 90%);
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(214, 36, 159, 0.25);
+}
+
+.social-links a.instagram-link:hover {
+  transform: translateY(-2px) scale(1.08);
+  box-shadow: 0 4px 12px rgba(214, 36, 159, 0.45);
+  filter: brightness(1.05);
 }
 
 /* =========================================================

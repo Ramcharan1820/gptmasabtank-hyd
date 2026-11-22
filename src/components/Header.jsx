@@ -17,6 +17,27 @@ import {
 } from "lucide-react";
 import "./Header.css";
 
+function InstagramIcon({ size = 17 }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      style={{ display: "block" }}
+    >
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+    </svg>
+  );
+}
+
 const departmentLinks = [
   { name: "Computer Science & Engineering", path: "/departments/cse", icon: Laptop },
   { name: "Electronics & Communication Engineering", path: "/departments/ece", icon: Cpu },
@@ -158,8 +179,16 @@ export default function Header({ showNavigation = true }) {
           </div>
 
           <div className="social-links">
-            <a href="#" aria-label="Facebook">f</a>
-            <a href="#" aria-label="Twitter">𝕏</a>
+            <a
+              href="https://www.instagram.com/gpt_masabtank_official"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram @gpt_masabtank_official"
+              className="instagram-link"
+              title="@gpt_masabtank_official on Instagram"
+            >
+              <InstagramIcon size={17} />
+            </a>
           </div>
         </div>
 

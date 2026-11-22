@@ -160,11 +160,34 @@ function requireAdmin(req, res, next) {
     });
   }
 
-  if (req.session.admin.role !== "admin") {
+  if (
+    req.session.admin.role !== "admin" &&
+    req.session.admin.role !== "superadmin"
+  ) {
     return res.status(403).json({
       success: false,
       authenticated: false,
       message: "Administrator access is required.",
+    });
+  }
+
+  return next();
+}
+
+function requireSuperAdmin(req, res, next) {
+  if (!req.session || !req.session.admin) {
+    return res.status(401).json({
+      success: false,
+      authenticated: false,
+      message: "Please log in as an administrator.",
+    });
+  }
+
+  if (req.session.admin.role !== "superadmin") {
+    return res.status(403).json({
+      success: false,
+      authenticated: false,
+      message: "Main Administrator access is required.",
     });
   }
 
@@ -350,22 +373,19 @@ app.get("/api/db-test", async (req, res) => {
 
 app.post("/api/admin/login", async (req, res) => {
   try {
-    const { email, password } = req.body || {};
+    const { email, username, identifier: rawId, password } = req.body || {};
 
-    const cleanEmail =
-      typeof email === "string"
-        ? email.trim().toLowerCase()
-        : "";
+    const rawIdentifier = (rawId || email || username || "").trim().toLowerCase();
 
     if (
-      !cleanEmail ||
+      !rawIdentifier ||
       typeof password !== "string" ||
       password.length === 0 ||
       password.length > 72
     ) {
       return res.status(400).json({
         success: false,
-        message: "Please enter a valid email and password.",
+        message: "Please enter a valid email/username and password.",
       });
     }
 
@@ -373,43 +393,73 @@ app.post("/api/admin/login", async (req, res) => {
       `SELECT
         id,
         name,
+        username,
         email,
         password_hash,
         role,
-        is_active
+        status,
+        is_active,
+        department,
+        designation,
+        avatar_url,
+        auth_provider,
+        rejection_reason
        FROM admins
-       WHERE email = ?
+       WHERE LOWER(email) = ? OR LOWER(username) = ?
        LIMIT 1`,
-      [cleanEmail]
+      [rawIdentifier, rawIdentifier]
     );
 
     if (admins.length === 0) {
       return res.status(401).json({
         success: false,
-        message: "Invalid email or password.",
+        message: "Invalid email/username or password.",
       });
     }
 
     const admin = admins[0];
 
-    if (
-      Number(admin.is_active) !== 1 ||
-      admin.role !== "admin"
-    ) {
+    // Status & Approval checks
+    if (admin.status === "pending") {
       return res.status(403).json({
         success: false,
+        status: "pending",
         message:
-          "This administrator account is inactive or unauthorized.",
+          "Your administrator registration is currently pending approval by the Main Administrator. Please check back later.",
       });
     }
 
-    if (
-      typeof admin.password_hash !== "string" ||
-      !admin.password_hash
-    ) {
-      return res.status(500).json({
+    if (admin.status === "rejected") {
+      return res.status(403).json({
         success: false,
-        message: "The administrator password is not configured correctly.",
+        status: "rejected",
+        message: `Your administrator registration was declined.${
+          admin.rejection_reason ? " Reason: " + admin.rejection_reason : ""
+        }`,
+      });
+    }
+
+    if (admin.status === "suspended" || Number(admin.is_active) !== 1) {
+      return res.status(403).json({
+        success: false,
+        status: "suspended",
+        message:
+          "This administrator account is currently inactive or suspended. Please contact the Main Administrator.",
+      });
+    }
+
+    if (admin.role !== "admin" && admin.role !== "superadmin") {
+      return res.status(403).json({
+        success: false,
+        message: "This account does not have administrator authorization.",
+      });
+    }
+
+    if (!admin.password_hash) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "This account was registered using Google OAuth. Please sign in using 'Continue with Google'.",
       });
     }
 
@@ -421,15 +471,20 @@ app.post("/api/admin/login", async (req, res) => {
     if (!passwordMatches) {
       return res.status(401).json({
         success: false,
-        message: "Invalid email or password.",
+        message: "Invalid email/username or password.",
       });
     }
 
-    // Regenerate the session after successful authentication.
+    // Update last_login_at
+    await db.execute(
+      "UPDATE admins SET last_login_at = CURRENT_TIMESTAMP WHERE id = ?",
+      [admin.id]
+    );
+
+    // Regenerate session
     req.session.regenerate((error) => {
       if (error) {
         console.error("Session regeneration error:", error.message);
-
         return res.status(500).json({
           success: false,
           message: "Unable to create an administrator session.",
@@ -439,15 +494,19 @@ app.post("/api/admin/login", async (req, res) => {
       req.session.admin = {
         id: admin.id,
         name: admin.name,
+        username: admin.username,
         email: admin.email,
         role: admin.role,
+        status: admin.status,
+        department: admin.department,
+        designation: admin.designation,
+        avatar_url: admin.avatar_url,
+        isSuperAdmin: admin.role === "superadmin",
       };
 
-      // Save the session before sending the response.
       req.session.save((saveError) => {
         if (saveError) {
           console.error("Session save error:", saveError.message);
-
           return res.status(500).json({
             success: false,
             message: "Unable to save the administrator session.",
@@ -465,7 +524,6 @@ app.post("/api/admin/login", async (req, res) => {
     });
   } catch (error) {
     console.error("Admin login error:", error.message);
-
     return res.status(500).json({
       success: false,
       message: "Unable to process administrator login.",
@@ -477,7 +535,7 @@ app.post("/api/admin/login", async (req, res) => {
 // CHECK ADMIN SESSION
 // =========================================================
 
-app.get("/api/admin/me", (req, res) => {
+app.get("/api/admin/me", async (req, res) => {
   if (!req.session || !req.session.admin) {
     return res.status(401).json({
       success: false,
@@ -486,19 +544,678 @@ app.get("/api/admin/me", (req, res) => {
     });
   }
 
-  if (req.session.admin.role !== "admin") {
-    return res.status(403).json({
-      success: false,
-      authenticated: false,
-      message: "Administrator access is required.",
+  try {
+    const adminId = req.session.admin.id;
+    const [rows] = await db.execute(
+      `SELECT
+        id,
+        name,
+        username,
+        email,
+        role,
+        status,
+        is_active,
+        department,
+        designation,
+        avatar_url
+       FROM admins
+       WHERE id = ?
+       LIMIT 1`,
+      [adminId]
+    );
+
+    if (
+      rows.length === 0 ||
+      rows[0].status !== "approved" ||
+      Number(rows[0].is_active) !== 1
+    ) {
+      if (req.session && typeof req.session.destroy === "function") {
+        req.session.destroy(() => {});
+      }
+      return res.status(403).json({
+        success: false,
+        authenticated: false,
+        message: "Administrator session is no longer active or authorized.",
+      });
+    }
+
+    const currentAdmin = rows[0];
+
+    // Sync refreshed properties into session
+    req.session.admin = {
+      id: currentAdmin.id,
+      name: currentAdmin.name,
+      username: currentAdmin.username,
+      email: currentAdmin.email,
+      role: currentAdmin.role,
+      status: currentAdmin.status,
+      department: currentAdmin.department,
+      designation: currentAdmin.designation,
+      avatar_url: currentAdmin.avatar_url,
+      isSuperAdmin: currentAdmin.role === "superadmin",
+    };
+
+    return res.status(200).json({
+      success: true,
+      authenticated: true,
+      admin: req.session.admin,
+      isSuperAdmin: req.session.admin.role === "superadmin",
+    });
+  } catch (error) {
+    console.error("Error refreshing admin session:", error.message);
+    return res.status(200).json({
+      success: true,
+      authenticated: true,
+      admin: req.session.admin,
+      isSuperAdmin: req.session.admin.role === "superadmin",
     });
   }
+});
 
-  return res.status(200).json({
-    success: true,
-    authenticated: true,
-    admin: req.session.admin,
-  });
+// =========================================================
+// ADMIN REGISTRATION (NEW ADMINS - REQUIRES APPROVAL)
+// =========================================================
+
+app.post("/api/admin/register", async (req, res) => {
+  try {
+    const {
+      name,
+      username,
+      email,
+      password,
+      department,
+      designation,
+      phone,
+      request_reason,
+      auth_provider,
+      auth_provider_id,
+      avatar_url,
+    } = req.body || {};
+
+    const cleanName = typeof name === "string" ? name.trim() : "";
+    const cleanUsername = typeof username === "string" ? username.trim().toLowerCase() : "";
+    const cleanEmail = typeof email === "string" ? email.trim().toLowerCase() : "";
+    const provider = auth_provider === "google" ? "google" : "local";
+
+    if (!cleanName || cleanName.length < 2 || cleanName.length > 150) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide a valid full name (2 to 150 characters).",
+      });
+    }
+
+    if (!cleanUsername || !/^[a-zA-Z0-9_]{3,30}$/.test(cleanUsername)) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Username must be 3-30 characters long and contain only letters, numbers, and underscores.",
+      });
+    }
+
+    if (!cleanEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+      return res.status(400).json({
+        success: false,
+        message: "Please enter a valid email address.",
+      });
+    }
+
+    if (provider !== "google") {
+      if (typeof password !== "string" || password.length < 8) {
+        return res.status(400).json({
+          success: false,
+          message: "Password must be at least 8 characters long.",
+        });
+      }
+      if (password.length > 72) {
+        return res.status(400).json({
+          success: false,
+          message: "Password must not exceed 72 characters.",
+        });
+      }
+    }
+
+    // Check if email already exists
+    const [existingEmail] = await db.execute(
+      "SELECT id, status, is_active FROM admins WHERE LOWER(email) = ? LIMIT 1",
+      [cleanEmail]
+    );
+
+    if (existingEmail.length > 0) {
+      const existing = existingEmail[0];
+      if (existing.status === "pending") {
+        return res.status(409).json({
+          success: false,
+          status: "pending",
+          message:
+            "A registration request with this email is already awaiting Main Administrator approval.",
+        });
+      }
+      if (existing.status === "approved") {
+        return res.status(409).json({
+          success: false,
+          status: "approved",
+          message: "An active administrator account with this email already exists.",
+        });
+      }
+      if (existing.status === "rejected") {
+        return res.status(409).json({
+          success: false,
+          status: "rejected",
+          message:
+            "A registration with this email was previously declined. Please contact the college administrator.",
+        });
+      }
+      return res.status(409).json({
+        success: false,
+        message: "An account with this email address already exists.",
+      });
+    }
+
+    // Check if username already exists
+    const [existingUsername] = await db.execute(
+      "SELECT id FROM admins WHERE LOWER(username) = ? LIMIT 1",
+      [cleanUsername]
+    );
+
+    if (existingUsername.length > 0) {
+      return res.status(409).json({
+        success: false,
+        message: "This username is already taken. Please choose another username.",
+      });
+    }
+
+    const passwordHash =
+      password && typeof password === "string"
+        ? await bcrypt.hash(password, 12)
+        : null;
+
+    const [result] = await db.execute(
+      `INSERT INTO admins (
+        name,
+        username,
+        email,
+        password_hash,
+        role,
+        status,
+        is_active,
+        auth_provider,
+        auth_provider_id,
+        department,
+        designation,
+        phone,
+        avatar_url,
+        request_reason
+      ) VALUES (?, ?, ?, ?, 'admin', 'pending', 0, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        cleanName,
+        cleanUsername,
+        cleanEmail,
+        passwordHash,
+        provider,
+        auth_provider_id || null,
+        department?.trim() || null,
+        designation?.trim() || null,
+        phone?.trim() || null,
+        avatar_url?.trim() || null,
+        request_reason?.trim() || null,
+      ]
+    );
+
+    return res.status(201).json({
+      success: true,
+      status: "pending",
+      message:
+        "Administrator registration request submitted successfully! Your account is queued for verification and approval by the Main Administrator.",
+      admin: {
+        id: result.insertId,
+        name: cleanName,
+        username: cleanUsername,
+        email: cleanEmail,
+        department: department || null,
+        status: "pending",
+        auth_provider: provider,
+      },
+    });
+  } catch (error) {
+    console.error("Admin registration error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to submit administrator registration. Please try again.",
+    });
+  }
+});
+
+// =========================================================
+// CHECK ADMIN REGISTRATION STATUS
+// =========================================================
+
+app.post("/api/admin/check-status", async (req, res) => {
+  try {
+    const { identifier } = req.body || {};
+    const cleanId = (identifier || "").trim().toLowerCase();
+
+    if (!cleanId) {
+      return res.status(400).json({
+        success: false,
+        message: "Please enter your email or username to check registration status.",
+      });
+    }
+
+    const [admins] = await db.execute(
+      `SELECT
+        a.id,
+        a.name,
+        a.username,
+        a.email,
+        a.department,
+        a.designation,
+        a.role,
+        a.status,
+        a.is_active,
+        a.auth_provider,
+        a.rejection_reason,
+        a.created_at,
+        a.approved_at,
+        approver.name AS approved_by_name
+       FROM admins a
+       LEFT JOIN admins approver ON a.approved_by = approver.id
+       WHERE LOWER(a.email) = ? OR LOWER(a.username) = ?
+       LIMIT 1`,
+      [cleanId, cleanId]
+    );
+
+    if (admins.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No administrator registration found for this email or username.",
+      });
+    }
+
+    const admin = admins[0];
+
+    return res.status(200).json({
+      success: true,
+      status: admin.status,
+      admin: {
+        id: admin.id,
+        name: admin.name,
+        username: admin.username,
+        email: admin.email,
+        department: admin.department,
+        designation: admin.designation,
+        role: admin.role,
+        status: admin.status,
+        is_active: Boolean(admin.is_active),
+        auth_provider: admin.auth_provider,
+        rejection_reason: admin.rejection_reason,
+        created_at: admin.created_at,
+        approved_at: admin.approved_at,
+        approved_by_name: admin.approved_by_name,
+      },
+    });
+  } catch (error) {
+    console.error("Admin check status error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Unable to retrieve registration status.",
+    });
+  }
+});
+
+// =========================================================
+// PENDING ADMIN REGISTRATIONS COUNT (FOR DASHBOARD BADGE)
+// =========================================================
+
+app.get("/api/admin/pending-count", requireAdmin, async (req, res) => {
+  try {
+    const [rows] = await db.execute(
+      "SELECT COUNT(*) AS count FROM admins WHERE status = 'pending'"
+    );
+    return res.status(200).json({
+      success: true,
+      count: rows[0]?.count || 0,
+    });
+  } catch (error) {
+    console.error("Pending count error:", error);
+    return res.status(500).json({ success: false, count: 0 });
+  }
+});
+
+// =========================================================
+// SUPERADMIN - LIST ALL ADMINISTRATORS & APPLICANTS
+// =========================================================
+
+app.get("/api/admin/users", requireSuperAdmin, async (req, res) => {
+  try {
+    const { status, search } = req.query || {};
+
+    let query = `
+      SELECT
+        a.id,
+        a.name,
+        a.username,
+        a.email,
+        a.role,
+        a.status,
+        a.is_active,
+        a.auth_provider,
+        a.department,
+        a.designation,
+        a.phone,
+        a.avatar_url,
+        a.request_reason,
+        a.rejection_reason,
+        a.created_at,
+        a.approved_at,
+        a.last_login_at,
+        approver.name AS approved_by_name
+      FROM admins a
+      LEFT JOIN admins approver ON a.approved_by = approver.id
+      WHERE 1=1
+    `;
+    const params = [];
+
+    if (status && status !== "all") {
+      query += " AND a.status = ?";
+      params.push(status);
+    }
+
+    if (search && search.trim()) {
+      const term = `%${search.trim().toLowerCase()}%`;
+      query += " AND (LOWER(a.name) LIKE ? OR LOWER(a.email) LIKE ? OR LOWER(COALESCE(a.username, '')) LIKE ? OR LOWER(COALESCE(a.department, '')) LIKE ?)";
+      params.push(term, term, term, term);
+    }
+
+    query += `
+      ORDER BY
+        CASE WHEN a.status = 'pending' THEN 0 ELSE 1 END,
+        a.created_at DESC
+    `;
+
+    const [admins] = await db.execute(query, params);
+
+    // Summary counts for dashboard metrics
+    const [counts] = await db.execute(`
+      SELECT
+        COUNT(*) AS total,
+        SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) AS pending,
+        SUM(CASE WHEN status = 'approved' AND is_active = 1 THEN 1 ELSE 0 END) AS approved,
+        SUM(CASE WHEN status = 'rejected' THEN 1 ELSE 0 END) AS rejected,
+        SUM(CASE WHEN status = 'suspended' OR is_active = 0 THEN 1 ELSE 0 END) AS suspended
+      FROM admins
+    `);
+
+    return res.status(200).json({
+      success: true,
+      admins,
+      counts: counts[0] || { total: 0, pending: 0, approved: 0, rejected: 0, suspended: 0 },
+    });
+  } catch (error) {
+    console.error("Fetch admins error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to retrieve administrator accounts.",
+    });
+  }
+});
+
+// =========================================================
+// SUPERADMIN - APPROVE ADMIN
+// =========================================================
+
+app.post("/api/admin/users/:id/approve", requireSuperAdmin, async (req, res) => {
+  try {
+    const adminId = Number(req.params.id);
+
+    if (!Number.isInteger(adminId) || adminId <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid administrator ID.",
+      });
+    }
+
+    const approverId = req.session.admin.id;
+
+    const [result] = await db.execute(
+      `UPDATE admins
+       SET status = 'approved',
+           is_active = 1,
+           approved_by = ?,
+           approved_at = CURRENT_TIMESTAMP,
+           rejection_reason = NULL
+       WHERE id = ?`,
+      [approverId, adminId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Administrator record not found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Administrator has been approved and granted active access.",
+    });
+  } catch (error) {
+    console.error("Approve admin error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to approve administrator.",
+    });
+  }
+});
+
+// =========================================================
+// SUPERADMIN - REJECT ADMIN
+// =========================================================
+
+app.post("/api/admin/users/:id/reject", requireSuperAdmin, async (req, res) => {
+  try {
+    const adminId = Number(req.params.id);
+    const { reason } = req.body || {};
+
+    if (!Number.isInteger(adminId) || adminId <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid administrator ID.",
+      });
+    }
+
+    if (adminId === req.session.admin.id) {
+      return res.status(400).json({
+        success: false,
+        message: "You cannot reject your own administrator account.",
+      });
+    }
+
+    const approverId = req.session.admin.id;
+
+    const [result] = await db.execute(
+      `UPDATE admins
+       SET status = 'rejected',
+           is_active = 0,
+           rejection_reason = ?,
+           approved_by = ?,
+           approved_at = CURRENT_TIMESTAMP
+       WHERE id = ?`,
+      [reason?.trim() || "Registration declined by Main Administrator", approverId, adminId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Administrator record not found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Administrator registration request has been declined.",
+    });
+  } catch (error) {
+    console.error("Reject admin error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to reject administrator.",
+    });
+  }
+});
+
+// =========================================================
+// SUPERADMIN - TOGGLE ACTIVE STATUS (SUSPEND / ACTIVATE)
+// =========================================================
+
+app.post("/api/admin/users/:id/toggle-status", requireSuperAdmin, async (req, res) => {
+  try {
+    const adminId = Number(req.params.id);
+
+    if (!Number.isInteger(adminId) || adminId <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid administrator ID.",
+      });
+    }
+
+    if (adminId === req.session.admin.id) {
+      return res.status(400).json({
+        success: false,
+        message: "You cannot deactivate or suspend your own account.",
+      });
+    }
+
+    const [rows] = await db.execute(
+      "SELECT id, is_active, status FROM admins WHERE id = ? LIMIT 1",
+      [adminId]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Administrator record not found.",
+      });
+    }
+
+    const currentActive = Number(rows[0].is_active) === 1;
+    const newActive = currentActive ? 0 : 1;
+    const newStatus = newActive ? "approved" : "suspended";
+
+    await db.execute(
+      "UPDATE admins SET is_active = ?, status = ? WHERE id = ?",
+      [newActive, newStatus, adminId]
+    );
+
+    return res.status(200).json({
+      success: true,
+      is_active: newActive,
+      status: newStatus,
+      message: newActive
+        ? "Administrator account has been activated."
+        : "Administrator account has been suspended.",
+    });
+  } catch (error) {
+    console.error("Toggle admin status error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update account status.",
+    });
+  }
+});
+
+// =========================================================
+// SUPERADMIN - UPDATE ADMIN ROLE (PROMOTE / DEMOTE)
+// =========================================================
+
+app.post("/api/admin/users/:id/role", requireSuperAdmin, async (req, res) => {
+  try {
+    const adminId = Number(req.params.id);
+    const { role } = req.body || {};
+
+    if (!Number.isInteger(adminId) || adminId <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid administrator ID.",
+      });
+    }
+
+    if (role !== "admin" && role !== "superadmin") {
+      return res.status(400).json({
+        success: false,
+        message: "Role must be either 'admin' or 'superadmin'.",
+      });
+    }
+
+    if (adminId === req.session.admin.id && role !== "superadmin") {
+      const [countSuper] = await db.execute(
+        "SELECT COUNT(*) AS count FROM admins WHERE role = 'superadmin' AND is_active = 1"
+      );
+      if (countSuper[0].count <= 1) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Cannot demote yourself. The system must retain at least one active Main Administrator.",
+        });
+      }
+    }
+
+    await db.execute("UPDATE admins SET role = ? WHERE id = ?", [role, adminId]);
+
+    return res.status(200).json({
+      success: true,
+      message: `Administrator role successfully updated to ${role}.`,
+    });
+  } catch (error) {
+    console.error("Update role error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update administrator role.",
+    });
+  }
+});
+
+// =========================================================
+// SUPERADMIN - DELETE ADMIN RECORD
+// =========================================================
+
+app.delete("/api/admin/users/:id", requireSuperAdmin, async (req, res) => {
+  try {
+    const adminId = Number(req.params.id);
+
+    if (!Number.isInteger(adminId) || adminId <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid administrator ID.",
+      });
+    }
+
+    if (adminId === req.session.admin.id) {
+      return res.status(400).json({
+        success: false,
+        message: "You cannot delete your own administrator account.",
+      });
+    }
+
+    const [result] = await db.execute("DELETE FROM admins WHERE id = ?", [adminId]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Administrator not found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Administrator record deleted successfully.",
+    });
+  } catch (error) {
+    console.error("Delete admin error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to delete administrator.",
+    });
+  }
 });
 
 // =========================================================
@@ -2292,8 +3009,16 @@ app.get("/api/auth/google", (req, res) => {
       );
     }
 
-    const state = createState();
-    req.session.googleOAuthState = state;
+    const intent = (req.query.intent || "alumni").trim();
+    const nonce = createState();
+    // Encode state and intent as URL-safe base64
+    const statePayload = Buffer.from(
+      JSON.stringify({ nonce, intent })
+    ).toString("base64url");
+
+    req.session.googleOAuthNonce = nonce;
+    req.session.googleOAuthIntent = intent;
+    req.session.googleOAuthState = statePayload;
 
     req.session.save((error) => {
       if (error) {
@@ -2310,7 +3035,7 @@ app.get("/api/auth/google", (req, res) => {
         `&redirect_uri=${encodeURIComponent(redirectUri)}` +
         `&response_type=code` +
         `&scope=${encodeURIComponent("openid email profile")}` +
-        `&state=${encodeURIComponent(state)}`;
+        `&state=${encodeURIComponent(statePayload)}`;
 
       return res.redirect(googleUrl);
     });
@@ -2337,17 +3062,30 @@ app.get("/api/auth/google/callback", async (req, res) => {
       );
     }
 
-    if (
-      typeof state !== "string" ||
-      !req.session.googleOAuthState ||
-      state !== req.session.googleOAuthState
-    ) {
-      return res.status(400).send(
-        "Invalid Google authentication state. Please try again."
-      );
+    let intent = "alumni";
+    let nonce = null;
+
+    if (typeof state === "string" && state) {
+      try {
+        const decoded = JSON.parse(
+          Buffer.from(state, "base64url").toString("utf8")
+        );
+        intent = decoded.intent || "alumni";
+        nonce = decoded.nonce || null;
+      } catch (_) {
+        if (state.includes("__")) {
+          const parts = state.split("__");
+          nonce = parts[0];
+          intent = parts[1] || "alumni";
+        } else {
+          nonce = state;
+        }
+      }
     }
 
     delete req.session.googleOAuthState;
+    delete req.session.googleOAuthNonce;
+    delete req.session.googleOAuthIntent;
 
     if (typeof code !== "string" || !code) {
       return res.status(400).send(
@@ -2385,7 +3123,7 @@ app.get("/api/auth/google/callback", async (req, res) => {
     const tokenData = await tokenResponse.json();
 
     if (!tokenResponse.ok || !tokenData.access_token) {
-      console.error("Google token exchange failed.");
+      console.error("Google token exchange failed:", tokenData);
 
       return res.status(400).send(
         "Could not complete Google authentication."
@@ -2412,11 +3150,139 @@ app.get("/api/auth/google/callback", async (req, res) => {
     const frontendUrl =
       process.env.FRONTEND_URL || "http://localhost:5173";
 
+    const cleanEmail = userData.email.toLowerCase().trim();
+
+    // Check if this is an Admin authentication or registration flow
+    if (intent === "admin_register" || intent === "admin_login") {
+      const [admins] = await db.execute(
+        `SELECT
+          id,
+          name,
+          username,
+          email,
+          role,
+          status,
+          is_active,
+          department,
+          designation,
+          avatar_url,
+          rejection_reason
+         FROM admins
+         WHERE LOWER(email) = ?
+         LIMIT 1`,
+        [cleanEmail]
+      );
+
+      if (admins.length > 0) {
+        const admin = admins[0];
+
+        if (admin.status === "pending") {
+          return res.redirect(
+            `${frontendUrl}/admin/register?status=pending&email=${encodeURIComponent(
+              cleanEmail
+            )}&name=${encodeURIComponent(admin.name)}`
+          );
+        }
+
+        if (admin.status === "rejected") {
+          return res.redirect(
+            `${frontendUrl}/admin/register?status=rejected&email=${encodeURIComponent(
+              cleanEmail
+            )}&reason=${encodeURIComponent(
+              admin.rejection_reason || "Registration request declined by the Main Administrator."
+            )}`
+          );
+        }
+
+        if (admin.status === "suspended" || Number(admin.is_active) !== 1) {
+          return res.redirect(
+            `${frontendUrl}/admin/login?error=${encodeURIComponent(
+              "This administrator account has been deactivated or suspended."
+            )}`
+          );
+        }
+
+        if (
+          (admin.status === "approved" || !admin.status) &&
+          Number(admin.is_active) === 1
+        ) {
+          const avatar = userData.picture || admin.avatar_url;
+          await db.execute(
+            `UPDATE admins
+             SET avatar_url = COALESCE(?, avatar_url),
+                 last_login_at = CURRENT_TIMESTAMP
+             WHERE id = ?`,
+            [avatar, admin.id]
+          );
+
+          return req.session.regenerate((err) => {
+            if (err) {
+              console.error("Session regeneration failed:", err);
+              return res.redirect(
+                `${frontendUrl}/admin/login?error=${encodeURIComponent(
+                  "Session creation failed."
+                )}`
+              );
+            }
+
+            req.session.admin = {
+              id: admin.id,
+              name: admin.name,
+              username: admin.username,
+              email: admin.email,
+              role: admin.role,
+              status: admin.status,
+              department: admin.department,
+              designation: admin.designation,
+              avatar_url: avatar,
+              isSuperAdmin: admin.role === "superadmin",
+            };
+
+            req.session.save((saveErr) => {
+              if (saveErr) {
+                console.error("Session save failed:", saveErr);
+                return res.redirect(
+                  `${frontendUrl}/admin/login?error=${encodeURIComponent(
+                    "Failed to save session."
+                  )}`
+                );
+              }
+
+              return res.redirect(
+                `${frontendUrl}/admin/dashboard?token=${encodeURIComponent(
+                  req.sessionID
+                )}`
+              );
+            });
+          });
+        }
+      }
+
+      // Admin does NOT exist in database
+      if (intent === "admin_login") {
+        return res.redirect(
+          `${frontendUrl}/admin/login?error=${encodeURIComponent(
+            `No administrator account found with ${cleanEmail}. Please submit an admin registration request first.`
+          )}`
+        );
+      }
+
+      // intent === "admin_register"
+      return res.redirect(
+        `${frontendUrl}/admin/register?oauth=google&email=${encodeURIComponent(
+          cleanEmail
+        )}&name=${encodeURIComponent(userData.name || "")}&avatar=${encodeURIComponent(
+          userData.picture || ""
+        )}&sub=${encodeURIComponent(userData.sub || "")}`
+      );
+    }
+
+    // Default: Alumni registration redirect
     const redirectUrl =
       `${frontendUrl}/alumni/register/form` +
       `?authMethod=google` +
       `&name=${encodeURIComponent(userData.name || "")}` +
-      `&email=${encodeURIComponent(userData.email)}`;
+      `&email=${encodeURIComponent(cleanEmail)}`;
 
     return res.redirect(redirectUrl);
   } catch (error) {

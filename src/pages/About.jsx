@@ -27,37 +27,37 @@ const departments = [
   {
     name: "Automobile Engineering",
     code: "AU",
-    slug: "automobile-engineering",
+    slug: "automobile",
     icon: Car,
   },
   {
     name: "Civil Engineering",
     code: "CE",
-    slug: "civil-engineering",
+    slug: "civil",
     icon: HardHat,
   },
   {
     name: "Computer Science and Engineering",
     code: "CS",
-    slug: "computer-science-engineering",
+    slug: "cse",
     icon: Cpu,
   },
   {
     name: "Electronics & Communication Engineering",
     code: "EC",
-    slug: "electronics-communication-engineering",
+    slug: "ece",
     icon: Radio,
   },
   {
     name: "Electrical & Electronics Engineering",
     code: "EE",
-    slug: "electrical-electronics-engineering",
+    slug: "eee",
     icon: Zap,
   },
   {
     name: "Mechanical Engineering",
     code: "ME",
-    slug: "mechanical-engineering",
+    slug: "mechanical",
     icon: Cog,
   },
 ];
@@ -236,7 +236,7 @@ function About() {
           <div className="gptm-info-card">
 
             <strong>
-              6
+              10
             </strong>
 
             <span>
@@ -249,7 +249,7 @@ function About() {
           <div className="gptm-info-card">
 
             <strong>
-              540
+              1800
             </strong>
 
             <span>
