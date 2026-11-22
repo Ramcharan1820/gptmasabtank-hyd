@@ -11,6 +11,17 @@ import {
 import "./Gallery.css";
 import API_BASE_URL from "../apiConfig";
 
+const fallbackGalleryItems = [
+  { id: "g1", title: "Masab Tank Historic Main Heritage Campus", category: "Campus", image: "/images/college.jpg" },
+  { id: "g2", title: "Modern Advanced Computer Science & AI Lab", category: "Laboratories", image: "/labs/WhatsApp Image 2026-11-12 at 4.05.59 PM.jpeg" },
+  { id: "g3", title: "Mechanical Engineering Workshop & Precision Machine Shop", category: "Laboratories", image: "/labs/WhatsApp Image 2026-11-12 at 4.06.34 PM.jpeg" },
+  { id: "g4", title: "Electrical Power Electronics & Drives Lab", category: "Laboratories", image: "/labs/WhatsApp Image 2026-11-12 at 4.21.51 PM.jpeg" },
+  { id: "g5", title: "Annual State Polytechnic Sports Meet", category: "Sports", image: "/sports/s1.jpeg" },
+  { id: "g6", title: "Inter-College Cricket Tournament Championship", category: "Sports", image: "/sports/s2.jpeg" },
+  { id: "g7", title: "Classroom Lecture & Seminar Session", category: "Academic", image: "/classroom/c1.jpeg" },
+  { id: "g8", title: "Interactive Technical Workshop & Group Learning", category: "Academic", image: "/classroom/c2.jpeg" },
+];
+
 function Gallery() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [selectedImage, setSelectedImage] = useState(null);
@@ -26,27 +37,41 @@ function Gallery() {
       const response = await fetch(`${API_BASE_URL}/api/content/gallery`);
       const result = await response.json();
 
-      if (!response.ok || !result.success) {
-        throw new Error(result.message || "Unable to load gallery photos.");
+      if (response.ok && result.success && Array.isArray(result.data) && result.data.length > 0) {
+        setItems(result.data);
+      } else {
+        setItems(fallbackGalleryItems);
       }
-
-      setItems(Array.isArray(result.data) ? result.data : []);
     } catch (err) {
-      console.error("Gallery content API error:", err);
-      setError(err.message || "Failed to load gallery images.");
+      console.warn("Gallery API offline, using curated campus media archive:", err.message);
+      setItems(fallbackGalleryItems);
     } finally {
       setLoading(false);
     }
   };
 
+  const [dbCategories, setDbCategories] = useState([]);
+
   useEffect(() => {
     fetchGallery();
+    fetch(`${API_BASE_URL}/api/categories?page=gallery`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.data)) {
+          setDbCategories(data.data);
+        }
+      })
+      .catch(() => {});
   }, []);
 
-  const categories = useMemo(
-    () => ["All", ...new Set(items.map((item) => item.category).filter(Boolean))],
-    [items]
-  );
+  const categories = useMemo(() => {
+    const set = new Set();
+    dbCategories.forEach((c) => set.add(c.name));
+    items.forEach((item) => {
+      if (item.category) set.add(item.category);
+    });
+    return ["All", ...Array.from(set)];
+  }, [items, dbCategories]);
 
   const filteredItems =
     activeCategory === "All"

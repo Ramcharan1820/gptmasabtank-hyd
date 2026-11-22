@@ -1,3 +1,4 @@
+import { Printer } from "lucide-react";
 import "./MidResult.css";
 
 function MidResult({ result, examType }) {
@@ -58,8 +59,19 @@ function MidResult({ result, examType }) {
           </p>
         </div>
 
-        <div className="mid-result-badge">
-          {examType}
+        <div className="mid-result-actions">
+          <button
+            type="button"
+            className="mid-print-btn"
+            onClick={() => window.print()}
+            title="Print or Save Marksheet"
+          >
+            <Printer size={15} />
+            <span>Print Marksheet</span>
+          </button>
+          <div className="mid-result-badge">
+            {examType}
+          </div>
         </div>
 
       </div>

@@ -62,6 +62,33 @@
   color: #718096;
 }
 
+.mid-result-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mid-print-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #ffffff;
+  color: #1e293b;
+  border: 1px solid #cbd5e1;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mid-print-btn:hover {
+  background: #f1f5f9;
+  border-color: #800000;
+  color: #800000;
+}
+
 .mid-result-badge {
   padding:
     8px 13px;

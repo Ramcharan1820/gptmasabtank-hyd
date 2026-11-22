@@ -187,7 +187,8 @@ export default function AdminRegister() {
 
   // Google OAuth Initiation
   const handleGoogleOAuth = () => {
-    window.location.href = `${API_BASE_URL}/api/auth/google?intent=admin_register`;
+    const returnUrl = encodeURIComponent(window.location.origin);
+    window.location.href = `${API_BASE_URL}/api/auth/google?intent=admin_register&return_to=${returnUrl}`;
   };
 
   // Handle Registration Form Submit
@@ -436,10 +437,13 @@ export default function AdminRegister() {
               {/* Header */}
               <div className="admin-reg-header">
                 <div className="admin-reg-icon-wrapper">
-                  <ShieldCheck size={32} />
+                  <ShieldCheck size={30} />
                 </div>
-                <h1>Administrator Registration</h1>
-                <p>Government Polytechnic College Masab Tank, Hyderabad</p>
+                <p className="admin-reg-label">GOVERNMENT POLYTECHNIC COLLEGE</p>
+                <h1>Admin Registration</h1>
+                <p className="admin-reg-description">
+                  Masab Tank, Hyderabad &bull; Official Management Portal
+                </p>
               </div>
 
               {/* Mode Switching Tabs */}
@@ -814,24 +818,12 @@ export default function AdminRegister() {
                     </div>
 
                     {/* Terms Checkbox */}
-                    <label
-                      style={{
-                        display: "flex",
-                        alignItems: "flex-start",
-                        gap: "10px",
-                        fontSize: "0.84rem",
-                        color: "#94a3b8",
-                        cursor: "pointer",
-                        lineHeight: 1.45,
-                        marginTop: "4px",
-                      }}
-                    >
+                    <label className="admin-terms-label">
                       <input
                         type="checkbox"
                         name="agreeTerms"
                         checked={formData.agreeTerms}
                         onChange={handleChange}
-                        style={{ marginTop: "3px" }}
                       />
                       <span>
                         I certify that I am an authorized faculty member or staff member of Government
@@ -864,13 +856,13 @@ export default function AdminRegister() {
 
               {/* VIEW: TRACK STATUS */}
               {viewMode === "status" && (
-                <div style={{ padding: "10px 0" }}>
-                  <p style={{ color: "#94a3b8", fontSize: "0.92rem", marginBottom: "20px" }}>
+                <div className="admin-status-search-view">
+                  <p className="admin-status-search-desc">
                     Already submitted a registration request? Enter your registered email address or
                     username below to view your real-time approval status.
                   </p>
 
-                  <form onSubmit={handleCheckStatus} style={{ marginBottom: "24px" }}>
+                  <form onSubmit={handleCheckStatus} className="admin-status-search-form">
                     <div className="admin-reg-field">
                       <label htmlFor="status-identifier">Registered Email or Username</label>
                       <div className="admin-input-wrapper">
@@ -949,17 +941,8 @@ export default function AdminRegister() {
                       </div>
 
                       {statusResult.status === "approved" && (
-                        <div
-                          style={{
-                            gridColumn: "1 / -1",
-                            padding: "12px",
-                            background: "rgba(16, 185, 129, 0.1)",
-                            borderRadius: "8px",
-                            border: "1px solid rgba(16, 185, 129, 0.25)",
-                            marginTop: "8px",
-                          }}
-                        >
-                          <div style={{ color: "#34d399", fontWeight: "600", marginBottom: "6px" }}>
+                        <div className="admin-status-approved-callout">
+                          <div className="admin-status-callout-title">
                             ✓ Account is Approved & Active
                           </div>
                           <Link to="/admin/login" className="admin-action-btn-primary">
@@ -969,20 +952,11 @@ export default function AdminRegister() {
                       )}
 
                       {statusResult.status === "rejected" && (
-                        <div
-                          style={{
-                            gridColumn: "1 / -1",
-                            padding: "12px",
-                            background: "rgba(239, 68, 68, 0.1)",
-                            borderRadius: "8px",
-                            border: "1px solid rgba(239, 68, 68, 0.25)",
-                            marginTop: "8px",
-                          }}
-                        >
-                          <div style={{ color: "#f87171", fontWeight: "600", marginBottom: "4px" }}>
+                        <div className="admin-status-rejected-callout">
+                          <div className="admin-status-callout-title">
                             Declined by Main Administrator
                           </div>
-                          <div style={{ color: "#cbd5e1", fontSize: "0.85rem" }}>
+                          <div className="admin-status-callout-reason">
                             Reason: {statusResult.rejection_reason || "Not specified."}
                           </div>
                         </div>

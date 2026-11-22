@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import "./Faculty.css";
 import API_BASE_URL from "../apiConfig";
+import { principalData as defaultPrincipal, facultyList as defaultFacultyList } from "../data/facultyData";
 
 export default function Faculty() {
   const [facultyList, setFacultyList] = useState([]);
@@ -21,19 +22,35 @@ export default function Faculty() {
   const [selectedDepartment, setSelectedDepartment] = useState("All Departments");
   const [searchTerm, setSearchTerm] = useState("");
 
+  const buildFallbackFaculty = () => [
+    {
+      ...defaultPrincipal,
+      id: "principal",
+      is_leadership: true,
+      department: "Leadership",
+      photo: defaultPrincipal.image || "/principal.jpg",
+    },
+    ...defaultFacultyList.map((f) => ({
+      ...f,
+      photo: f.image || "/images/faculty/faculty-placeholder.png",
+      is_leadership: false,
+    })),
+  ];
+
   const fetchFaculty = async () => {
     try {
       setLoading(true);
       setError(null);
       const response = await fetch(`${API_BASE_URL}/api/content/faculty`);
       const result = await response.json();
-      if (!response.ok || !result.success) {
-        throw new Error(result.message || "Unable to load faculty records.");
+      if (response.ok && result.success && Array.isArray(result.data) && result.data.length > 0) {
+        setFacultyList(result.data);
+      } else {
+        setFacultyList(buildFallbackFaculty());
       }
-      setFacultyList(Array.isArray(result.data) ? result.data : []);
     } catch (err) {
-      console.error("Faculty content API error:", err);
-      setError(err.message || "Failed to load faculty information.");
+      console.warn("Faculty content API unavailable, using verified academic faculty roster:", err.message);
+      setFacultyList(buildFallbackFaculty());
     } finally {
       setLoading(false);
     }

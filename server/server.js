@@ -19,6 +19,14 @@ const db = require("./db");
 const app = express();
 const PORT = Number(process.env.PORT) || 5000;
 
+process.on("unhandledRejection", (reason) => {
+  console.error("Unhandled Rejection:", reason?.message || reason);
+});
+
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception:", err?.message || err);
+});
+
 if (!process.env.SESSION_SECRET) {
   throw new Error("SESSION_SECRET is missing from server/.env");
 }
@@ -1568,13 +1576,451 @@ app.get("/api/alumni", requireAdmin, async (req, res) => {
 });
 
 // =========================================================
+// CATEGORIES MANAGEMENT SYSTEM - FOR ALL PAGES
+// =========================================================
+
+const VALID_CATEGORY_TARGETS = new Set([
+  "events",
+  "gallery",
+  "notices",
+  "faculty",
+  "placements",
+  "departments",
+  "alumni",
+  "general",
+]);
+
+const slugifyCategory = (text) =>
+  String(text || "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+// PUBLIC: Fetch categories by page or all active
+app.get("/api/categories", async (req, res) => {
+  try {
+    const { page } = req.query;
+    let query = `
+      SELECT id, target_page, name, slug, description, color, icon, sort_order, is_active, created_at, updated_at
+      FROM categories
+      WHERE is_active = 1
+    `;
+    const params = [];
+
+    if (page && typeof page === "string" && page.trim() && page.trim().toLowerCase() !== "all") {
+      query += ` AND target_page = ?`;
+      params.push(page.trim().toLowerCase());
+    }
+
+    query += ` ORDER BY target_page ASC, sort_order ASC, name ASC`;
+
+    const [rows] = await db.query(query, params);
+
+    return res.json({
+      success: true,
+      data: rows,
+    });
+  } catch (error) {
+    console.error("Get categories error:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch categories.",
+    });
+  }
+});
+
+// ADMIN: Fetch all categories with dynamic item usage count
+app.get("/api/admin/categories", requireAdmin, async (req, res) => {
+  try {
+    const { page, search, status } = req.query;
+
+    let query = `
+      SELECT id, target_page, name, slug, description, color, icon, sort_order, is_active, created_at, updated_at
+      FROM categories
+      WHERE 1=1
+    `;
+    const params = [];
+
+    if (page && typeof page === "string" && page.trim() && page.trim().toLowerCase() !== "all") {
+      query += ` AND target_page = ?`;
+      params.push(page.trim().toLowerCase());
+    }
+
+    if (status === "active") {
+      query += ` AND is_active = 1`;
+    } else if (status === "inactive") {
+      query += ` AND is_active = 0`;
+    }
+
+    if (search && typeof search === "string" && search.trim()) {
+      query += ` AND (name LIKE ? OR slug LIKE ? OR description LIKE ?)`;
+      const term = `%${search.trim()}%`;
+      params.push(term, term, term);
+    }
+
+    query += ` ORDER BY target_page ASC, sort_order ASC, name ASC`;
+
+    const [categories] = await db.query(query, params);
+
+    // Compute live item counts for categories
+    const usageCounts = {
+      events: {},
+      gallery: {},
+      notices: {},
+      faculty: {},
+      placements: {},
+      departments: {},
+      alumni: {},
+    };
+
+    try {
+      const [eventRows] = await db.query(
+        "SELECT LOWER(category) as cat, COUNT(*) as c FROM events WHERE category IS NOT NULL GROUP BY LOWER(category)"
+      );
+      for (const r of eventRows) if (r.cat) usageCounts.events[r.cat] = Number(r.c);
+
+      const [galleryRows] = await db.query(
+        "SELECT LOWER(JSON_UNQUOTE(JSON_EXTRACT(payload, '$.category'))) as cat, COUNT(*) as c FROM site_content WHERE content_type = 'gallery' GROUP BY cat"
+      );
+      for (const r of galleryRows) if (r.cat) usageCounts.gallery[r.cat] = Number(r.c);
+
+      const [noticeRows] = await db.query(
+        "SELECT LOWER(category) as cat, COUNT(*) as c FROM notices WHERE category IS NOT NULL GROUP BY LOWER(category)"
+      );
+      for (const r of noticeRows) if (r.cat) usageCounts.notices[r.cat] = Number(r.c);
+
+      const [facultyRows] = await db.query(
+        "SELECT LOWER(COALESCE(JSON_UNQUOTE(JSON_EXTRACT(payload, '$.category')), JSON_UNQUOTE(JSON_EXTRACT(payload, '$.department')))) as cat, COUNT(*) as c FROM site_content WHERE content_type = 'faculty' GROUP BY cat"
+      );
+      for (const r of facultyRows) if (r.cat) usageCounts.faculty[r.cat] = Number(r.c);
+
+      const [placementRows] = await db.query(
+        "SELECT LOWER(COALESCE(JSON_UNQUOTE(JSON_EXTRACT(payload, '$.category')), JSON_UNQUOTE(JSON_EXTRACT(payload, '$.kind')))) as cat, COUNT(*) as c FROM site_content WHERE content_type = 'placements' GROUP BY cat"
+      );
+      for (const r of placementRows) if (r.cat) usageCounts.placements[r.cat] = Number(r.c);
+
+      const [deptRows] = await db.query(
+        "SELECT LOWER(department_code) as cat, COUNT(*) as c FROM departments GROUP BY cat"
+      );
+      for (const r of deptRows) if (r.cat) usageCounts.departments[r.cat] = Number(r.c);
+
+      const [alumniRows] = await db.query(
+        "SELECT LOWER(department) as cat, COUNT(*) as c FROM alumni WHERE department IS NOT NULL GROUP BY LOWER(department)"
+      );
+      for (const r of alumniRows) if (r.cat) usageCounts.alumni[r.cat] = Number(r.c);
+    } catch (countErr) {
+      console.warn("Could not calculate dynamic category usage counts:", countErr.message);
+    }
+
+    const data = categories.map((cat) => {
+      const target = (cat.target_page || "").toLowerCase();
+      const catKey = (cat.name || "").toLowerCase();
+      const itemCount = usageCounts[target]?.[catKey] || 0;
+      return {
+        ...cat,
+        is_active: Boolean(cat.is_active),
+        item_count: itemCount,
+      };
+    });
+
+    return res.json({
+      success: true,
+      data,
+    });
+  } catch (error) {
+    console.error("Get admin categories error:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch categories.",
+    });
+  }
+});
+
+// ADMIN: POST /api/admin/categories
+app.post("/api/admin/categories", requireAdmin, async (req, res) => {
+  try {
+    const {
+      target_page,
+      name,
+      slug,
+      description,
+      color = "#800000",
+      icon = "Tag",
+      sort_order = 0,
+      is_active = true,
+    } = req.body || {};
+
+    if (
+      !target_page ||
+      typeof target_page !== "string" ||
+      !VALID_CATEGORY_TARGETS.has(target_page.trim().toLowerCase())
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: `Invalid target page. Supported pages: ${Array.from(VALID_CATEGORY_TARGETS).join(", ")}.`,
+      });
+    }
+
+    if (!name || typeof name !== "string" || !name.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Category name is required.",
+      });
+    }
+
+    const cleanTarget = target_page.trim().toLowerCase();
+    const cleanName = name.trim();
+    const cleanSlug = slug && typeof slug === "string" && slug.trim() ? slugifyCategory(slug) : slugifyCategory(cleanName);
+    const cleanDesc = description && typeof description === "string" ? description.trim() || null : null;
+    const cleanColor = typeof color === "string" && /^#[0-9a-fA-F]{3,8}$/.test(color.trim()) ? color.trim() : "#800000";
+    const cleanIcon = typeof icon === "string" && icon.trim() ? icon.trim() : "Tag";
+    const parsedOrder = Number.isInteger(Number(sort_order)) ? Number(sort_order) : 0;
+
+    // Check duplicate
+    const [existing] = await db.execute(
+      "SELECT id FROM categories WHERE target_page = ? AND LOWER(name) = LOWER(?) LIMIT 1",
+      [cleanTarget, cleanName]
+    );
+
+    if (existing.length > 0) {
+      return res.status(409).json({
+        success: false,
+        message: `Category "${cleanName}" already exists for ${cleanTarget}.`,
+      });
+    }
+
+    const [result] = await db.execute(
+      `INSERT INTO categories
+        (target_page, name, slug, description, color, icon, sort_order, is_active)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [cleanTarget, cleanName, cleanSlug, cleanDesc, cleanColor, cleanIcon, parsedOrder, is_active ? 1 : 0]
+    );
+
+    return res.status(201).json({
+      success: true,
+      message: `Category "${cleanName}" created successfully for ${cleanTarget}.`,
+      data: {
+        id: result.insertId,
+        target_page: cleanTarget,
+        name: cleanName,
+        slug: cleanSlug,
+        description: cleanDesc,
+        color: cleanColor,
+        icon: cleanIcon,
+        sort_order: parsedOrder,
+        is_active: Boolean(is_active),
+      },
+    });
+  } catch (error) {
+    console.error("Create category error:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to create category.",
+    });
+  }
+});
+
+// ADMIN: PUT /api/admin/categories/:id
+app.put("/api/admin/categories/:id", requireAdmin, async (req, res) => {
+  try {
+    const categoryId = Number(req.params.id);
+    if (!Number.isInteger(categoryId) || categoryId <= 0) {
+      return res.status(400).json({ success: false, message: "Invalid category ID." });
+    }
+
+    const {
+      target_page,
+      name,
+      slug,
+      description,
+      color,
+      icon,
+      sort_order,
+      is_active,
+    } = req.body || {};
+
+    const [existing] = await db.execute("SELECT * FROM categories WHERE id = ? LIMIT 1", [categoryId]);
+    if (existing.length === 0) {
+      return res.status(404).json({ success: false, message: "Category not found." });
+    }
+    const current = existing[0];
+
+    const cleanTarget = target_page && typeof target_page === "string" && VALID_CATEGORY_TARGETS.has(target_page.trim().toLowerCase())
+      ? target_page.trim().toLowerCase()
+      : current.target_page;
+
+    const cleanName = name && typeof name === "string" && name.trim() ? name.trim() : current.name;
+    const cleanSlug = slug && typeof slug === "string" && slug.trim() ? slugifyCategory(slug) : slugifyCategory(cleanName);
+    const cleanDesc = description !== undefined ? (typeof description === "string" ? description.trim() || null : null) : current.description;
+    const cleanColor = color && typeof color === "string" && /^#[0-9a-fA-F]{3,8}$/.test(color.trim()) ? color.trim() : current.color;
+    const cleanIcon = icon && typeof icon === "string" && icon.trim() ? icon.trim() : current.icon;
+    const cleanOrder = sort_order !== undefined && Number.isInteger(Number(sort_order)) ? Number(sort_order) : current.sort_order;
+    const cleanActive = is_active !== undefined ? (Boolean(is_active) ? 1 : 0) : current.is_active;
+
+    // Check duplicate name on target page
+    const [dup] = await db.execute(
+      "SELECT id FROM categories WHERE target_page = ? AND LOWER(name) = LOWER(?) AND id != ? LIMIT 1",
+      [cleanTarget, cleanName, categoryId]
+    );
+
+    if (dup.length > 0) {
+      return res.status(409).json({
+        success: false,
+        message: `Another category with name "${cleanName}" already exists for ${cleanTarget}.`,
+      });
+    }
+
+    await db.execute(
+      `UPDATE categories
+       SET target_page = ?, name = ?, slug = ?, description = ?, color = ?, icon = ?, sort_order = ?, is_active = ?
+       WHERE id = ?`,
+      [cleanTarget, cleanName, cleanSlug, cleanDesc, cleanColor, cleanIcon, cleanOrder, cleanActive, categoryId]
+    );
+
+    return res.json({
+      success: true,
+      message: "Category updated successfully.",
+      data: {
+        id: categoryId,
+        target_page: cleanTarget,
+        name: cleanName,
+        slug: cleanSlug,
+        description: cleanDesc,
+        color: cleanColor,
+        icon: cleanIcon,
+        sort_order: cleanOrder,
+        is_active: Boolean(cleanActive),
+      },
+    });
+  } catch (error) {
+    console.error("Update category error:", error.message);
+    return res.status(500).json({ success: false, message: "Failed to update category." });
+  }
+});
+
+// ADMIN: POST /api/admin/categories/:id/toggle-status
+app.post("/api/admin/categories/:id/toggle-status", requireAdmin, async (req, res) => {
+  try {
+    const categoryId = Number(req.params.id);
+    if (!Number.isInteger(categoryId) || categoryId <= 0) {
+      return res.status(400).json({ success: false, message: "Invalid category ID." });
+    }
+
+    const [rows] = await db.execute("SELECT id, name, is_active FROM categories WHERE id = ? LIMIT 1", [categoryId]);
+    if (rows.length === 0) {
+      return res.status(404).json({ success: false, message: "Category not found." });
+    }
+
+    const newStatus = rows[0].is_active ? 0 : 1;
+    await db.execute("UPDATE categories SET is_active = ? WHERE id = ?", [newStatus, categoryId]);
+
+    return res.json({
+      success: true,
+      message: `Category "${rows[0].name}" is now ${newStatus ? "active" : "inactive"}.`,
+      is_active: Boolean(newStatus),
+    });
+  } catch (error) {
+    console.error("Toggle category status error:", error.message);
+    return res.status(500).json({ success: false, message: "Failed to toggle category status." });
+  }
+});
+
+// ADMIN: DELETE /api/admin/categories/:id
+app.delete("/api/admin/categories/:id", requireAdmin, async (req, res) => {
+  try {
+    const categoryId = Number(req.params.id);
+    const force = req.query.force === "true";
+
+    if (!Number.isInteger(categoryId) || categoryId <= 0) {
+      return res.status(400).json({ success: false, message: "Invalid category ID." });
+    }
+
+    const [existing] = await db.execute("SELECT * FROM categories WHERE id = ? LIMIT 1", [categoryId]);
+    if (existing.length === 0) {
+      return res.status(404).json({ success: false, message: "Category not found." });
+    }
+    const category = existing[0];
+
+    // Check usage
+    let inUseCount = 0;
+    try {
+      if (category.target_page === "events") {
+        const [r] = await db.execute("SELECT count(*) as c FROM events WHERE LOWER(category) = LOWER(?)", [category.name]);
+        inUseCount = Number(r[0].c);
+      } else if (category.target_page === "gallery") {
+        const [r] = await db.execute(
+          "SELECT count(*) as c FROM site_content WHERE content_type = 'gallery' AND LOWER(JSON_UNQUOTE(JSON_EXTRACT(payload, '$.category'))) = LOWER(?)",
+          [category.name]
+        );
+        inUseCount = Number(r[0].c);
+      } else if (category.target_page === "notices") {
+        const [r] = await db.execute("SELECT count(*) as c FROM notices WHERE LOWER(category) = LOWER(?)", [category.name]);
+        inUseCount = Number(r[0].c);
+      }
+    } catch (e) {
+      // continue
+    }
+
+    if (inUseCount > 0 && !force) {
+      return res.status(409).json({
+        success: false,
+        in_use: true,
+        count: inUseCount,
+        message: `Category "${category.name}" is currently assigned to ${inUseCount} ${category.target_page} item(s). Confirm delete with force=true if you really wish to delete it.`,
+      });
+    }
+
+    await db.execute("DELETE FROM categories WHERE id = ?", [categoryId]);
+
+    return res.json({
+      success: true,
+      message: `Category "${category.name}" deleted successfully.`,
+    });
+  } catch (error) {
+    console.error("Delete category error:", error.message);
+    return res.status(500).json({ success: false, message: "Failed to delete category." });
+  }
+});
+
+// ADMIN: POST /api/admin/categories/seed-defaults
+app.post("/api/admin/categories/seed-defaults", requireAdmin, async (req, res) => {
+  try {
+    const { DEFAULT_CATEGORIES } = require("./migrations/migrate_categories");
+    let inserted = 0;
+    for (const cat of DEFAULT_CATEGORIES) {
+      const [existing] = await db.execute(
+        "SELECT id FROM categories WHERE target_page = ? AND name = ? LIMIT 1",
+        [cat.target_page, cat.name]
+      );
+      if (existing.length === 0) {
+        await db.execute(
+          `INSERT INTO categories (target_page, name, slug, description, color, icon, sort_order, is_active)
+           VALUES (?, ?, ?, ?, ?, ?, ?, 1)`,
+          [cat.target_page, cat.name, cat.slug, cat.description, cat.color, cat.icon, cat.sort_order]
+        );
+        inserted++;
+      }
+    }
+    return res.json({
+      success: true,
+      message: `Seeded ${inserted} standard categories.`,
+    });
+  } catch (error) {
+    console.error("Seed categories error:", error.message);
+    return res.status(500).json({ success: false, message: "Failed to seed default categories." });
+  }
+});
+
+// =========================================================
 // NOTICES
 // =========================================================
 
 app.get("/api/notices", async (req, res) => {
   try {
     const [rows] = await db.query(`
-      SELECT id, title, description, notice_date, created_at
+      SELECT id, title, description, category, notice_date, created_at
       FROM notices
       ORDER BY notice_date DESC, id DESC
     `);
@@ -1599,7 +2045,7 @@ app.get("/api/notices", async (req, res) => {
 
 app.post("/api/notices", requireAdmin, async (req, res) => {
   try {
-    const { title, description, notice_date } = req.body || {};
+    const { title, description, category, notice_date } = req.body || {};
 
     if (typeof title !== "string" || !title.trim()) {
       return res.status(400).json({
@@ -1608,14 +2054,17 @@ app.post("/api/notices", requireAdmin, async (req, res) => {
       });
     }
 
+    const cleanCategory = typeof category === "string" && category.trim() ? category.trim() : "General";
+
     const [result] = await db.execute(
-      `INSERT INTO notices (title, description, notice_date)
-       VALUES (?, ?, ?)`,
+      `INSERT INTO notices (title, description, category, notice_date)
+       VALUES (?, ?, ?, ?)`,
       [
         title.trim(),
         typeof description === "string"
           ? description.trim() || null
           : null,
+        cleanCategory,
         notice_date || null,
       ]
     );
@@ -1626,6 +2075,7 @@ app.post("/api/notices", requireAdmin, async (req, res) => {
       data: {
         id: result.insertId,
         title: title.trim(),
+        category: cleanCategory,
       },
     });
   } catch (error) {
@@ -1645,7 +2095,7 @@ app.post("/api/notices", requireAdmin, async (req, res) => {
 app.put("/api/notices/:id", requireAdmin, async (req, res) => {
   try {
     const noticeId = Number(req.params.id);
-    const { title, description, notice_date } = req.body || {};
+    const { title, description, category, notice_date } = req.body || {};
 
     if (!Number.isInteger(noticeId) || noticeId <= 0) {
       return res.status(400).json({
@@ -1663,7 +2113,7 @@ app.put("/api/notices/:id", requireAdmin, async (req, res) => {
 
     // Check that the notice exists before updating it.
     const [existingNotice] = await db.execute(
-      "SELECT id FROM notices WHERE id = ? LIMIT 1",
+      "SELECT id, category FROM notices WHERE id = ? LIMIT 1",
       [noticeId]
     );
 
@@ -1679,13 +2129,19 @@ app.put("/api/notices/:id", requireAdmin, async (req, res) => {
         ? description.trim() || null
         : null;
 
+    const cleanCategory =
+      category !== undefined
+        ? (typeof category === "string" && category.trim() ? category.trim() : "General")
+        : existingNotice[0].category || "General";
+
     await db.execute(
       `UPDATE notices
-       SET title = ?, description = ?, notice_date = ?
+       SET title = ?, description = ?, category = ?, notice_date = ?
        WHERE id = ?`,
       [
         title.trim(),
         cleanDescription,
+        cleanCategory,
         notice_date || null,
         noticeId,
       ]
@@ -2744,16 +3200,16 @@ app.get("/api/result", async (req, res) => {
     const schemeMap = {
       C24: process.env.SBTET_C24_SCHEME_ID || "11",
       C26: process.env.SBTET_C26_SCHEME_ID || "12",
-      ER2020: process.env.SBTET_ER2020_SCHEME_ID,
-      C21: process.env.SBTET_C21_SCHEME_ID,
-      C09: process.env.SBTET_C09_SCHEME_ID,
-      C08: process.env.SBTET_C08_SCHEME_ID,
-      C05: process.env.SBTET_C05_SCHEME_ID,
+      C21: process.env.SBTET_C21_SCHEME_ID || "10",
       C18: process.env.SBTET_C18_SCHEME_ID || "8",
-      C16S: process.env.SBTET_C16S_SCHEME_ID,
+      C16S: process.env.SBTET_C16S_SCHEME_ID || "7",
       C16: process.env.SBTET_C16_SCHEME_ID || "6",
-      ER91: process.env.SBTET_ER91_SCHEME_ID,
-      C14: process.env.SBTET_C14_SCHEME_ID,
+      C14: process.env.SBTET_C14_SCHEME_ID || "5",
+      C09: process.env.SBTET_C09_SCHEME_ID || "4",
+      C08: process.env.SBTET_C08_SCHEME_ID || "3",
+      C05: process.env.SBTET_C05_SCHEME_ID || "2",
+      ER2020: process.env.SBTET_ER2020_SCHEME_ID || "9",
+      ER91: process.env.SBTET_ER91_SCHEME_ID || "1",
     };
 
     const schemeId = schemeMap[cleanScheme];
@@ -2856,51 +3312,50 @@ app.get("/api/result", async (req, res) => {
 
       let foundReport = null;
       let lastStatus = null;
+      const CHUNK_SIZE = 5;
+      const cleanSemNumber = String(semYearId);
+      const romanMap = { I: "1", II: "2", III: "3", IV: "4", V: "5", VI: "6" };
 
-      for (const examMonthYearId of examMonthYearIds) {
-        const url =
-          `${SBTET_SEM_RESULT_URL}` +
-          `?ExamMonthYearId=${encodeURIComponent(examMonthYearId)}` +
-          `&ExamTypeId=5` +
-          `&Pin=${encodeURIComponent(cleanPin)}` +
-          `&SchemeId=${encodeURIComponent(schemeId)}` +
-          `&SemYearId=${semYearId}` +
-          `&StudentTypeId=${Number(process.env.SBTET_STUDENT_TYPE_ID) || 1}`;
+      for (let i = 0; i < examMonthYearIds.length && !foundReport; i += CHUNK_SIZE) {
+        const chunk = examMonthYearIds.slice(i, i + CHUNK_SIZE);
+        const promises = chunk.map((id) => {
+          const url =
+            `${SBTET_SEM_RESULT_URL}` +
+            `?ExamMonthYearId=${encodeURIComponent(id)}` +
+            `&ExamTypeId=5` +
+            `&Pin=${encodeURIComponent(cleanPin)}` +
+            `&SchemeId=${encodeURIComponent(schemeId)}` +
+            `&SemYearId=${semYearId}` +
+            `&StudentTypeId=${Number(process.env.SBTET_STUDENT_TYPE_ID) || 1}`;
 
-        const result = await fetchSBTET(url);
-        lastStatus = result.status;
-
-        if (!result.ok) {
-          continue;
-        }
-
-        const reports = parseSBTETResponse(result.data);
-        const reportList = Array.isArray(reports) ? reports : [reports];
-        foundReport = reportList.find((item) => {
-          if (!item || typeof item !== "object") {
-            return false;
-          }
-
-          const subjects = Array.isArray(item.studentWiseReport)
-            ? item.studentWiseReport
-            : [];
-          const studentInfo = Array.isArray(item.studentInfo)
-            ? item.studentInfo[0]
-            : null;
-          const returnedSemester = String(
-            studentInfo?.Sem || studentInfo?.Semester || ""
-          )
-            .trim()
-            .toUpperCase();
-
-          return (
-            subjects.length > 0 &&
-            (!returnedSemester || returnedSemester === cleanSemester)
-          );
+          return fetchSBTET(url).catch((err) => ({ ok: false, status: 500, error: err }));
         });
 
-        if (foundReport) {
-          break;
+        const responses = await Promise.all(promises);
+
+        for (const result of responses) {
+          if (!result || !result.ok) {
+            if (result?.status) lastStatus = result.status;
+            continue;
+          }
+
+          const reports = parseSBTETResponse(result.data);
+          const reportList = Array.isArray(reports) ? reports : [reports];
+          const matched = reportList.find((item) => {
+            if (!item || typeof item !== "object") return false;
+            const subjects = Array.isArray(item.studentWiseReport) ? item.studentWiseReport : [];
+            const studentInfo = Array.isArray(item.studentInfo) ? item.studentInfo[0] : null;
+            const rawSem = String(studentInfo?.Sem || studentInfo?.Semester || "").trim().toUpperCase();
+            const semDigits = rawSem.match(/\d+/)?.[0];
+            const normRoman = romanMap[rawSem.replace(/SEM|SEMESTER/g, "").trim()];
+            const semMatches = !rawSem || rawSem === cleanSemester || semDigits === cleanSemNumber || normRoman === cleanSemNumber;
+            return subjects.length > 0 && semMatches;
+          });
+
+          if (matched) {
+            foundReport = matched;
+            break;
+          }
         }
       }
 
@@ -3009,16 +3464,28 @@ app.get("/api/auth/google", (req, res) => {
       );
     }
 
+    const returnTo = req.query.return_to || req.headers.referer || "";
+    let returnOrigin = "";
+    if (returnTo) {
+      try {
+        const parsed = new URL(returnTo);
+        returnOrigin = parsed.origin;
+      } catch (_) {}
+    }
+
     const intent = (req.query.intent || "alumni").trim();
     const nonce = createState();
-    // Encode state and intent as URL-safe base64
+    // Encode state, intent, and returnOrigin as URL-safe base64
     const statePayload = Buffer.from(
-      JSON.stringify({ nonce, intent })
+      JSON.stringify({ nonce, intent, returnOrigin })
     ).toString("base64url");
 
     req.session.googleOAuthNonce = nonce;
     req.session.googleOAuthIntent = intent;
     req.session.googleOAuthState = statePayload;
+    if (returnOrigin) {
+      req.session.googleOAuthReturnOrigin = returnOrigin;
+    }
 
     req.session.save((error) => {
       if (error) {
@@ -3064,6 +3531,7 @@ app.get("/api/auth/google/callback", async (req, res) => {
 
     let intent = "alumni";
     let nonce = null;
+    let returnOrigin = "";
 
     if (typeof state === "string" && state) {
       try {
@@ -3072,6 +3540,7 @@ app.get("/api/auth/google/callback", async (req, res) => {
         );
         intent = decoded.intent || "alumni";
         nonce = decoded.nonce || null;
+        returnOrigin = decoded.returnOrigin || "";
       } catch (_) {
         if (state.includes("__")) {
           const parts = state.split("__");
@@ -3083,9 +3552,14 @@ app.get("/api/auth/google/callback", async (req, res) => {
       }
     }
 
+    if (!returnOrigin && req.session.googleOAuthReturnOrigin) {
+      returnOrigin = req.session.googleOAuthReturnOrigin;
+    }
+
     delete req.session.googleOAuthState;
     delete req.session.googleOAuthNonce;
     delete req.session.googleOAuthIntent;
+    delete req.session.googleOAuthReturnOrigin;
 
     if (typeof code !== "string" || !code) {
       return res.status(400).send(
@@ -3147,8 +3621,10 @@ app.get("/api/auth/google/callback", async (req, res) => {
       );
     }
 
-    const frontendUrl =
-      process.env.FRONTEND_URL || "http://localhost:5173";
+    let frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+    if (returnOrigin && isOriginAllowed(returnOrigin)) {
+      frontendUrl = returnOrigin.replace(/\/+$/, "");
+    }
 
     const cleanEmail = userData.email.toLowerCase().trim();
 

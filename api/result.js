@@ -121,16 +121,16 @@ export default async function handler(req, res) {
     const schemeMap = {
       C24: process.env.SBTET_C24_SCHEME_ID || "11",
       C26: process.env.SBTET_C26_SCHEME_ID || "12",
-      ER2020: process.env.SBTET_ER2020_SCHEME_ID,
-      C21: process.env.SBTET_C21_SCHEME_ID,
-      C09: process.env.SBTET_C09_SCHEME_ID,
-      C08: process.env.SBTET_C08_SCHEME_ID,
-      C05: process.env.SBTET_C05_SCHEME_ID,
+      C21: process.env.SBTET_C21_SCHEME_ID || "10",
       C18: process.env.SBTET_C18_SCHEME_ID || "8",
-      C16S: process.env.SBTET_C16S_SCHEME_ID,
+      C16S: process.env.SBTET_C16S_SCHEME_ID || "7",
       C16: process.env.SBTET_C16_SCHEME_ID || "6",
-      ER91: process.env.SBTET_ER91_SCHEME_ID,
-      C14: process.env.SBTET_C14_SCHEME_ID,
+      C14: process.env.SBTET_C14_SCHEME_ID || "5",
+      C09: process.env.SBTET_C09_SCHEME_ID || "4",
+      C08: process.env.SBTET_C08_SCHEME_ID || "3",
+      C05: process.env.SBTET_C05_SCHEME_ID || "2",
+      ER2020: process.env.SBTET_ER2020_SCHEME_ID || "9",
+      ER91: process.env.SBTET_ER91_SCHEME_ID || "1",
     };
 
     const schemeId = schemeMap[cleanScheme];
@@ -225,51 +225,50 @@ export default async function handler(req, res) {
 
       let foundReport = null;
       let lastStatus = null;
+      const CHUNK_SIZE = 5;
+      const cleanSemNumber = String(semYearId);
+      const romanMap = { I: "1", II: "2", III: "3", IV: "4", V: "5", VI: "6" };
 
-      for (const examMonthYearId of examMonthYearIds) {
-        const url =
-          `${SBTET_SEM_RESULT_URL}` +
-          `?ExamMonthYearId=${encodeURIComponent(examMonthYearId)}` +
-          `&ExamTypeId=5` +
-          `&Pin=${encodeURIComponent(cleanPin)}` +
-          `&SchemeId=${encodeURIComponent(schemeId)}` +
-          `&SemYearId=${semYearId}` +
-          `&StudentTypeId=${Number(process.env.SBTET_STUDENT_TYPE_ID) || 1}`;
+      for (let i = 0; i < examMonthYearIds.length && !foundReport; i += CHUNK_SIZE) {
+        const chunk = examMonthYearIds.slice(i, i + CHUNK_SIZE);
+        const promises = chunk.map((id) => {
+          const url =
+            `${SBTET_SEM_RESULT_URL}` +
+            `?ExamMonthYearId=${encodeURIComponent(id)}` +
+            `&ExamTypeId=5` +
+            `&Pin=${encodeURIComponent(cleanPin)}` +
+            `&SchemeId=${encodeURIComponent(schemeId)}` +
+            `&SemYearId=${semYearId}` +
+            `&StudentTypeId=${Number(process.env.SBTET_STUDENT_TYPE_ID) || 1}`;
 
-        const result = await fetchSBTET(url);
-        lastStatus = result.status;
-
-        if (!result.ok) {
-          continue;
-        }
-
-        const reports = parseSBTETResponse(result.data);
-        const reportList = Array.isArray(reports) ? reports : [reports];
-        foundReport = reportList.find((item) => {
-          if (!item || typeof item !== "object") {
-            return false;
-          }
-
-          const subjects = Array.isArray(item.studentWiseReport)
-            ? item.studentWiseReport
-            : [];
-          const studentInfo = Array.isArray(item.studentInfo)
-            ? item.studentInfo[0]
-            : null;
-          const returnedSemester = String(
-            studentInfo?.Sem || studentInfo?.Semester || ""
-          )
-            .trim()
-            .toUpperCase();
-
-          return (
-            subjects.length > 0 &&
-            (!returnedSemester || returnedSemester === cleanSemester)
-          );
+          return fetchSBTET(url).catch((err) => ({ ok: false, status: 500, error: err }));
         });
 
-        if (foundReport) {
-          break;
+        const responses = await Promise.all(promises);
+
+        for (const result of responses) {
+          if (!result || !result.ok) {
+            if (result?.status) lastStatus = result.status;
+            continue;
+          }
+
+          const reports = parseSBTETResponse(result.data);
+          const reportList = Array.isArray(reports) ? reports : [reports];
+          const matched = reportList.find((item) => {
+            if (!item || typeof item !== "object") return false;
+            const subjects = Array.isArray(item.studentWiseReport) ? item.studentWiseReport : [];
+            const studentInfo = Array.isArray(item.studentInfo) ? item.studentInfo[0] : null;
+            const rawSem = String(studentInfo?.Sem || studentInfo?.Semester || "").trim().toUpperCase();
+            const semDigits = rawSem.match(/\d+/)?.[0];
+            const normRoman = romanMap[rawSem.replace(/SEM|SEMESTER/g, "").trim()];
+            const semMatches = !rawSem || rawSem === cleanSemester || semDigits === cleanSemNumber || normRoman === cleanSemNumber;
+            return subjects.length > 0 && semMatches;
+          });
+
+          if (matched) {
+            foundReport = matched;
+            break;
+          }
         }
       }
 

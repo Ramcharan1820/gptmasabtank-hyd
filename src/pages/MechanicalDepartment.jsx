@@ -13,9 +13,52 @@ import {
   Thermometer,
   Droplets,
   ChevronRight,
+  Users,
+  Mail,
+  BookOpen,
+  Briefcase,
 } from "lucide-react";
 
 import "./MechanicalDepartment.css";
+
+const mechanicalFaculty = [
+  {
+    name: "Dr. G. Venkat Rao",
+    designation: "Head of Section (HOD)",
+    qualification: "Ph.D, M.Tech (CAD/CAM)",
+    experience: "24+ Years",
+    specialization: "Thermal Systems & Robotics",
+    email: "hod.mech@gptmasab.ac.in",
+    image: "/images/departments/mechanical/hod.jpg",
+  },
+  {
+    name: "Smt. K. Saritha",
+    designation: "Senior Lecturer",
+    qualification: "M.Tech (Production Engg)",
+    experience: "16+ Years",
+    specialization: "Manufacturing & CNC Tech",
+    email: "saritha.k@gptmasab.ac.in",
+    image: "/images/faculty/faculty-placeholder.png",
+  },
+  {
+    name: "Sri P. Murali Krishna",
+    designation: "Lecturer",
+    qualification: "M.Tech (Machine Design & Mechatronics)",
+    experience: "10+ Years",
+    specialization: "Industrial Automation & Kinematics",
+    email: "murali.krishna@gptmasab.ac.in",
+    image: "/images/faculty/faculty-placeholder.png",
+  },
+  {
+    name: "Sri V. Anjaiah",
+    designation: "Lecturer",
+    qualification: "B.Tech (Mechanical Engineering)",
+    experience: "8+ Years",
+    specialization: "Workshop Practice, Welding & Fluid Mechanics",
+    email: "anjaiah.v@gptmasab.ac.in",
+    image: "/images/faculty/faculty-placeholder.png",
+  },
+];
 
 const MechanicalDepartment = () => {
   return (
@@ -537,6 +580,87 @@ const MechanicalDepartment = () => {
               </p>
             </div>
 
+          </div>
+
+        </section>
+
+
+        {/* =================================================
+            TEACHING FACULTY SECTION
+        ================================================= */}
+        <section className="mechanical-section mechanical-faculty-section">
+
+          <div className="mechanical-section-heading">
+
+            <div className="mechanical-section-icon">
+              <Users size={24} />
+            </div>
+
+            <div>
+              <p className="mechanical-section-label">
+                ACADEMIC EXPERTS & MENTORS
+              </p>
+
+              <h2>
+                Department Teaching Faculty
+              </h2>
+            </div>
+
+            <div className="mechanical-faculty-counter">
+              <strong>{mechanicalFaculty.length}</strong>
+              <span>Faculty Members</span>
+            </div>
+
+          </div>
+
+          <div className="mechanical-faculty-grid">
+            {mechanicalFaculty.map((member) => (
+              <article className="mechanical-faculty-card" key={member.name}>
+                <div className="mechanical-faculty-photo">
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      if (e.currentTarget.nextSibling) {
+                        e.currentTarget.nextSibling.style.display = "flex";
+                      }
+                    }}
+                  />
+                  <div className="mechanical-faculty-placeholder" style={{ display: "none" }}>
+                    <UserRound size={42} />
+                  </div>
+                  <span className="mechanical-faculty-badge">
+                    {member.designation}
+                  </span>
+                </div>
+
+                <div className="mechanical-faculty-details">
+                  <h3>{member.name}</h3>
+
+                  <div className="mechanical-faculty-meta">
+                    <span>
+                      <GraduationCap size={15} /> {member.qualification}
+                    </span>
+                    <span>
+                      <Briefcase size={15} /> {member.experience}
+                    </span>
+                  </div>
+
+                  {member.specialization && (
+                    <p className="mechanical-faculty-spec">
+                      <BookOpen size={14} /> {member.specialization}
+                    </p>
+                  )}
+
+                  {member.email && (
+                    <a href={`mailto:${member.email}`} className="mechanical-faculty-email">
+                      <Mail size={14} /> {member.email}
+                    </a>
+                  )}
+                </div>
+              </article>
+            ))}
           </div>
 
         </section>

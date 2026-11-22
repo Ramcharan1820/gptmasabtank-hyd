@@ -808,6 +808,183 @@
 
 
 /* =========================================================
+   MECHANICAL FACULTY SECTION
+========================================================= */
+
+.mechanical-faculty-counter {
+  margin-left: auto;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  background: #fdf5e6;
+  border: 1px solid #e2cb9d;
+  padding: 8px 16px;
+  border-radius: 30px;
+}
+
+.mechanical-faculty-counter strong {
+  font-size: 20px;
+  font-weight: 800;
+  color: #8b2424;
+}
+
+.mechanical-faculty-counter span {
+  font-size: 13px;
+  color: #713f12;
+  font-weight: 600;
+}
+
+.mechanical-faculty-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 22px;
+  margin-top: 24px;
+}
+
+.mechanical-faculty-card {
+  background: #ffffff;
+  border: 1px solid #ead9c5;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(139, 36, 36, 0.05);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.mechanical-faculty-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(139, 36, 36, 0.12);
+  border-color: #8b2424;
+}
+
+.mechanical-faculty-photo {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.mechanical-faculty-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.3s ease;
+}
+
+.mechanical-faculty-card:hover .mechanical-faculty-photo img {
+  transform: scale(1.04);
+}
+
+.mechanical-faculty-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f5e6e6, #fde8cc);
+  color: #8b2424;
+}
+
+.mechanical-faculty-badge {
+  position: absolute;
+  bottom: 10px;
+  left: 12px;
+  background: rgba(139, 36, 36, 0.92);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  backdrop-filter: blur(4px);
+  letter-spacing: 0.3px;
+}
+
+.mechanical-faculty-details {
+  padding: 18px 20px 22px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.mechanical-faculty-details h3 {
+  margin: 0 0 10px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.mechanical-faculty-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 12px;
+}
+
+.mechanical-faculty-meta span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mechanical-faculty-meta span svg {
+  color: #8b2424;
+  flex-shrink: 0;
+}
+
+.mechanical-faculty-spec {
+  margin: 0 0 14px;
+  font-size: 12.5px;
+  color: #475569;
+  line-height: 1.5;
+  background: #fdf5e6;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border-left: 3px solid #b45309;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.mechanical-faculty-spec svg {
+  margin-top: 2px;
+  flex-shrink: 0;
+  color: #b45309;
+}
+
+.mechanical-faculty-email {
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #8b2424;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  word-break: break-all;
+}
+
+.mechanical-faculty-email:hover {
+  color: #5c1414;
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .mechanical-faculty-counter {
+    margin-left: 0;
+    margin-top: 8px;
+  }
+}
+
+/* =========================================================
    RESPONSIVE - 380px
 ========================================================= */
 

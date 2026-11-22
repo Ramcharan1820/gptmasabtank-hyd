@@ -45,6 +45,9 @@ export default function Contact() {
 
   const address = details?.address || "Government Polytechnic College, Masab Tank, Hyderabad, Telangana, India.";
   const location = details?.location || "Masab Tank, Hyderabad, Telangana, India.";
+  const phone = details?.phone || "040-23395914, 9912342001";
+  const email = details?.email || "gpthyd01@gmail.com";
+  const workingHours = details?.working_hours || "Monday to Saturday: 09:30 AM to 04:00 PM (Second Saturdays & Public Holidays Closed)";
   const mapUrl = details?.map_url || "https://www.google.com/maps/search/?api=1&query=Government+Polytechnic+College+Masab+Tank+Hyderabad";
   const mapEmbedUrl = details?.map_embed_url || "https://www.google.com/maps?q=Government%20Polytechnic%20College%20Masab%20Tank%20Hyderabad&output=embed";
 
@@ -122,7 +125,11 @@ export default function Contact() {
 
               <h3>Phone</h3>
 
-              <p>{details?.phone ? <a href={`tel:${details.phone}`}>{details.phone}</a> : "Contact the college office during working hours for enquiries."}</p>
+              <p>
+                <a href="tel:04023395914">040-23395914</a>
+                {" • "}
+                <a href="tel:9912342001">+91 9912342001</a>
+              </p>
 
             </div>
 
@@ -136,7 +143,9 @@ export default function Contact() {
 
               <h3>Email</h3>
 
-              <p>{details?.email ? <a href={`mailto:${details.email}`}>{details.email}</a> : "Contact the college through the official communication channels."}</p>
+              <p>
+                <a href={`mailto:${email}`} title="Email GPT Masab Tank">{email}</a>
+              </p>
 
             </div>
 
@@ -150,7 +159,7 @@ export default function Contact() {
 
               <h3>Working Hours</h3>
 
-              <p>{details?.working_hours || <>Monday to Friday<br />During regular college working hours.</>}</p>
+              <p>{workingHours}</p>
 
             </div>
 

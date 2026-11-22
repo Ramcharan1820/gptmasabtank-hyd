@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   Info,
   UserRound,
@@ -12,6 +13,7 @@ import {
   Factory,
   Map,
   ChevronRight,
+  ArrowRight,
 } from "lucide-react";
 
 import "./CivilDepartment.css";
@@ -19,24 +21,34 @@ import "./CivilDepartment.css";
 const CivilDepartment = () => {
   const faculty = [
     {
+      name: "Smt. V.V. Rama Lakshmi",
+      image: "https://drive.google.com/uc?export=view&id=1L5GmzxGc-6jln7JWlJAWwH1L1KUlimuy",
+      designation: "Senior Lecturer in Civil Engineering",
+    },
+    {
       name: "V. KRISHNAIAH",
       image: "/images/departments/civil/v-krishnaiah.jpg",
+      designation: "Lecturer",
     },
     {
       name: "SANDEEP",
       image: "/images/departments/civil/sandeep.jpg",
+      designation: "Lecturer",
     },
     {
       name: "KHAJA",
       image: "/images/departments/civil/khaja.jpg",
+      designation: "Lecturer",
     },
     {
       name: "G. RAKESH",
       image: "/images/departments/civil/g-rakesh.jpg",
+      designation: "Lecturer",
     },
     {
       name: "J. HARIKA",
       image: "/images/departments/civil/j-harika.jpg",
+      designation: "Lecturer",
     },
   ];
 
@@ -727,6 +739,28 @@ const CivilDepartment = () => {
 
             ))}
 
+          </div>
+
+          <div style={{ textAlign: "center", marginTop: "28px" }}>
+            <Link
+              to="/faculty?department=Civil"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "11px 24px",
+                background: "linear-gradient(135deg, #800000 0%, #5e0508 100%)",
+                color: "#ffffff",
+                borderRadius: "8px",
+                fontWeight: 700,
+                fontSize: "13.5px",
+                textDecoration: "none",
+                boxShadow: "0 4px 14px rgba(128, 0, 0, 0.2)",
+              }}
+            >
+              <span>View Civil Engineering Faculty in Directory</span>
+              <ArrowRight size={16} />
+            </Link>
           </div>
 
         </section>

@@ -9,51 +9,122 @@ import {
   FileText,
   ArrowLeft,
   ArrowRight,
+  GraduationCap,
+  Briefcase,
+  Mail,
+  UserRound,
+  Award,
+  BookOpen,
+  CalendarDays,
+  ShieldCheck,
+  Building,
 } from "lucide-react";
 
 import "./PharmacyDepartment.css";
+
+const stats = [
+  { label: "Established Year", value: "1978", sub: "Decades of Excellence" },
+  { label: "Program Duration", value: "2 Years", sub: "Diploma in Pharmacy (D.Pharm)" },
+  { label: "Annual Intake", value: "60 Seats", sub: "PCI & SBTET Approved" },
+  { label: "Specialized Labs", value: "6 Labs", sub: "Practical Training Units" },
+];
+
+const hodData = {
+  name: "Smt. K. Lalitha",
+  designation: "Head of Section (HOD)",
+  department: "Pharmacy",
+  qualification: "M.Pharm (Pharmacology)",
+  experience: "18+ Years",
+  email: "hod.pharmacy@gptmasab.ac.in",
+  message:
+    "Pharmacy is an indispensable pillar of modern healthcare. At Government Polytechnic Masab Tank, we impart comprehensive practical education in medicinal compounding, dosage accuracy, pharmacotherapy, and drug law jurisprudence. Our graduates are ethical, capable, and immediately industry-ready.",
+};
+
+const pharmacyFaculty = [
+  {
+    name: "Dr. M Vinay Kumar Chakravarthy",
+    designation: "Lecturer in Pharmacy",
+    qualification: "Ph.D, M.Pharmacy",
+    experience: "14 Years",
+    specialization: "Pharmaceutical Chemistry & Drug Analysis",
+    email: "m.vinay2708@gmail.com",
+    photo: "https://drive.google.com/uc?export=view&id=1feiocxWtSpCE9Wr0JPA3q_9dd7ypWzZ0",
+  },
+  {
+    name: "D SUDHEER KUMAR",
+    designation: "Senior Lecturer in Pharmacy",
+    qualification: "M. Pharmacy",
+    experience: "14 Years",
+    specialization: "Pharmaceutics & Hospital Pharmacy Practice",
+    email: "sudeer.donta@gmail.com",
+    photo: "https://drive.google.com/uc?export=view&id=1uMT4ssIYzI9YavTqw5nkKLcTMXy_7qOA",
+  },
+  {
+    name: "Sri R. Naveen",
+    designation: "Lecturer in Pharmacy",
+    qualification: "M.Pharm (Pharmacognosy)",
+    experience: "9 Years",
+    specialization: "Herbal Drug Standardization & Phytochemistry",
+    email: "naveen.pharm@gptmasab.ac.in",
+  },
+  {
+    name: "Smt. B. Swathi",
+    designation: "Lecturer in Pharmacy",
+    qualification: "M.Pharm (Clinical Pharmacy)",
+    experience: "7 Years",
+    specialization: "Hospital Pharmacy, Toxicology & Patient Care",
+    email: "swathi.b@gptmasab.ac.in",
+  },
+];
 
 const areas = [
   {
     icon: Pill,
     title: "Pharmaceutics",
-    text: "Formulation, manufacturing, and dosage forms of various pharmaceutical drugs.",
+    text: "Formulation, manufacturing, dosage forms, stability testing, and sterile product compounding.",
   },
   {
     icon: FlaskConical,
     title: "Pharmaceutical Chemistry",
-    text: "Chemical structure, synthesis, and analysis of active medicinal ingredients.",
+    text: "Chemical structure, synthesis, qualitative analysis, and assaying of active pharmaceutical ingredients.",
   },
   {
     icon: Microscope,
     title: "Pharmacognosy",
-    text: "Study of natural drugs derived from plants, animals, and mineral sources.",
+    text: "Identification and extraction of therapeutic compounds derived from botanical and natural sources.",
   },
   {
     icon: HeartPulse,
     title: "Pharmacology & Anatomy",
-    text: "Understanding human physiology and drug interactions within the body.",
+    text: "Understanding human organ systems, biochemical mechanisms of drug action, and physiological effects.",
   },
   {
     icon: Scale,
     title: "Hospital & Clinical Pharmacy",
-    text: "Patient care, drug dispensing, dosage regulation, and inventory management.",
+    text: "Direct patient care, dosage regimens, prescription auditing, adverse drug reactions, and hospital supply.",
   },
   {
     icon: FileText,
     title: "Drug Store & Jurisprudence",
-    text: "Understanding pharmacy laws, medical ethics, and pharmaceutical business operations.",
+    text: "Pharmacy Council regulations, Drugs and Cosmetics Act, ethics, licensing, and pharmaceutical retailing.",
   },
+];
+
+const careers = [
+  { title: "Registered Pharmacist", desc: "Licensed dispensing of prescription medicines in community & retail pharmacies." },
+  { title: "Hospital Pharmacist", desc: "Clinical pharmacy services, ICU medication therapy, and hospital supply logistics." },
+  { title: "Quality Control (QC/QA)", desc: "Analytical testing and quality assurance in pharmaceutical manufacturing units." },
+  { title: "Medical Representative", desc: "Scientific communication and professional engagement with healthcare practitioners." },
+  { title: "Higher Education (B.Pharm)", desc: "Lateral entry into 2nd year B.Pharm via Telangana ECET entrance examinations." },
+  { title: "Drug Regulatory Inspector", desc: "Government healthcare inspection and quality compliance enforcement." },
 ];
 
 function PharmacyDepartment() {
   return (
     <main className="pharm-page">
-
       {/* HERO */}
       <section className="site-hero pharm-hero">
         <div className="container">
-
           <Link to="/departments" className="pharm-back">
             <ArrowLeft size={16} />
             Back to Departments
@@ -68,20 +139,29 @@ function PharmacyDepartment() {
 
           <p>
             Educating competent healthcare professionals skilled in pharmaceutical chemistry,
-            drug formulation, clinical care, and medicine administration.
+            drug formulation, clinical care, and ethical medicine dispensing since 1978.
           </p>
-
         </div>
       </section>
 
+      {/* STATS STRIP */}
+      <section className="pharm-stats-strip">
+        <div className="container pharm-stats-grid">
+          {stats.map((s, idx) => (
+            <div className="pharm-stat-item" key={idx}>
+              <strong>{s.value}</strong>
+              <span className="pharm-stat-label">{s.label}</span>
+              <span className="pharm-stat-sub">{s.sub}</span>
+            </div>
+          ))}
+        </div>
+      </section>
 
-      {/* ABOUT */}
+      {/* ABOUT & OVERVIEW */}
       <section className="pharm-section">
         <div className="container pharm-about">
-
           <div>
             <span>ABOUT THE DEPARTMENT</span>
-
             <h2>
               Healthcare, pharmaceutical science, and patient care.
             </h2>
@@ -89,47 +169,85 @@ function PharmacyDepartment() {
 
           <div>
             <p>
-              The Pharmacy department provides students with comprehensive knowledge
-              of drug composition, therapeutic uses, formulation practices, and healthcare delivery.
+              The Department of Pharmacy at Government Polytechnic College, Masab Tank, is approved by the
+              Pharmacy Council of India (PCI) and the State Board of Technical Education and Training (SBTET),
+              Telangana.
             </p>
-
             <p>
-              Through practical laboratory training and clinical exposure, students learn to
-              analyze chemical compounds, prepare formulations, and manage hospital and community retail pharmacies.
+              Through comprehensive laboratory coursework, analytical instrumentation, and compulsory hospital
+              internship training, students master the preparation of medicines, drug safety guidelines, and
+              community health care standards.
             </p>
           </div>
-
         </div>
       </section>
 
+      {/* HOD SECTION */}
+      <section className="pharm-light-section pharm-hod-section">
+        <div className="container">
+          <div className="pharm-heading">
+            <span>DEPARTMENT LEADERSHIP</span>
+            <h2>Head of Department Desk</h2>
+          </div>
+
+          <div className="pharm-hod-card">
+            <div className="pharm-hod-photo-wrap">
+              <div className="pharm-hod-photo">
+                <UserRound size={64} className="pharm-hod-icon" />
+              </div>
+              <span className="pharm-hod-badge">
+                <Award size={14} /> Head of Section
+              </span>
+            </div>
+
+            <div className="pharm-hod-info">
+              <h3>{hodData.name}</h3>
+              <p className="pharm-hod-title">{hodData.designation}</p>
+
+              <div className="pharm-hod-meta">
+                <span>
+                  <GraduationCap size={16} /> {hodData.qualification}
+                </span>
+                <span>
+                  <Briefcase size={16} /> {hodData.experience} Teaching & Research
+                </span>
+                {hodData.email && (
+                  <a href={`mailto:${hodData.email}`} className="pharm-hod-email">
+                    <Mail size={16} /> {hodData.email}
+                  </a>
+                )}
+              </div>
+
+              <blockquote className="pharm-hod-quote">
+                "{hodData.message}"
+              </blockquote>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* VISION & MISSION */}
-      <section className="pharm-light-section">
+      <section className="pharm-section">
         <div className="container">
-
           <div className="pharm-heading">
             <span>OUR DIRECTION</span>
             <h2>Vision & Mission</h2>
           </div>
 
           <div className="pharm-two-column">
-
             <article>
-              <Pill size={25} />
-
+              <Pill size={28} />
               <h3>Vision</h3>
-
               <p>
                 To produce ethical, highly competent, and skilled pharmacy professionals
-                committed to improving public health and supporting the healthcare ecosystem.
+                committed to improving public health and supporting the healthcare ecosystem
+                with integrity and patient-centric focus.
               </p>
             </article>
 
             <article>
-              <FlaskConical size={25} />
-
+              <FlaskConical size={28} />
               <h3>Mission</h3>
-
               <ul>
                 <li>Provide rigorous practical training in pharmaceutical chemistry and formulation.</li>
                 <li>Instill ethical clinical standards and professional drug dispensing habits.</li>
@@ -137,128 +255,194 @@ function PharmacyDepartment() {
                 <li>Prepare students for hospital positions, industrial roles, and higher studies (B.Pharm).</li>
               </ul>
             </article>
-
           </div>
-
         </div>
       </section>
 
-
       {/* CORE AREAS */}
-      <section className="pharm-section">
+      <section className="pharm-light-section">
         <div className="container">
-
           <div className="pharm-heading">
             <span>ACADEMIC FOCUS</span>
-            <h2>Core Areas</h2>
+            <h2>Core Areas of Study</h2>
           </div>
 
           <div className="pharm-grid">
-
             {areas.map((area, index) => {
               const Icon = area.icon;
-
               return (
                 <article className="pharm-card" key={index}>
-
                   <div className="pharm-icon">
-                    <Icon size={23} />
+                    <Icon size={24} />
                   </div>
-
                   <h3>{area.title}</h3>
-
                   <p>{area.text}</p>
-
                 </article>
               );
             })}
-
           </div>
-
         </div>
       </section>
 
+      {/* TEACHING FACULTY */}
+      <section className="pharm-section pharm-faculty-section">
+        <div className="container">
+          <div className="pharm-heading-row">
+            <div>
+              <span>ACADEMIC MENTORS</span>
+              <h2>Teaching Faculty Directory</h2>
+            </div>
+            <div className="pharm-faculty-count">
+              <strong>{pharmacyFaculty.length}</strong>
+              <span>Faculty Profiles</span>
+            </div>
+          </div>
+
+          <div className="pharm-faculty-grid">
+            {pharmacyFaculty.map((member, index) => (
+              <article className="pharm-faculty-card" key={index}>
+                <div className="pharm-faculty-photo">
+                  {member.photo ? (
+                    <img
+                      src={member.photo}
+                      alt={member.name}
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                        if (e.currentTarget.nextSibling) {
+                          e.currentTarget.nextSibling.style.display = "flex";
+                        }
+                      }}
+                    />
+                  ) : null}
+                  <div
+                    className="pharm-faculty-placeholder"
+                    style={{ display: member.photo ? "none" : "flex" }}
+                  >
+                    <UserRound size={42} />
+                  </div>
+                  <span className="pharm-faculty-badge">{member.designation}</span>
+                </div>
+
+                <div className="pharm-faculty-details">
+                  <h3>{member.name}</h3>
+
+                  <div className="pharm-faculty-meta">
+                    <span>
+                      <GraduationCap size={15} /> {member.qualification}
+                    </span>
+                    <span>
+                      <Briefcase size={15} /> {member.experience} Experience
+                    </span>
+                  </div>
+
+                  {member.specialization && (
+                    <p className="pharm-faculty-spec">
+                      <BookOpen size={14} /> {member.specialization}
+                    </p>
+                  )}
+
+                  {member.email && (
+                    <a href={`mailto:${member.email}`} className="pharm-faculty-email">
+                      <Mail size={14} /> {member.email}
+                    </a>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div style={{ textAlign: "center", marginTop: "28px" }}>
+            <Link
+              to="/faculty?department=Pharmacy"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "11px 24px",
+                background: "linear-gradient(135deg, #800000 0%, #5e0508 100%)",
+                color: "#ffffff",
+                borderRadius: "8px",
+                fontWeight: 700,
+                fontSize: "13.5px",
+                textDecoration: "none",
+                boxShadow: "0 4px 14px rgba(128, 0, 0, 0.2)",
+              }}
+            >
+              <span>View Pharmacy Faculty in Directory</span>
+              <ArrowRight size={16} />
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* LABORATORIES */}
       <section className="pharm-light-section">
         <div className="container">
-
           <div className="pharm-heading">
             <span>PRACTICAL LEARNING</span>
-            <h2>Laboratories</h2>
+            <h2>State-of-the-Art Laboratories</h2>
+            <p className="pharm-subtext">
+              Fully equipped departmental laboratories supporting analytical, clinical, and compounding coursework:
+            </p>
           </div>
 
           <div className="pharm-labs">
-
-            <div>Pharmaceutics Laboratory</div>
-            <div>Pharmaceutical Chemistry Lab</div>
-            <div>Pharmacognosy Laboratory</div>
-            <div>Human Anatomy & Physiology Lab</div>
-            <div>Biochemistry & Pathology Lab</div>
-            <div>Community Pharmacy Practice Unit</div>
-
+            <div>
+              <FlaskConical size={18} /> Pharmaceutics Laboratory
+            </div>
+            <div>
+              <Microscope size={18} /> Pharmaceutical Chemistry Lab
+            </div>
+            <div>
+              <Pill size={18} /> Pharmacognosy Laboratory
+            </div>
+            <div>
+              <HeartPulse size={18} /> Human Anatomy & Physiology Lab
+            </div>
+            <div>
+              <FlaskConical size={18} /> Biochemistry & Pathology Lab
+            </div>
+            <div>
+              <ShieldCheck size={18} /> Community & Hospital Pharmacy Unit
+            </div>
           </div>
-
         </div>
       </section>
 
-
-      {/* DEPARTMENT DETAILS */}
+      {/* CAREER PATHWAYS */}
       <section className="pharm-section">
         <div className="container">
-
-          <div className="pharm-details">
-
-            <div>
-              <span>DEPARTMENT</span>
-
-              <h2>
-                Pharmacy (D.Pharm)
-              </h2>
-
-              <p>
-                Government Polytechnic College,
-                Masab Tank, Hyderabad.
-              </p>
-            </div>
-
-            <div>
-              <span>STUDENT DEVELOPMENT</span>
-
-              <ul>
-                <li>Drug Compounding & Dispensing</li>
-                <li>Chemical & Pharmacognostic Analysis</li>
-                <li>Patient Counseling & Dosage Safety</li>
-                <li>Pharmacy Management Practices</li>
-              </ul>
-            </div>
-
+          <div className="pharm-heading">
+            <span>CAREER HORIZONS</span>
+            <h2>Career Pathways for D.Pharm Graduates</h2>
           </div>
 
+          <div className="pharm-careers-grid">
+            {careers.map((c, i) => (
+              <div className="pharm-career-card" key={i}>
+                <div className="pharm-career-num">{String(i + 1).padStart(2, "0")}</div>
+                <h3>{c.title}</h3>
+                <p>{c.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
-
 
       {/* CTA */}
       <section className="pharm-cta">
         <div className="container">
-
           <div>
             <span>EXPLORE MORE</span>
-
-            <h2>
-              Explore other academic departments.
-            </h2>
+            <h2>Explore other academic departments.</h2>
           </div>
 
           <Link to="/departments">
-            View Departments
+            View All Departments
             <ArrowRight size={17} />
           </Link>
-
         </div>
       </section>
-
     </main>
   );
 }

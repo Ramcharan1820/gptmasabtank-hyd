@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   Info,
   CalendarDays,
@@ -13,6 +14,7 @@ import {
   Award,
   Laptop,
   ChevronRight,
+  ArrowRight,
 } from "lucide-react";
 
 import "./CSEDepartment.css";
@@ -23,58 +25,57 @@ import "./CSEDepartment.css";
 
 const faculty = [
   {
-    name: "MD RIAZ",
-    designation: "LECTURER",
-    qualification: "B.Tech, M.Tech in Computer Science & Engineering",
-    joined: "20 September 2010",
-    image: "/images/departments/cse/md-riaz.jpg",
-    profile:
-      "https://dte.telangana.gov.in/filePreview?fileName=CMS/File_290120261224281476637643.pdf",
-  },
-  {
-    name: "V. SAI DURGA PRASAD GOUD",
-    designation: "LECTURER",
-    qualification: "B.Tech in Data Science",
-    joined: "15 August 2025",
-    image: "/images/departments/cse/sai-durga-prasad-goud.jpg",
-    profile:
-      "https://dte.telangana.gov.in/filePreview?fileName=CMS/File_290120261104549702435983.pdf",
-  },
-  {
-    name: "N. SRILAXMI",
-    designation: "LECTURER",
-    qualification: "B.Tech",
-    joined: "7 August 2025",
-    image: "/images/departments/cse/n-srilaxmi.jpg",
-    profile:
-      "https://dte.telangana.gov.in/filePreview?fileName=CMS/File_110320261145573564034269.pdf",
+    name: "Ram",
+    designation: "Head of Section (HOD)",
+    qualification: "M.Tech in Computer Science & Engineering",
+    joined: "18 Years Experience",
+    image: "https://drive.google.com/uc?export=view&id=1aGCDbCch0O5w1bLwNmTw-Xl2LCtiTUFb",
+    email: "tejayadavnani@gmail.com",
+    profile: "mailto:tejayadavnani@gmail.com",
   },
   {
     name: "N. MOUNIKA",
     designation: "LECTURER",
-    qualification: "B.Tech",
+    qualification: "B.Tech in Computer Science & Engineering",
     joined: "7 August 2025",
-    image: "/images/departments/cse/n-mounika.jpg",
-    profile:
-      "https://dte.telangana.gov.in/filePreview?fileName=CMS/File_110320261147388421233708.pdf",
+    image: "https://drive.google.com/uc?export=view&id=1vTUCT3ZEXIKvLzZV92ZR8FMd66VV-oRX",
+    email: "manaswimiryala@gmail.com",
+    profile: "mailto:manaswimiryala@gmail.com",
   },
   {
     name: "B. MOUNIKA",
     designation: "LECTURER",
-    qualification: "B.Tech",
-    joined: "7 August 2025",
-    image: "/images/departments/cse/b-mounika.jpg",
-    profile:
-      "https://dte.telangana.gov.in/filePreview?fileName=CMS/File_110320261146394985107915.pdf",
-  },
-  {
-    name: "USHASWINI",
-    designation: "LECTURER",
     qualification: "B.Tech in Computer Science & Engineering",
     joined: "7 August 2025",
-    image: "/images/departments/cse/ushaswini.jpg",
-    profile:
-      "https://dte.telangana.gov.in/filePreview?fileName=CMS/File_110320261147057910594688.pdf",
+    image: "https://drive.google.com/uc?export=view&id=1DtsKV4uUlOKoRlCB-sNkVWRMSjRXtrKo",
+    email: "mounika.maligireddy14@gmail.com",
+    profile: "mailto:mounika.maligireddy14@gmail.com",
+  },
+  {
+    name: "S. SRINIVAS",
+    designation: "LECTURER",
+    qualification: "B.E (Bachelor of Engineering)",
+    joined: "16 Years Experience",
+    image: "https://drive.google.com/uc?export=view&id=1PP44BawT2MaR1Fct1XtyE1m7mqewfcEl",
+    email: "srinivas8126@gmail.com",
+    profile: "mailto:srinivas8126@gmail.com",
+  },
+  {
+    name: "SAILAJA THUMMALA",
+    designation: "LECTURER",
+    qualification: "M.Tech in Computer Science & Engineering",
+    joined: "13 Years Experience",
+    image: "https://drive.google.com/uc?export=view&id=14QKK9jtV4YwHGIeja1I3LqNwRdJW06Df",
+    email: "sailaja.thummala@gmail.com",
+    profile: "mailto:sailaja.thummala@gmail.com",
+  },
+  {
+    name: "MD RIAZ",
+    designation: "SENIOR LECTURER",
+    qualification: "B.Tech, M.Tech in Computer Science & Engineering",
+    joined: "20 September 2010",
+    image: "/images/departments/cse/md-riaz.jpg",
+    profile: "https://dte.telangana.gov.in/filePreview?fileName=CMS/File_290120261224281476637643.pdf",
   },
 ];
 
@@ -675,6 +676,29 @@ export default function CSEDepartment() {
 
           ))}
 
+        </div>
+
+        <div style={{ textAlign: "center", marginTop: "28px" }}>
+          <Link
+            to="/faculty?department=CSE"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "11px 24px",
+              background: "linear-gradient(135deg, #800000 0%, #5e0508 100%)",
+              color: "#ffffff",
+              borderRadius: "8px",
+              fontWeight: 700,
+              fontSize: "13.5px",
+              textDecoration: "none",
+              boxShadow: "0 4px 14px rgba(128, 0, 0, 0.2)",
+              transition: "transform 0.2s ease",
+            }}
+          >
+            <span>View Full Faculty Directory</span>
+            <ArrowRight size={16} />
+          </Link>
         </div>
 
       </section>

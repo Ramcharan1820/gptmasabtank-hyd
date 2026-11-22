@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   Info,
   CalendarDays,
@@ -15,6 +16,7 @@ import {
   Cpu,
   CircuitBoard,
   ChevronRight,
+  ArrowRight,
 } from "lucide-react";
 
 import "./ECEDepartment.css";
@@ -24,6 +26,14 @@ import "./ECEDepartment.css";
 ========================================================= */
 
 const faculty = [
+  {
+    name: "D. SRIKANTH",
+    designation: "LECTURER",
+    qualification: "M.Tech",
+    experience: "14 Years",
+    image: "https://drive.google.com/uc?export=view&id=1pIP1-cJGQL95owrCtDHHui3qmDaecsji",
+    email: "srideva.5050@gmail.com",
+  },
   {
     name: "K. SAI PRASHANTH",
     designation: "LECTURER",

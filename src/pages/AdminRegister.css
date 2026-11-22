@@ -1,49 +1,88 @@
 /* =========================================================
-   ADMIN REGISTRATION & APPROVAL WORKFLOW STYLES
-   Government Polytechnic College Masab Tank
-========================================================= */
+   ADMIN REGISTRATION & APPROVAL WORKFLOW
+   Government Polytechnic College, Masab Tank
+   Theme: Official Institutional Maroon & Deep Navy / Clean White
+   Harmonized with AdminLogin.css
+   ========================================================= */
 
 .admin-reg-page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
-  background: radial-gradient(circle at 10% 20%, rgba(30, 58, 138, 0.15) 0%, transparent 40%),
-              radial-gradient(circle at 90% 80%, rgba(14, 165, 233, 0.12) 0%, transparent 40%),
-              linear-gradient(135deg, #0b1329 0%, #0f172a 50%, #111827 100%);
-  font-family: inherit;
-  color: #f1f5f9;
   position: relative;
+  isolation: isolate;
+  display: grid;
+  min-height: 100vh;
+  min-height: 100svh;
+  place-items: center;
   overflow-x: hidden;
+  padding: 40px 18px;
+  background:
+    radial-gradient(ellipse at 12% 12%, rgba(32, 113, 174, 0.3), transparent 36%),
+    radial-gradient(ellipse at 88% 88%, rgba(139, 30, 63, 0.2), transparent 32%),
+    linear-gradient(140deg, #081d35 0%, #102e50 52%, #173d61 100%);
+  color: #17283e;
+  font-family: "DM Sans", Arial, sans-serif;
 }
 
+.admin-reg-page::before,
+.admin-reg-page::after {
+  position: absolute;
+  z-index: -1;
+  width: 460px;
+  height: 460px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+}
+
+.admin-reg-page::before {
+  top: -210px;
+  right: -130px;
+}
+
+.admin-reg-page::after {
+  bottom: -280px;
+  left: -160px;
+  width: 560px;
+  height: 560px;
+}
+
+.admin-reg-page *,
+.admin-reg-page *::before,
+.admin-reg-page *::after {
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   CONTAINER & CARD
+   ========================================================= */
+
 .admin-reg-container {
-  width: 100%;
-  max-width: 720px;
+  width: min(100%, 680px);
   position: relative;
   z-index: 2;
 }
 
 .admin-reg-card {
-  background: rgba(17, 24, 39, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 100%;
+  padding: 34px 38px 30px;
+  border: 1px solid rgba(226, 234, 244, 0.85);
   border-radius: 20px;
-  padding: 36px 40px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
-              0 0 0 1px rgba(255, 255, 255, 0.05);
+  background: #ffffff;
+  box-shadow: 0 28px 80px rgba(0, 12, 30, 0.32);
+  animation: admin-reg-enter 0.35s ease-out both;
 }
 
 @media (max-width: 640px) {
   .admin-reg-card {
-    padding: 26px 20px;
+    padding: 26px 20px 22px;
     border-radius: 16px;
   }
 }
 
-/* Top Navigation Bar */
+/* =========================================================
+   TOP NAVIGATION
+   ========================================================= */
+
 .admin-reg-topbar {
   display: flex;
   justify-content: space-between;
@@ -55,15 +94,15 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #94a3b8;
+  color: #5d6e81;
+  font-size: 13px;
+  font-weight: 600;
   text-decoration: none;
-  font-size: 0.88rem;
-  font-weight: 500;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .admin-reg-back-link:hover {
-  color: #38bdf8;
+  color: #620509;
   transform: translateX(-2px);
 }
 
@@ -73,56 +112,75 @@
   gap: 6px;
   padding: 4px 12px;
   border-radius: 999px;
-  background: rgba(14, 165, 233, 0.15);
-  border: 1px solid rgba(14, 165, 233, 0.3);
-  color: #38bdf8;
-  font-size: 0.76rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
+  background: #fdf2f4;
+  border: 1px solid #f8d7dc;
+  color: #800000;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
 }
 
-/* Header */
+/* =========================================================
+   HEADER
+   ========================================================= */
+
 .admin-reg-header {
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 
 .admin-reg-icon-wrapper {
-  width: 60px;
-  height: 60px;
+  display: grid;
+  width: 62px;
+  height: 62px;
+  place-items: center;
   margin: 0 auto 16px;
-  background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
-  border-radius: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border-radius: 17px;
+  background: linear-gradient(145deg, #620509, #800000);
+  box-shadow: 0 10px 24px rgba(18, 60, 105, 0.2);
   color: #ffffff;
-  box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
+}
+
+.admin-reg-label {
+  margin: 0 0 9px;
+  color: #a1364d;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+  text-align: center;
+  text-transform: uppercase;
 }
 
 .admin-reg-header h1 {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: #ffffff;
-  margin: 0 0 6px;
-  letter-spacing: -0.02em;
-}
-
-.admin-reg-header p {
-  color: #94a3b8;
-  font-size: 0.92rem;
   margin: 0;
+  color: #142b45;
+  font-size: clamp(24px, 4.5vw, 30px);
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.2;
+  text-align: center;
 }
 
-/* View Mode Tabs */
+.admin-reg-description {
+  margin: 8px 0 24px;
+  color: #6a788a;
+  font-size: 13px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+/* =========================================================
+   VIEW MODE TABS (SEGMENTED CONTROL)
+   ========================================================= */
+
 .admin-reg-tabs {
   display: flex;
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
   border-radius: 12px;
   padding: 4px;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
   gap: 4px;
 }
 
@@ -136,89 +194,106 @@
   border-radius: 8px;
   border: none;
   background: transparent;
-  color: #94a3b8;
-  font-size: 0.9rem;
+  color: #64748b;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .admin-reg-tab-btn:hover {
-  color: #f1f5f9;
+  color: #1e293b;
 }
 
 .admin-reg-tab-btn.active {
-  background: #1e293b;
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  color: #620509;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
-/* Approval Notice Banner */
+/* =========================================================
+   APPROVAL PROTOCOL BANNER
+   ========================================================= */
+
 .admin-reg-approval-banner {
-  background: rgba(245, 158, 11, 0.1);
-  border: 1px solid rgba(245, 158, 11, 0.25);
-  border-radius: 12px;
-  padding: 14px 18px;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 10px;
+  padding: 13px 16px;
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  margin-bottom: 24px;
-  color: #fde68a;
-  font-size: 0.88rem;
+  margin-bottom: 22px;
+  color: #92400e;
+  font-size: 12.5px;
   line-height: 1.5;
 }
 
 .admin-reg-approval-banner svg {
   flex-shrink: 0;
-  color: #f59e0b;
+  color: #d97706;
   margin-top: 2px;
 }
 
-/* Google OAuth Button */
+.admin-reg-approval-banner strong {
+  color: #78350f;
+  font-weight: 700;
+}
+
+/* =========================================================
+   GOOGLE OAUTH BUTTON
+   ========================================================= */
+
 .admin-reg-oauth-section {
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .admin-google-btn {
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  padding: 13px 20px;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 18px;
   border-radius: 12px;
   background: #ffffff;
   color: #1e293b;
-  border: 1px solid #cbd5e1;
-  font-size: 0.95rem;
+  border: 1.5px solid #e2e8f0;
+  font: inherit;
+  font-size: 13.5px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
 .admin-google-btn:hover {
   background: #f8fafc;
+  border-color: #cbd5e1;
   transform: translateY(-1px);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
 .admin-google-btn svg {
   flex-shrink: 0;
 }
 
-/* Divider */
+/* =========================================================
+   DIVIDER
+   ========================================================= */
+
 .admin-reg-divider {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin: 24px 0;
-  color: #64748b;
-  font-size: 0.8rem;
-  font-weight: 600;
+  gap: 12px;
+  margin: 20px 0;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.8px;
 }
 
 .admin-reg-divider::before,
@@ -226,26 +301,29 @@
   content: "";
   flex: 1;
   height: 1px;
-  background: rgba(255, 255, 255, 0.1);
+  background: #e2e8f0;
 }
 
-/* Verified Google Profile Card */
+/* =========================================================
+   VERIFIED GOOGLE PROFILE CARD
+   ========================================================= */
+
 .admin-verified-profile-card {
-  background: rgba(16, 185, 129, 0.08);
-  border: 1px solid rgba(16, 185, 129, 0.25);
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
   border-radius: 12px;
-  padding: 14px 18px;
+  padding: 12px 16px;
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 24px;
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
 .admin-verified-avatar {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: 2px solid #10b981;
+  border: 2px solid #22c55e;
   object-fit: cover;
 }
 
@@ -253,7 +331,7 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: #0284c7;
+  background: linear-gradient(145deg, #166534, #15803d);
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -267,134 +345,181 @@
 }
 
 .admin-verified-name {
-  font-weight: 600;
-  color: #f1f5f9;
-  font-size: 0.95rem;
+  font-weight: 700;
+  color: #14532d;
+  font-size: 13.5px;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
 .admin-verified-email {
-  font-size: 0.82rem;
-  color: #94a3b8;
+  font-size: 12px;
+  color: #15803d;
 }
 
 .admin-verified-badge {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 0.72rem;
+  font-size: 11px;
   font-weight: 700;
-  color: #10b981;
-  background: rgba(16, 185, 129, 0.15);
-  padding: 3px 8px;
+  color: #15803d;
+  background: #dcfce7;
+  border: 1px solid #86efac;
+  padding: 2px 8px;
   border-radius: 999px;
 }
 
-/* Form Grid & Fields */
+/* =========================================================
+   FORM GRID & FIELDS
+   ========================================================= */
+
 .admin-reg-form {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 16px;
 }
 
 .admin-form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 14px;
 }
 
 @media (max-width: 600px) {
   .admin-form-row {
     grid-template-columns: 1fr;
+    gap: 14px;
   }
 }
 
 .admin-reg-field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
 }
 
 .admin-reg-field label {
-  font-size: 0.84rem;
-  font-weight: 500;
-  color: #cbd5e1;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 7px;
+  color: #2b3d53;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .admin-field-hint {
-  font-size: 0.74rem;
+  font-size: 11px;
   color: #64748b;
-  font-weight: 400;
+  font-weight: 500;
 }
 
 .admin-input-wrapper {
   position: relative;
   display: flex;
+  min-height: 48px;
   align-items: center;
+  border: 1px solid #dce4ed;
+  border-radius: 9px;
+  background: #f8fafc;
+  color: #718197;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.admin-input-wrapper:focus-within {
+  border-color: #3974a8;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(42, 105, 158, 0.12);
 }
 
 .admin-input-icon {
   position: absolute;
-  left: 14px;
-  color: #64748b;
+  left: 13px;
+  color: #718197;
   pointer-events: none;
 }
 
-.admin-reg-input,
-.admin-reg-select,
-.admin-reg-textarea {
+.admin-reg-input {
   width: 100%;
-  padding: 12px 14px 12px 42px;
-  background: rgba(15, 23, 42, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 10px;
-  color: #f1f5f9;
-  font-size: 0.92rem;
-  transition: all 0.2s ease;
-  outline: none;
+  min-width: 0;
+  height: 46px;
+  padding: 0 38px 0 40px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #1e293b;
+  font: inherit;
+  font-size: 13px;
+}
+
+.admin-reg-input::placeholder {
+  color: #9aa7b7;
 }
 
 .admin-reg-select {
+  width: 100%;
+  height: 46px;
+  padding: 0 36px 0 40px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #1e293b;
+  font: inherit;
+  font-size: 13px;
   cursor: pointer;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23718197'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 14px center;
-  background-size: 16px;
+  background-size: 15px;
+}
+
+.admin-reg-select option {
+  background: #ffffff;
+  color: #1e293b;
 }
 
 .admin-reg-textarea {
-  min-height: 80px;
+  width: 100%;
+  min-height: 84px;
   resize: vertical;
-  padding: 12px 14px;
+  padding: 11px 13px;
+  border: 1px solid #dce4ed;
+  border-radius: 9px;
+  background: #f8fafc;
+  color: #1e293b;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.5;
+  outline: 0;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
-.admin-reg-input:focus,
-.admin-reg-select:focus,
 .admin-reg-textarea:focus {
-  border-color: #38bdf8;
-  background: rgba(15, 23, 42, 0.95);
-  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+  border-color: #3974a8;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(42, 105, 158, 0.12);
+}
+
+.admin-reg-textarea::placeholder {
+  color: #9aa7b7;
 }
 
 .admin-reg-input:disabled {
   opacity: 0.65;
   cursor: not-allowed;
+  background: #f1f5f9;
 }
 
 .admin-pw-toggle {
   position: absolute;
-  right: 12px;
-  background: none;
-  border: none;
-  color: #64748b;
+  right: 8px;
+  padding: 6px;
+  border: 0;
+  background: transparent;
+  color: #718197;
   cursor: pointer;
-  padding: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -402,15 +527,18 @@
 }
 
 .admin-pw-toggle:hover {
-  color: #94a3b8;
+  color: #620509;
 }
 
-/* Password Strength Indicator */
+/* =========================================================
+   PASSWORD STRENGTH METER
+   ========================================================= */
+
 .admin-pw-strength {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 4px;
+  margin-top: 6px;
 }
 
 .admin-pw-bars {
@@ -424,7 +552,7 @@
   flex: 1;
   height: 100%;
   border-radius: 2px;
-  background: rgba(255, 255, 255, 0.1);
+  background: #e2e8f0;
   transition: background 0.2s ease;
 }
 
@@ -437,223 +565,254 @@
 }
 
 .admin-pw-bar.active-good {
-  background: #3b82f6;
+  background: #2563eb;
 }
 
 .admin-pw-bar.active-strong {
-  background: #10b981;
+  background: #16a34a;
 }
 
 .admin-pw-label {
-  font-size: 0.74rem;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   text-transform: capitalize;
 }
 
 .admin-pw-label.weak { color: #ef4444; }
 .admin-pw-label.fair { color: #f59e0b; }
-.admin-pw-label.good { color: #3b82f6; }
-.admin-pw-label.strong { color: #10b981; }
+.admin-pw-label.good { color: #2563eb; }
+.admin-pw-label.strong { color: #16a34a; }
 
-/* Alerts */
-.admin-alert {
-  padding: 12px 16px;
-  border-radius: 10px;
+/* =========================================================
+   TERMS CHECKBOX
+   ========================================================= */
+
+.admin-terms-label {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  font-size: 0.88rem;
-  line-height: 1.45;
+  font-size: 12.5px;
+  color: #475569;
+  cursor: pointer;
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+.admin-terms-label input[type="checkbox"] {
+  accent-color: #800000;
+  margin-top: 3px;
+  cursor: pointer;
+}
+
+/* =========================================================
+   ALERTS
+   ========================================================= */
+
+.admin-alert {
+  padding: 11px 14px;
+  border-radius: 9px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 12.5px;
+  line-height: 1.5;
 }
 
 .admin-alert.error {
-  background: rgba(239, 68, 68, 0.12);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #fca5a5;
+  border: 1px solid #f1c5cb;
+  background: #fff3f4;
+  color: #9b2938;
 }
 
 .admin-alert.success {
-  background: rgba(16, 185, 129, 0.12);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  color: #6ee7b7;
+  border: 1px solid #bbf7d0;
+  background: #f0fdf4;
+  color: #166534;
 }
 
 .admin-alert.info {
-  background: rgba(56, 189, 248, 0.12);
-  border: 1px solid rgba(56, 189, 248, 0.3);
-  color: #7dd3fc;
+  border: 1px solid #bae6fd;
+  background: #f0f9ff;
+  color: #0369a1;
 }
 
-/* Submit Button */
+/* =========================================================
+   SUBMIT BUTTON
+   ========================================================= */
+
 .admin-reg-submit {
-  width: 100%;
   display: flex;
+  width: 100%;
+  min-height: 50px;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding: 14px 24px;
-  border-radius: 12px;
-  border: none;
-  background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
-  color: #ffffff;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
+  gap: 9px;
   margin-top: 8px;
+  padding: 12px 18px;
+  border: 0;
+  border-radius: 9px;
+  background: linear-gradient(105deg, #620509, #800000);
+  box-shadow: 0 7px 16px rgba(18, 60, 105, 0.17);
+  color: #ffffff;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 }
 
 .admin-reg-submit:hover:not(:disabled) {
-  background: linear-gradient(135deg, #0369a1 0%, #1d4ed8 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 14px 30px -5px rgba(37, 99, 235, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 21px rgba(18, 60, 105, 0.24);
 }
 
 .admin-reg-submit:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
+  opacity: 0.72;
+  cursor: wait;
 }
 
-/* Footer & Switch Link */
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
 .admin-reg-footer {
   text-align: center;
   margin-top: 24px;
-  padding-top: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  font-size: 0.9rem;
-  color: #94a3b8;
+  padding-top: 18px;
+  border-top: 1px solid #edf0f4;
+  font-size: 12.5px;
+  color: #64748b;
 }
 
 .admin-reg-footer a {
-  color: #38bdf8;
+  color: #620509;
+  font-weight: 700;
   text-decoration: none;
-  font-weight: 600;
-  margin-left: 6px;
-  transition: color 0.2s ease;
+  margin-left: 5px;
+  transition: color 0.15s ease;
 }
 
 .admin-reg-footer a:hover {
-  color: #7dd3fc;
+  color: #800000;
   text-decoration: underline;
 }
 
 /* =========================================================
-   STATUS / PENDING / DETAILS DISPLAY
-========================================================= */
+   APPLICATION STATUS VIEW
+   ========================================================= */
 
 .admin-status-card {
   text-align: center;
-  padding: 10px 0;
+  padding: 8px 0;
 }
 
 .admin-status-icon-box {
-  width: 72px;
-  height: 72px;
-  margin: 0 auto 20px;
-  border-radius: 20px;
+  width: 68px;
+  height: 68px;
+  margin: 0 auto 18px;
+  border-radius: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
 }
 
 .admin-status-icon-box.pending {
-  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
   color: #ffffff;
-  box-shadow: 0 12px 28px -5px rgba(217, 119, 6, 0.4);
+  box-shadow: 0 10px 24px rgba(217, 119, 6, 0.25);
 }
 
 .admin-status-icon-box.approved {
-  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: #ffffff;
-  box-shadow: 0 12px 28px -5px rgba(5, 150, 105, 0.4);
+  box-shadow: 0 10px 24px rgba(5, 150, 105, 0.25);
 }
 
 .admin-status-icon-box.rejected {
-  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: #ffffff;
-  box-shadow: 0 12px 28px -5px rgba(220, 38, 38, 0.4);
+  box-shadow: 0 10px 24px rgba(220, 38, 38, 0.25);
 }
 
 .admin-status-card h2 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #ffffff;
+  font-size: 22px;
+  font-weight: 800;
+  color: #142b45;
   margin: 0 0 10px;
 }
 
 .admin-status-desc {
-  color: #94a3b8;
-  font-size: 0.95rem;
+  color: #5d6e81;
+  font-size: 13.5px;
   line-height: 1.6;
   max-width: 520px;
-  margin: 0 auto 24px;
+  margin: 0 auto 22px;
 }
 
 .admin-status-details-grid {
-  background: rgba(15, 23, 42, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
-  padding: 18px 22px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 18px;
   text-align: left;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 24px;
+  gap: 14px;
+  margin-bottom: 22px;
 }
 
 @media (max-width: 560px) {
   .admin-status-details-grid {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
 }
 
 .admin-status-detail-item span {
   display: block;
-  font-size: 0.75rem;
+  font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.5px;
   color: #64748b;
   margin-bottom: 3px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .admin-status-detail-item strong {
-  font-size: 0.95rem;
-  color: #f1f5f9;
-  font-weight: 600;
+  font-size: 13.5px;
+  color: #1e293b;
+  font-weight: 700;
 }
 
 .admin-status-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 12px;
+  padding: 3px 10px;
   border-radius: 999px;
-  font-size: 0.8rem;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.5px;
 }
 
 .admin-status-badge.pending {
-  background: rgba(245, 158, 11, 0.15);
-  border: 1px solid rgba(245, 158, 11, 0.35);
-  color: #fbbf24;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  color: #92400e;
 }
 
 .admin-status-badge.approved {
-  background: rgba(16, 185, 129, 0.15);
-  border: 1px solid rgba(16, 185, 129, 0.35);
-  color: #34d399;
+  background: #dcfce7;
+  border: 1px solid #bbf7d0;
+  color: #166534;
 }
 
 .admin-status-badge.rejected {
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid rgba(239, 68, 68, 0.35);
-  color: #f87171;
+  background: #ffe4e6;
+  border: 1px solid #fecdd3;
+  color: #9f1239;
 }
 
 .admin-status-actions {
@@ -668,10 +827,10 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 11px 22px;
-  border-radius: 10px;
-  font-size: 0.92rem;
-  font-weight: 600;
+  padding: 11px 20px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 700;
   text-decoration: none;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -679,27 +838,89 @@
 }
 
 .admin-action-btn-primary {
-  background: #0284c7;
+  background: linear-gradient(105deg, #620509, #800000);
+  box-shadow: 0 4px 12px rgba(98, 5, 9, 0.2);
   color: #ffffff;
 }
 
 .admin-action-btn-primary:hover {
-  background: #0369a1;
   transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(98, 5, 9, 0.3);
 }
 
 .admin-action-btn-secondary {
-  background: rgba(255, 255, 255, 0.08);
-  color: #cbd5e1;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
 }
 
 .admin-action-btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
+  background: #e2e8f0;
+  color: #1e293b;
 }
 
-/* Spinner */
+/* =========================================================
+   STATUS SEARCH VIEW
+   ========================================================= */
+
+.admin-status-search-view {
+  padding: 4px 0 10px;
+}
+
+.admin-status-search-desc {
+  color: #5d6e81;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.admin-status-search-form {
+  margin-bottom: 20px;
+}
+
+.admin-status-approved-callout {
+  grid-column: 1 / -1;
+  padding: 14px 16px;
+  background: #f0fdf4;
+  border-radius: 10px;
+  border: 1px solid #bbf7d0;
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-status-callout-title {
+  color: #166534;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.admin-status-rejected-callout {
+  grid-column: 1 / -1;
+  padding: 14px 16px;
+  background: #fff3f4;
+  border-radius: 10px;
+  border: 1px solid #f1c5cb;
+  margin-top: 8px;
+}
+
+.admin-status-rejected-callout .admin-status-callout-title {
+  color: #9b2938;
+  font-weight: 700;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.admin-status-callout-reason {
+  color: #7f1d1d;
+  font-size: 12.5px;
+}
+
+/* =========================================================
+   ANIMATIONS & MOTION
+   ========================================================= */
+
 .spin {
   animation: adminSpin 1s linear infinite;
 }
@@ -709,3 +930,19 @@
   to { transform: rotate(360deg); }
 }
 
+@keyframes admin-reg-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-reg-card {
+    animation: none;
+  }
+}

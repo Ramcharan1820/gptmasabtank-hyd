@@ -24,7 +24,7 @@
       rgba(66, 2, 4, 0.94),
       rgba(108, 11, 16, 0.86)
     ),
-    url("/images/college-bg.jpg");
+    url("/images/college.jpg");
   background-size: cover;
   background-position: center;
   border-bottom: 3.5px solid var(--gold-primary) !important;

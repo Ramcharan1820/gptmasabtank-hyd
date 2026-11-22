@@ -1,3 +1,4 @@
+import { Printer } from "lucide-react";
 import "./SemesterResult.css";
 
 function SemesterResult({ result }) {
@@ -89,15 +90,26 @@ function SemesterResult({ result }) {
           </p>
         </div>
 
-        <div
-          className={`semester-status ${
-            String(resultStatus)
-              .toLowerCase() === "pass"
-              ? "pass"
-              : ""
-          }`}
-        >
-          {resultStatus}
+        <div className="semester-result-actions">
+          <button
+            type="button"
+            className="semester-print-btn"
+            onClick={() => window.print()}
+            title="Print or Save Semester Memo"
+          >
+            <Printer size={15} />
+            <span>Print Memo</span>
+          </button>
+          <div
+            className={`semester-status ${
+              String(resultStatus)
+                .toLowerCase() === "pass"
+                ? "pass"
+                : ""
+            }`}
+          >
+            {resultStatus}
+          </div>
         </div>
 
       </div>

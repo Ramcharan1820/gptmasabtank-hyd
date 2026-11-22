@@ -13,6 +13,8 @@ import {
   Radio,
   Zap,
   Cog,
+  Pill,
+  ArrowRight,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -59,6 +61,12 @@ const departments = [
     code: "ME",
     slug: "mechanical",
     icon: Cog,
+  },
+  {
+    name: "Pharmacy",
+    code: "PH",
+    slug: "pharmacy",
+    icon: Pill,
   },
 ];
 
@@ -406,6 +414,29 @@ function About() {
               );
             })}
 
+          </div>
+
+          <div style={{ textAlign: "center", marginTop: "32px" }}>
+            <Link
+              to="/departments"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "12px 28px",
+                background: "linear-gradient(135deg, #800000 0%, #5e0508 100%)",
+                color: "#ffffff",
+                borderRadius: "10px",
+                fontWeight: 700,
+                fontSize: "14px",
+                textDecoration: "none",
+                boxShadow: "0 6px 18px rgba(128, 0, 0, 0.22)",
+                transition: "transform 0.2s ease, box-shadow 0.2s ease",
+              }}
+            >
+              <span>Explore All Academic Departments</span>
+              <ArrowRight size={17} />
+            </Link>
           </div>
 
         </section>

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   Info,
   CalendarDays,
@@ -16,6 +17,7 @@ import {
   Wrench,
   Settings,
   ChevronRight,
+  ArrowRight,
 } from "lucide-react";
 
 import "./AutomobileDepartment.css";
@@ -53,9 +55,11 @@ const faculty = [
     image: "/images/departments/automobile/k-dattatreya.jpg",
   },
   {
-    name: "M. PRIYANKA",
+    name: "MIRYALKAR PRIYANKA",
     designation: "LECTURER",
-    image: "/images/departments/automobile/m-priyanka.jpg",
+    image: "https://drive.google.com/uc?export=view&id=1fQ3cEQMBZ0ati2KqyLbvXpjqMmGOPY7H",
+    qualification: "M.Tech",
+    experience: "5 Years",
   },
 ];
 
@@ -774,6 +778,28 @@ export default function AutomobileDepartment() {
             Polytechnic College, Masab Tank.
           </span>
 
+        </div>
+
+        <div style={{ textAlign: "center", marginTop: "24px" }}>
+          <Link
+            to="/faculty?department=Automobile"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "11px 24px",
+              background: "linear-gradient(135deg, #800000 0%, #5e0508 100%)",
+              color: "#ffffff",
+              borderRadius: "8px",
+              fontWeight: 700,
+              fontSize: "13.5px",
+              textDecoration: "none",
+              boxShadow: "0 4px 14px rgba(128, 0, 0, 0.2)",
+            }}
+          >
+            <span>View Automobile Faculty in Directory</span>
+            <ArrowRight size={16} />
+          </Link>
         </div>
 
       </section>

@@ -41,7 +41,8 @@ function AdminLogin() {
   }, [searchParams]);
 
   const handleGoogleLogin = () => {
-    window.location.href = `${API_URL}/api/auth/google?intent=admin_login`;
+    const returnUrl = encodeURIComponent(window.location.origin);
+    window.location.href = `${API_URL}/api/auth/google?intent=admin_login&return_to=${returnUrl}`;
   };
 
   const handleSubmit = async (event) => {
@@ -241,7 +242,24 @@ function AdminLogin() {
           {/* Error Message */}
           {error && !isPending && (
             <div className="admin-login-error" role="alert">
-              {error}
+              <div>{error}</div>
+              {error.toLowerCase().includes("registration request") && (
+                <div style={{ marginTop: "8px" }}>
+                  <Link
+                    to="/admin/register"
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "4px",
+                      color: "#620509",
+                      fontWeight: 700,
+                      textDecoration: "underline",
+                    }}
+                  >
+                    Go to Admin Registration Page &rarr;
+                  </Link>
+                </div>
+              )}
             </div>
           )}
 

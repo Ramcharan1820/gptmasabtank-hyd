@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import API_BASE_URL from "../apiConfig";
 import "./Result.css";
 import MidResult from "./MidResult";
@@ -7,12 +7,21 @@ import SemesterResult from "./SemesterResult";
 function Result() {
   const [pin, setPin] = useState("");
   const [scheme, setScheme] = useState("C24");
-  const [semester, setSemester] = useState("5SEM");
+  const [semester, setSemester] = useState("1SEM");
   const [examType, setExamType] = useState("Mid-1");
 
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    try {
+      const savedPin = localStorage.getItem("sbtet_last_pin");
+      if (savedPin) {
+        setPin(savedPin);
+      }
+    } catch {}
+  }, []);
 
   const schemes = [
     "C26",
@@ -114,6 +123,9 @@ function Result() {
       }
 
       setResult(data);
+      try {
+        localStorage.setItem("sbtet_last_pin", enteredPin);
+      } catch {}
 
     } catch (err) {
       console.error(

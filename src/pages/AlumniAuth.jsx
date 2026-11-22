@@ -43,7 +43,8 @@ function AlumniAuth() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = `${API_BASE_URL}/api/auth/google`;
+    const returnUrl = encodeURIComponent(window.location.origin);
+    window.location.href = `${API_BASE_URL}/api/auth/google?return_to=${returnUrl}`;
   };
 
   const handleLinkedInLogin = () => {

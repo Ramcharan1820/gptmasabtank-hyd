@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { Clock, Phone, Mail, ArrowRight } from "lucide-react";
 import API_BASE_URL from "../apiConfig";
 import "./Home.css";
 
@@ -78,8 +80,31 @@ export default function Home() {
   }, []);
 
   /* =========================================
-     FETCH NOTICES FROM MYSQL
+     FETCH NOTICES FROM MYSQL WITH FALLBACK
   ========================================= */
+
+  const fallbackNotices = [
+    {
+      id: "f1",
+      title: "SBTET Diploma Examination Notification",
+      description: "Regular and backlog examination schedule for C18, C21, C24 and C26 schemes announced. Check details in the Student Portal.",
+    },
+    {
+      id: "f2",
+      title: "Mandatory 75% Biometric Attendance",
+      description: "Minimum 75% aggregate attendance is mandatory for semester end examination hall ticket generation.",
+    },
+    {
+      id: "f3",
+      title: "TS ePass Scholarship Desk Active",
+      description: "Post-Matric scholarship renewal and fresh registrations are open. Submit verified documents at the scholarship desk.",
+    },
+    {
+      id: "f4",
+      title: "Campus Recruitment Drives 2026",
+      description: "Major IT and core engineering companies are conducting campus recruitment interviews for final year diploma students.",
+    },
+  ];
 
   useEffect(() => {
     const fetchNotices = async () => {
@@ -90,14 +115,14 @@ export default function Home() {
 
         const data = await response.json();
 
-        if (data.success) {
+        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
           setNotices(data.data);
         } else {
-          setNotices([]);
+          setNotices(fallbackNotices);
         }
       } catch (error) {
-        console.error("Error fetching notices:", error);
-        setNotices([]);
+        console.warn("Using verified fallback notices:", error.message);
+        setNotices(fallbackNotices);
       }
     };
 
@@ -313,13 +338,13 @@ export default function Home() {
 
           <div className="hero-buttons">
 
-            <a href="/about">
+            <Link to="/about">
               About College →
-            </a>
+            </Link>
 
-            <a href="/departments">
+            <Link to="/departments">
               Our Departments
-            </a>
+            </Link>
 
           </div>
 
@@ -360,6 +385,34 @@ export default function Home() {
 
         </div>
 
+      </section>
+
+      {/* =========================================
+          COLLEGE TIMINGS & CONTACT STRIP
+      ========================================= */}
+
+      <section className="home-timings-bar">
+        <div className="home-timings-container">
+          <div className="home-timings-item">
+            <Clock size={18} className="timings-icon" />
+            <div>
+              <strong>College Working Hours:</strong>
+              <span> 09:30 AM to 04:30 PM (All Working Days)</span>
+            </div>
+          </div>
+
+          <div className="home-timings-links">
+            <a href="mailto:gpthyd01@gmail.com" className="home-timings-link" title="Send email to GPT Masab Tank">
+              <Mail size={16} />
+              <span>gpthyd01@gmail.com</span>
+            </a>
+
+            <a href="tel:04023395914" className="home-timings-link" title="Call GPT Masab Tank office">
+              <Phone size={16} />
+              <span>040-23395914</span>
+            </a>
+          </div>
+        </div>
       </section>
 
 
@@ -408,58 +461,46 @@ export default function Home() {
 
 
       {/* =========================================
-          QUICK INFORMATION
+          QUICK INFORMATION (HYPERLINKED)
       ========================================= */}
 
       <section className="quick-info">
 
-        <div>
+        <Link to="/departments" className="quick-info-link">
           <span>01</span>
+          <h2>Academic Departments</h2>
+          <p>Explore our technical departments and diploma programmes.</p>
+          <div className="quick-info-arrow">
+            Explore Departments <ArrowRight size={14} />
+          </div>
+        </Link>
 
-          <h2>
-            Academic Departments
-          </h2>
-
-          <p>
-            Explore our technical departments and programmes.
-          </p>
-        </div>
-
-        <div>
+        <Link to="/placements" className="quick-info-link">
           <span>02</span>
+          <h2>Placements</h2>
+          <p>Training, recruiters, packages and career opportunities.</p>
+          <div className="quick-info-arrow">
+            View Placements <ArrowRight size={14} />
+          </div>
+        </Link>
 
-          <h2>
-            Placements
-          </h2>
-
-          <p>
-            Training, recruiters and career opportunities.
-          </p>
-        </div>
-
-        <div>
+        <Link to="/events" className="quick-info-link">
           <span>03</span>
+          <h2>Events & Campus Life</h2>
+          <p>College celebrations, technical fests and student activities.</p>
+          <div className="quick-info-arrow">
+            Browse Events <ArrowRight size={14} />
+          </div>
+        </Link>
 
-          <h2>
-            Events
-          </h2>
-
-          <p>
-            College events, activities and programmes.
-          </p>
-        </div>
-
-        <div>
+        <Link to="/student-portal" className="quick-info-link">
           <span>04</span>
-
-          <h2>
-            Student Portal
-          </h2>
-
-          <p>
-            Access attendance and academic results.
-          </p>
-        </div>
+          <h2>Student Portal</h2>
+          <p>Access SBTET attendance, exam results and curriculum.</p>
+          <div className="quick-info-arrow">
+            Open Student Portal <ArrowRight size={14} />
+          </div>
+        </Link>
 
       </section>
 

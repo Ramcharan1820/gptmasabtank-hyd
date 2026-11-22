@@ -310,6 +310,97 @@
 
 
 /* =========================================================
+   CARD TOP & BADGE
+========================================================= */
+
+.student-service-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.student-service-top .student-service-icon {
+  margin-bottom: 0;
+}
+
+.student-service-badge {
+  background: #fdf5e6;
+  border: 1px solid #e2cb9d;
+  color: #800000;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+}
+
+.student-portal-external-section {
+  padding-top: 0;
+}
+
+.student-service-card.external {
+  border-style: dashed;
+}
+
+/* =========================================================
+   REGULATIONS SECTION
+========================================================= */
+
+.student-portal-regulations {
+  padding: 60px 0 90px;
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+}
+
+.student-regulations-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.student-regulation-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid #800000;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.regulation-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.regulation-card-header .reg-icon {
+  color: #800000;
+  flex-shrink: 0;
+}
+
+.regulation-card-header h3 {
+  margin: 0;
+  font-size: 16.5px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.student-regulation-card p {
+  margin: 0;
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.65;
+}
+
+@media (max-width: 900px) {
+  .student-regulations-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+/* =========================================================
    SMALL MOBILE
 ========================================================= */
 

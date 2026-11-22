@@ -62,6 +62,33 @@
   color: #718096;
 }
 
+.semester-result-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.semester-print-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #ffffff;
+  color: #1e293b;
+  border: 1px solid #cbd5e1;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.semester-print-btn:hover {
+  background: #f1f5f9;
+  border-color: #800000;
+  color: #800000;
+}
+
 .semester-status {
   padding:
     8px 15px;
