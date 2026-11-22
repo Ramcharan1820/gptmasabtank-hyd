@@ -17,40 +17,43 @@ import {
 } from "lucide-react";
 
 import "./CivilDepartment.css";
+import useDepartmentFaculty from "../hooks/useDepartmentFaculty";
+
+const initialFaculty = [
+  {
+    name: "Smt. V.V. Rama Lakshmi",
+    image: "https://drive.google.com/uc?export=view&id=1L5GmzxGc-6jln7JWlJAWwH1L1KUlimuy",
+    designation: "Senior Lecturer in Civil Engineering",
+  },
+  {
+    name: "V. KRISHNAIAH",
+    image: "/images/departments/civil/v-krishnaiah.jpg",
+    designation: "Lecturer",
+  },
+  {
+    name: "SANDEEP",
+    image: "/images/departments/civil/sandeep.jpg",
+    designation: "Lecturer",
+  },
+  {
+    name: "KHAJA",
+    image: "/images/departments/civil/khaja.jpg",
+    designation: "Lecturer",
+  },
+  {
+    name: "G. RAKESH",
+    image: "/images/departments/civil/g-rakesh.jpg",
+    designation: "Lecturer",
+  },
+  {
+    name: "J. HARIKA",
+    image: "/images/departments/civil/j-harika.jpg",
+    designation: "Lecturer",
+  },
+];
 
 const CivilDepartment = () => {
-  const faculty = [
-    {
-      name: "Smt. V.V. Rama Lakshmi",
-      image: "https://drive.google.com/uc?export=view&id=1L5GmzxGc-6jln7JWlJAWwH1L1KUlimuy",
-      designation: "Senior Lecturer in Civil Engineering",
-    },
-    {
-      name: "V. KRISHNAIAH",
-      image: "/images/departments/civil/v-krishnaiah.jpg",
-      designation: "Lecturer",
-    },
-    {
-      name: "SANDEEP",
-      image: "/images/departments/civil/sandeep.jpg",
-      designation: "Lecturer",
-    },
-    {
-      name: "KHAJA",
-      image: "/images/departments/civil/khaja.jpg",
-      designation: "Lecturer",
-    },
-    {
-      name: "G. RAKESH",
-      image: "/images/departments/civil/g-rakesh.jpg",
-      designation: "Lecturer",
-    },
-    {
-      name: "J. HARIKA",
-      image: "/images/departments/civil/j-harika.jpg",
-      designation: "Lecturer",
-    },
-  ];
+  const { faculty } = useDepartmentFaculty("Civil", initialFaculty);
 
   return (
     <div className="civil-page">

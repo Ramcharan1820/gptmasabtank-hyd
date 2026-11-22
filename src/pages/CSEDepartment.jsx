@@ -18,12 +18,13 @@ import {
 } from "lucide-react";
 
 import "./CSEDepartment.css";
+import useDepartmentFaculty from "../hooks/useDepartmentFaculty";
 
 /* =========================================================
    FACULTY DATA
 ========================================================= */
 
-const faculty = [
+const initialFaculty = [
   {
     name: "Ram",
     designation: "Head of Section (HOD)",
@@ -134,6 +135,8 @@ function SectionTitle({ icon: Icon, children }) {
 ========================================================= */
 
 export default function CSEDepartment() {
+  const { faculty } = useDepartmentFaculty("CSE", initialFaculty);
+
   return (
     <main className="cse-page">
 

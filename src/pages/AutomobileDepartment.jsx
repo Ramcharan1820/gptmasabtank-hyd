@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 
 import "./AutomobileDepartment.css";
+import useDepartmentFaculty from "../hooks/useDepartmentFaculty";
 
 
 /* =========================================================
@@ -28,7 +29,7 @@ import "./AutomobileDepartment.css";
    Information supplied from the department source
 ========================================================= */
 
-const faculty = [
+const initialFaculty = [
   {
     name: "DR. BHUKYA BALAJI",
     designation: "LECTURER",
@@ -121,6 +122,8 @@ function SectionTitle({ icon: Icon, children }) {
 ========================================================= */
 
 export default function AutomobileDepartment() {
+  const { faculty } = useDepartmentFaculty("Automobile", initialFaculty);
+
   return (
     <main className="auto-page">
 

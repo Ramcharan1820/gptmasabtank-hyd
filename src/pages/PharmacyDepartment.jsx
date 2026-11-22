@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 
 import "./PharmacyDepartment.css";
+import useDepartmentFaculty from "../hooks/useDepartmentFaculty";
 
 const stats = [
   { label: "Established Year", value: "1978", sub: "Decades of Excellence" },
@@ -40,7 +41,7 @@ const hodData = {
     "Pharmacy is an indispensable pillar of modern healthcare. At Government Polytechnic Masab Tank, we impart comprehensive practical education in medicinal compounding, dosage accuracy, pharmacotherapy, and drug law jurisprudence. Our graduates are ethical, capable, and immediately industry-ready.",
 };
 
-const pharmacyFaculty = [
+const initialPharmacyFaculty = [
   {
     name: "Dr. M Vinay Kumar Chakravarthy",
     designation: "Lecturer in Pharmacy",
@@ -120,6 +121,8 @@ const careers = [
 ];
 
 function PharmacyDepartment() {
+  const { faculty: pharmacyFaculty } = useDepartmentFaculty("Pharmacy", initialPharmacyFaculty);
+
   return (
     <main className="pharm-page">
       {/* HERO */}

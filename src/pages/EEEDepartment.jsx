@@ -17,13 +17,14 @@ import {
 } from "lucide-react";
 
 import "./EEEDepartment.css";
+import useDepartmentFaculty from "../hooks/useDepartmentFaculty";
 
 
 /* =========================================================
    FACULTY DATA
 ========================================================= */
 
-const faculty = [
+const initialFaculty = [
   {
     name: "PASU MALLESHAM",
     designation: "LECTURER",
@@ -94,6 +95,8 @@ function SectionTitle({ icon: Icon, children }) {
 ========================================================= */
 
 export default function EEEDepartment() {
+  const { faculty } = useDepartmentFaculty("EEE", initialFaculty);
+
   return (
     <main className="eee-page">
 

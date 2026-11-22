@@ -20,12 +20,13 @@ import {
 } from "lucide-react";
 
 import "./ECEDepartment.css";
+import useDepartmentFaculty from "../hooks/useDepartmentFaculty";
 
 /* =========================================================
    ECE FACULTY
 ========================================================= */
 
-const faculty = [
+const initialFaculty = [
   {
     name: "D. SRIKANTH",
     designation: "LECTURER",
@@ -115,6 +116,8 @@ function SectionTitle({ icon: Icon, children }) {
 ========================================================= */
 
 export default function ECEDepartment() {
+  const { faculty } = useDepartmentFaculty("ECE", initialFaculty);
+
   return (
     <main className="ece-page">
 

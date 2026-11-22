@@ -2,71 +2,78 @@ const bcrypt = require("bcryptjs");
 const db = require("./db");
 
 async function setMainAdministrator() {
-  const targetEmail = "gpthyd.dte.telangana@gmail.com".toLowerCase().trim();
-  const targetUsername = "gpthyd_admin".toLowerCase().trim();
-  const rawPassword = "admin@500028";
-  const name = "Main Administrator";
+  const adminAccounts = [
+    {
+      name: "Main Administrator",
+      email: "gpthyd.dte.telangana@gmail.com".toLowerCase().trim(),
+      username: "gpthyd_admin".toLowerCase().trim(),
+      rawPassword: "admin@500028",
+      authProvider: "local",
+      designation: "Main Administrator",
+    },
+    {
+      name: "Teja Yadav",
+      email: "tejayadavnani@gmail.com".toLowerCase().trim(),
+      username: "tejayadav".toLowerCase().trim(),
+      rawPassword: "admin@500028",
+      authProvider: "google",
+      designation: "Super Administrator",
+    },
+  ];
 
-  console.log("Setting Main Administrator account...");
-  console.log("Email:", targetEmail);
-  console.log("Username:", targetUsername);
+  for (const acc of adminAccounts) {
+    console.log(`\nConfiguring administrator: ${acc.email}...`);
+    const passwordHash = await bcrypt.hash(acc.rawPassword, 12);
 
-  const passwordHash = await bcrypt.hash(rawPassword, 12);
-
-  // Check if account with email or username already exists
-  const [existing] = await db.execute(
-    "SELECT id, email, username FROM admins WHERE email = ? OR username = ? OR id = 1 LIMIT 1",
-    [targetEmail, targetUsername]
-  );
-
-  if (existing.length > 0) {
-    const existingId = existing[0].id;
-    console.log(`Updating existing admin record (ID: ${existingId})...`);
-    await db.execute(
-      `UPDATE admins
-       SET name = ?,
-           email = ?,
-           username = ?,
-           password_hash = ?,
-           role = 'superadmin',
-           status = 'approved',
-           is_active = 1,
-           department = 'Principal / Head Office',
-           designation = 'Main Administrator'
-       WHERE id = ?`,
-      [name, targetEmail, targetUsername, passwordHash, existingId]
+    const [existing] = await db.execute(
+      "SELECT id, email, username FROM admins WHERE email = ? OR username = ? LIMIT 1",
+      [acc.email, acc.username]
     );
-  } else {
-    console.log("Inserting new Main Administrator record...");
-    await db.execute(
-      `INSERT INTO admins (
-        name,
-        email,
-        username,
-        password_hash,
-        role,
-        status,
-        is_active,
-        department,
-        designation
-      ) VALUES (?, ?, ?, ?, 'superadmin', 'approved', 1, 'Principal / Head Office', 'Main Administrator')`,
-      [name, targetEmail, targetUsername, passwordHash]
-    );
+
+    if (existing.length > 0) {
+      const existingId = existing[0].id;
+      console.log(`Updating existing admin record (ID: ${existingId})...`);
+      await db.execute(
+        `UPDATE admins
+         SET name = ?,
+             email = ?,
+             username = ?,
+             password_hash = ?,
+             role = 'superadmin',
+             status = 'approved',
+             is_active = 1,
+             department = 'Principal / Head Office',
+             designation = ?
+         WHERE id = ?`,
+        [acc.name, acc.email, acc.username, passwordHash, acc.designation, existingId]
+      );
+    } else {
+      console.log(`Inserting new administrator record for ${acc.email}...`);
+      await db.execute(
+        `INSERT INTO admins (
+          name,
+          email,
+          username,
+          password_hash,
+          role,
+          status,
+          is_active,
+          auth_provider,
+          department,
+          designation
+        ) VALUES (?, ?, ?, ?, 'superadmin', 'approved', 1, ?, 'Principal / Head Office', ?)`,
+        [acc.name, acc.email, acc.username, passwordHash, acc.authProvider, acc.designation]
+      );
+    }
   }
 
   // Verify in database
   const [admins] = await db.execute(
-    "SELECT id, name, username, email, role, status, is_active, department, designation FROM admins WHERE email = ?",
-    [targetEmail]
+    "SELECT id, name, username, email, role, status, is_active, auth_provider, department, designation FROM admins"
   );
 
-  console.log("\nMain Administrator account successfully configured:");
+  console.log("\nSuper Administrator accounts successfully configured:");
   console.table(admins);
-
-  // Test bcrypt verification
-  const [stored] = await db.execute("SELECT password_hash FROM admins WHERE email = ?", [targetEmail]);
-  const isMatch = await bcrypt.compare(rawPassword, stored[0].password_hash);
-  console.log("Password verification check:", isMatch ? "MATCHED (Ready to login)" : "FAILED");
 
   process.exit(0);
 }

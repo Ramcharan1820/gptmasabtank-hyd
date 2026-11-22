@@ -5,7 +5,7 @@ import "./AdminImageField.css";
 import API_BASE_URL, { getAdminAuthHeaders } from "../apiConfig";
 
 const API_BASE = API_BASE_URL;
-const MAX_FILE_BYTES = 15 * 1024 * 1024;
+const MAX_FILE_BYTES = 300 * 1024; // Strict restriction: less than 300 KB
 const ACCEPTED_TYPES = new Set([
   "image/jpeg",
   "image/png",
@@ -144,8 +144,16 @@ export default function AdminImageField({
       setError("Choose a JPEG, PNG, WebP, GIF, or AVIF image.");
       return;
     }
-    if (file.size < 1 || file.size > MAX_FILE_BYTES) {
-      setError("Image must be larger than 0 bytes and no larger than 15 MB.");
+    if (file.size < 1) {
+      setError("The selected photo file is empty.");
+      return;
+    }
+    if (!COMPRESSIBLE_TYPES.has(file.type) && file.size > MAX_FILE_BYTES) {
+      setError(`Photo size must be less than 300 KB (selected: ${(file.size / 1024).toFixed(1)} KB).`);
+      return;
+    }
+    if (file.size > 25 * 1024 * 1024) {
+      setError("Photo file is too large to process. Please choose a photo under 25 MB.");
       return;
     }
 
@@ -156,12 +164,23 @@ export default function AdminImageField({
 
     try {
       let uploadImage = file;
-      if (COMPRESSIBLE_TYPES.has(file.type) && file.size > 2 * 1024 * 1024) {
-        uploadImage = await imageCompression(file, {
-          maxSizeMB: 1.8,
-          maxWidthOrHeight: 2560,
-          useWebWorker: true,
-        });
+      if (COMPRESSIBLE_TYPES.has(file.type) && file.size > MAX_FILE_BYTES) {
+        try {
+          uploadImage = await imageCompression(file, {
+            maxSizeMB: 0.28,
+            maxWidthOrHeight: 1600,
+            useWebWorker: true,
+          });
+        } catch (compErr) {
+          console.warn("Client image compression warning:", compErr);
+        }
+      }
+
+      if (uploadImage.size > MAX_FILE_BYTES) {
+        setError(
+          `Photo must be less than 300 KB. Current size is ${(uploadImage.size / 1024).toFixed(1)} KB. Please select a smaller photo.`
+        );
+        return;
       }
 
       const signatureResponse = await fetch(
@@ -295,6 +314,12 @@ export default function AdminImageField({
             Cancel upload
           </button>
         )}
+      </div>
+
+      <div className="admin-image-hint-row">
+        <span className="admin-image-hint">
+          * Photo size must be less than 300 KB (JPEG, PNG, WebP)
+        </span>
       </div>
 
       {uploading && (

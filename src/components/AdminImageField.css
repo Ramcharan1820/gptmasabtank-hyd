@@ -122,6 +122,18 @@
   transition: width 0.15s ease;
 }
 
+.admin-image-hint-row {
+  margin-top: -3px;
+  margin-bottom: 1px;
+}
+
+.admin-image-hint {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 500;
+  display: inline-block;
+}
+
 .admin-image-error {
   margin: 0;
   color: #a22d3d;

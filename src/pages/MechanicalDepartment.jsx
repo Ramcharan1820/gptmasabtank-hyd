@@ -20,8 +20,9 @@ import {
 } from "lucide-react";
 
 import "./MechanicalDepartment.css";
+import useDepartmentFaculty from "../hooks/useDepartmentFaculty";
 
-const mechanicalFaculty = [
+const initialMechanicalFaculty = [
   {
     name: "Dr. G. Venkat Rao",
     designation: "Head of Section (HOD)",
@@ -61,6 +62,8 @@ const mechanicalFaculty = [
 ];
 
 const MechanicalDepartment = () => {
+  const { faculty: mechanicalFaculty } = useDepartmentFaculty("Mechanical", initialMechanicalFaculty);
+
   return (
     <div className="mechanical-page">
 

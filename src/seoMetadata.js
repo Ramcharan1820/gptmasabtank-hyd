@@ -140,6 +140,12 @@ export const PRIVATE_PAGE_TITLES = {
 
   "/alumni/register/form":
     "Complete Alumni Registration | Government Polytechnic College",
+
+  "/admin/login":
+    "Admin Login | Government Polytechnic College",
+
+  "/admin/register":
+    "Admin Registration | Government Polytechnic College",
 };
 
 export const PRERENDER_ROUTES = [

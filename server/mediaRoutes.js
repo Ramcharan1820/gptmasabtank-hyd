@@ -185,7 +185,7 @@ module.exports = function createMediaRouter({ db, requireAdmin }) {
     const { contentType, fileSize, mimeType } = req.body || {};
     const maxFileSize =
       Number(process.env.CLOUDINARY_CONTENT_MAX_FILE_BYTES) ||
-      15 * 1024 * 1024;
+      300 * 1024; // 300 KB photo upload restriction
 
     if (!CONTENT_ASSET_TYPES.has(contentType)) {
       return res.status(400).json({
@@ -203,7 +203,7 @@ module.exports = function createMediaRouter({ db, requireAdmin }) {
     ) {
       return res.status(413).json({
         success: false,
-        message: "Choose a supported image no larger than the configured upload limit.",
+        message: `Photo file size must be less than 300 KB (maximum ${(maxFileSize / 1024).toFixed(0)} KB allowed).`,
       });
     }
 
