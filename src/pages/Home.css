@@ -65,7 +65,7 @@
 }
 
 /* =========================================
-   HERO MAROON OVERLAY
+   HERO TRANSPARENT MAROON OVERLAY
 ========================================= */
 
 .hero-overlay {
@@ -73,12 +73,19 @@
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    rgba(66, 2, 4, 0.94) 0%,
-    rgba(108, 11, 16, 0.85) 50%,
-    rgba(45, 2, 4, 0.6) 100%
-  ) !important;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(20, 2, 4, 0.35) 0%,
+      rgba(35, 3, 6, 0.12) 45%,
+      rgba(15, 2, 4, 0.45) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(40, 3, 6, 0.52) 0%,
+      rgba(60, 5, 10, 0.28) 42%,
+      rgba(10, 2, 4, 0.08) 100%
+    ) !important;
 }
 
 /* =========================================
@@ -92,7 +99,7 @@
   max-width: 1100px;
   margin: auto;
   color: #ffffff;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.95);
 }
 
 .hero-content span {
@@ -102,6 +109,7 @@
   font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
 }
 
 .hero-content h1 {
@@ -113,15 +121,17 @@
   line-height: 1.15;
   letter-spacing: -1px;
   font-weight: 800;
+  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.85), 0 1px 4px rgba(0, 0, 0, 0.95);
 }
 
 .hero-content p {
   max-width: 680px;
   min-height: auto;
   margin: 0;
-  color: #f7e6e7;
+  color: #ffffff;
   font-size: 15px;
   line-height: 1.55;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
 }
 
 /* =========================================
@@ -617,10 +627,11 @@
   .hero-overlay {
     background:
       linear-gradient(
-        90deg,
-        rgba(0, 0, 0, 0.82) 0%,
-        rgba(0, 0, 0, 0.62) 100%
-      );
+        180deg,
+        rgba(20, 2, 4, 0.35) 0%,
+        rgba(35, 3, 6, 0.22) 50%,
+        rgba(15, 2, 4, 0.5) 100%
+      ) !important;
   }
 
 
