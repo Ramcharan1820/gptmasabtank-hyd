@@ -8,7 +8,7 @@ import {
   Search,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import API_BASE_URL from "../apiConfig";
+import API_BASE_URL, { safeFetchJson } from "../apiConfig";
 import "./ConsolidatedResult.css";
 
 const SCHEMES = [
@@ -166,13 +166,11 @@ function ConsolidatedResult() {
 
     try {
       const params = new URLSearchParams({ pin: enteredPin, scheme });
-      const apiBase = import.meta.env.PROD ? "" : API_BASE_URL;
-      const response = await fetch(
-        `${apiBase}/api/consolidated-result?${params.toString()}`
+      const { ok, data: payload } = await safeFetchJson(
+        `/api/consolidated-result?${params.toString()}`
       );
-      const payload = await response.json();
 
-      if (!response.ok || !payload?.success) {
+      if (!ok || !payload?.success) {
         throw new Error(
           payload?.message || "Unable to fetch your consolidated result."
         );

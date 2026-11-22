@@ -10,6 +10,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
+import RouteSEO from "./components/RouteSEO";
 
 /* Main Pages */
 import Home from "./pages/Home";
@@ -55,6 +56,7 @@ function App() {
 
   return (
     <>
+      <RouteSEO />
       <ScrollToTop />
 
       {!isAdminAuthRoute && (

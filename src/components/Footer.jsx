@@ -125,21 +125,11 @@ function Footer() {
                 <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
                 <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
               </svg>
-              <span>@gpt_masabtank_official</span>
+              <span>gpt_masabtank_official</span>
             </a>
           </div>
         </div>
 
-      </div>
-
-      {/* PROJECT TEAM / GROUP MEMBERS SECTION */}
-      <div className="footer-team-strip">
-        <div className="footer-team-content">
-          <span className="footer-team-label">🎓 Project & Website Development Group:</span>
-          <span className="footer-team-members">
-            Teja &amp; Project Group Members (Diploma in CSE, GPT Masab Tank)
-          </span>
-        </div>
       </div>
 
       {/* BOTTOM */}

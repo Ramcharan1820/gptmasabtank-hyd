@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import API_BASE_URL from "../apiConfig";
+import API_BASE_URL, { safeFetchJson } from "../apiConfig";
 import "./Result.css";
 import MidResult from "./MidResult";
 import SemesterResult from "./SemesterResult";
@@ -100,12 +100,9 @@ function Result() {
         `Requesting ${examType} result for ${semester}`
       );
 
-      const apiBase = import.meta.env.PROD ? "" : API_BASE_URL;
-      const response = await fetch(
-        `${apiBase}/api/result?${params.toString()}`
+      const { ok, data } = await safeFetchJson(
+        `/api/result?${params.toString()}`
       );
-
-      const data = await response.json();
 
       console.log(
         "Result response received:",
@@ -115,10 +112,10 @@ function Result() {
         }
       );
 
-      if (!response.ok || !data.success) {
+      if (!ok || !data?.success) {
         throw new Error(
-          data.message ||
-            "Unable to fetch result from SBTET."
+          data?.message ||
+            "Unable to fetch result from SBTET. Please check your details."
         );
       }
 

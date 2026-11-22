@@ -1,10 +1,6 @@
 import { useMemo, useState } from "react";
-import API_BASE_URL from "../apiConfig";
+import API_BASE_URL, { safeFetchJson } from "../apiConfig";
 import "./Attendance.css";
-
-const API_URL = import.meta.env.PROD
-  ? "/api/attendance"
-  : `${API_BASE_URL}/api/attendance`;
 
 function Attendance() {
   const [pin, setPin] = useState("");
@@ -29,32 +25,11 @@ function Attendance() {
     setError("");
 
     try {
-      let response;
-      try {
-        response = await fetch(
-          `${API_URL}?pin=${encodeURIComponent(enteredPin)}`
-        );
-      } catch (err) {
-        if (API_URL !== `${API_BASE_URL}/api/attendance`) {
-          response = await fetch(
-            `${API_BASE_URL}/api/attendance?pin=${encodeURIComponent(enteredPin)}`
-          );
-        } else {
-          throw err;
-        }
-      }
+      const { ok, data: result } = await safeFetchJson(
+        `/api/attendance?pin=${encodeURIComponent(enteredPin)}`
+      );
 
-      let result;
-
-      try {
-        result = await response.json();
-      } catch {
-        throw new Error(
-          `Attendance API returned a non-JSON response (HTTP ${response.status}). Check VITE_API_BASE_URL in the frontend deployment settings and redeploy.`
-        );
-      }
-
-      if (!response.ok || !result?.success || !result?.data) {
+      if (!ok || !result?.success || !result?.data) {
         throw new Error(
           result?.message ||
             "We couldn't retrieve attendance from SBTET right now."

@@ -114,29 +114,44 @@ export const PUBLIC_PAGES = {
     description:
       "Connect with alumni of Government Polytechnic College, Masab Tank, Hyderabad, and explore the college alumni community, achievements and opportunities.",
   },
+
+  "/student-portal": {
+    title: "Student Portal | Government Polytechnic College, Masab Tank",
+    description:
+      "Access student services including attendance monitoring, semester exam results, curriculum resources and SBTET updates.",
+  },
+
+  "/student-portal/attendance": {
+    title: "Student Attendance Portal | Government Polytechnic College",
+    description:
+      "Check live student attendance, monthly percentages, and semester exam eligibility from SBTET at Government Polytechnic College, Masab Tank.",
+  },
+
+  "/student-portal/result": {
+    title: "Student Examination Results | Government Polytechnic College",
+    description:
+      "Check Mid and Semester examination results with subject-wise marks and grades at Government Polytechnic College, Masab Tank.",
+  },
+
+  "/student-portal/consolidated-result": {
+    title: "Consolidated Results & Ledger | Government Polytechnic College",
+    description:
+      "Access your complete multi-semester academic ledger, subject credits, GPA/CGPA summary, and printable memo at Government Polytechnic College, Masab Tank.",
+  },
+
+  "/alumni/register": {
+    title: "Alumni Registration | Government Polytechnic College",
+    description:
+      "Register and join the alumni network of Government Polytechnic College, Masab Tank, Hyderabad.",
+  },
 };
 
 export const PRIVATE_PAGE_TITLES = {
-  "/student-portal":
-    "Student Portal | Government Polytechnic College",
-
-  "/student-portal/attendance":
-    "Student Attendance | Government Polytechnic College",
-
-  "/student-portal/result":
-    "Student Results | Government Polytechnic College",
-
-  "/student-portal/consolidated-result":
-    "Consolidated Results | Government Polytechnic College",
-
   "/student-portal/result/mid":
     "Mid Results | Government Polytechnic College",
 
   "/student-portal/result/semester":
     "Semester Results | Government Polytechnic College",
-
-  "/alumni/register":
-    "Alumni Registration | Government Polytechnic College",
 
   "/alumni/register/form":
     "Complete Alumni Registration | Government Polytechnic College",
@@ -146,6 +161,12 @@ export const PRIVATE_PAGE_TITLES = {
 
   "/admin/register":
     "Admin Registration | Government Polytechnic College",
+
+  "/admin/dashboard":
+    "Admin Dashboard | Government Polytechnic College",
+
+  "/admin/media":
+    "Admin Event Media | Government Polytechnic College",
 };
 
 export const PRERENDER_ROUTES = [
@@ -232,7 +253,7 @@ export function renderSeoHead(pathname) {
 
   const canonicalUrl =
     new URL(
-      page ? routePath : "/",
+      routePath,
       SITE_URL
     ).href;
 

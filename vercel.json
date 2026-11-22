@@ -2,14 +2,8 @@
   "regions": ["bom1"],
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
-    },
-    {
-      "source": "/(.*)",
+      "source": "/((?!api/|assets/|images/|.*\\..*).*)",
       "destination": "/index.html"
     }
   ]
 }
-
-

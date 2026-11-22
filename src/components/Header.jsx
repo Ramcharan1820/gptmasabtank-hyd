@@ -565,6 +565,20 @@ export default function Header({ showNavigation = true }) {
                     ));
                   })()}
                 </div>
+                <div className="drawer-contact-row">
+                  <a
+                    href="https://www.instagram.com/gpt_masabtank_official"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="drawer-insta-link"
+                    title="@gpt_masabtank_official on Instagram"
+                  >
+                    <span className="drawer-insta-icon">
+                      <InstagramIcon size={13} />
+                    </span>
+                    <span>gpt_masabtank_official</span>
+                  </a>
+                </div>
                 <p className="drawer-timing">
                   {contactDetails?.working_hours || "College: 09:00 AM – 04:00 PM (Mon – Sat)"}
                 </p>
