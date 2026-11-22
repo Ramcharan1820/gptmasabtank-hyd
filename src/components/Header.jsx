@@ -284,6 +284,15 @@ export default function Header({ showNavigation = true }) {
             >
               <InstagramIcon size={17} />
             </a>
+            <a
+              href="https://www.instagram.com/gpt_masabtank_official"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="instagram-handle-link"
+              title="Visit gpt_masabtank_official on Instagram"
+            >
+              gpt_masabtank_official
+            </a>
           </div>
         </div>
 

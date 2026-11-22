@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Clock, Phone, Mail, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import API_BASE_URL from "../apiConfig";
 import "./Home.css";
 
@@ -387,38 +387,6 @@ export default function Home() {
 
       </section>
 
-      {/* =========================================
-          COLLEGE TIMINGS & CONTACT STRIP
-      ========================================= */}
-
-      <section className="home-timings-bar">
-        <div className="home-timings-container">
-          <div className="home-timings-item">
-            <Clock size={18} className="timings-icon" />
-            <div>
-              <strong>College Working Hours:</strong>
-              <span> 09:00 AM to 04:00 PM (Mon – Sat)</span>
-            </div>
-          </div>
-
-          <div className="home-timings-links">
-            <a href="mailto:gpthyd01@gmail.com" className="home-timings-link" title="Send email to GPT Masab Tank">
-              <Mail size={16} />
-              <span>gpthyd01@gmail.com</span>
-            </a>
-
-            <a href="tel:04023393246" className="home-timings-link" title="Call GPT Masab Tank Landline">
-              <Phone size={16} />
-              <span>040-23393246</span>
-            </a>
-
-            <a href="tel:9912342001" className="home-timings-link" title="Call GPT Masab Tank Mobile">
-              <Phone size={16} />
-              <span>9912342001</span>
-            </a>
-          </div>
-        </div>
-      </section>
 
 
       {/* =========================================

@@ -1,5 +1,5 @@
 export const SITE_URL =
-  "https://gptmasabtank-hyd.tejayadavn.workers.dev";
+  "https://gptmasabtank.in";
 
 export const SITE_NAME =
   "Government Polytechnic College, Masab Tank";

@@ -307,68 +307,6 @@
 
 
 /* =========================================
-   COLLEGE TIMINGS & QUICK CONTACT STRIP
-========================================= */
-
-.home-timings-bar {
-  background: linear-gradient(90deg, #5b0508 0%, #800000 50%, #4a0306 100%);
-  color: #ffffff;
-  border-bottom: 2px solid #c59b27;
-  padding: 12px 0;
-}
-
-.home-timings-container {
-  width: 90%;
-  max-width: 1100px;
-  margin: auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 14px;
-  font-size: 13.5px;
-}
-
-.home-timings-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.timings-icon {
-  color: #f5c451;
-  flex-shrink: 0;
-}
-
-.home-timings-links {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-
-.home-timings-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  color: #f7e6e7;
-  text-decoration: none;
-  font-size: 13px;
-  font-weight: 600;
-  padding: 5px 12px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  transition: all 0.2s ease;
-}
-
-.home-timings-link:hover {
-  color: #f5c451;
-  border-color: #f5c451;
-  background: rgba(255, 255, 255, 0.16);
-}
-
-/* =========================================
    PRINCIPAL SECTION
 ========================================= */
 
