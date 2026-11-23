@@ -67,14 +67,12 @@ export async function safeFetchJson(endpoint, options = {}) {
   const isProd = getEnvVar("PROD", false) || getEnvVar("NODE_ENV", "") === "production";
 
   if (isSbtet) {
-    // In production, ALWAYS try relative endpoint first because Vercel Serverless Functions
-    // execute in Mumbai, India (bom1) and are not subject to SBTET overseas IP geo-blocking.
-    candidateUrls.push(cleanEndpoint);
-    if (customBase && API_BASE_URL) {
-      candidateUrls.push(`${API_BASE_URL}${cleanEndpoint}`);
-    } else if (API_BASE_URL) {
+    // When API_BASE_URL is configured (e.g. https://api.gptmasabtank.in), try it first
+    // because the backend handles geo-blocking via Mumbai proxy and returns JSON immediately.
+    if (API_BASE_URL) {
       candidateUrls.push(`${API_BASE_URL}${cleanEndpoint}`);
     }
+    candidateUrls.push(cleanEndpoint);
   } else {
     // Non-SBTET endpoints (database, admin auth, content, media): backend is primary
     if (customBase && API_BASE_URL) {
@@ -99,12 +97,24 @@ export async function safeFetchJson(endpoint, options = {}) {
   let lastError = null;
 
   for (const url of uniqueUrls) {
+    let timer = null;
     try {
       const targetUrl =
         url.startsWith("/") && typeof window === "undefined"
           ? `${API_BASE_URL || "http://localhost:5000"}${url}`
           : url;
-      const response = await fetch(targetUrl, options);
+
+      const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+      if (controller && !options.signal) {
+        timer = setTimeout(() => controller.abort(), 15000);
+      }
+
+      const fetchOptions = {
+        ...options,
+        signal: options.signal || (controller ? controller.signal : undefined),
+      };
+
+      const response = await fetch(targetUrl, fetchOptions);
 
       const contentType = response.headers.get("content-type") || "";
       const text = await response.text();
@@ -149,6 +159,8 @@ export async function safeFetchJson(endpoint, options = {}) {
       };
     } catch (netErr) {
       lastError = netErr;
+    } finally {
+      if (timer) clearTimeout(timer);
     }
   }
 

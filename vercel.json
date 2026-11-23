@@ -3,6 +3,12 @@
   "functions": {
     "api/attendance.js": {
       "maxDuration": 60
+    },
+    "api/result.js": {
+      "maxDuration": 60
+    },
+    "api/consolidated-result.js": {
+      "maxDuration": 60
     }
   },
   "rewrites": [

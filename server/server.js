@@ -342,6 +342,56 @@ function fetchSBTET(url, options = {}) {
   });
 }
 
+function fetchViaVercelProxy(apiPath) {
+  return new Promise((resolve, reject) => {
+    try {
+      const cleanPath = apiPath.startsWith("/") ? apiPath : `/${apiPath}`;
+      const options = {
+        hostname: "cname.vercel-dns.com",
+        port: 443,
+        path: cleanPath,
+        headers: {
+          Host: "gptmasabtank.in",
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+          Accept: "application/json, text/plain, */*",
+        },
+        servername: "gptmasabtank.in",
+        timeout: 15000,
+        rejectUnauthorized: false,
+      };
+
+      const req = https.get(options, (res) => {
+        let rawData = "";
+        res.setEncoding("utf8");
+        res.on("data", (chunk) => {
+          rawData += chunk;
+        });
+        res.on("end", () => {
+          let data;
+          try {
+            data = JSON.parse(rawData);
+          } catch {
+            data = rawData;
+          }
+          resolve({
+            ok: res.statusCode >= 200 && res.statusCode < 300,
+            status: res.statusCode,
+            data,
+          });
+        });
+      });
+
+      req.on("error", (err) => reject(err));
+      req.on("timeout", () => {
+        req.destroy(new Error(`Vercel India proxy request timed out for ${cleanPath}`));
+      });
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
 // =========================================================
 // HOME ROUTE
 // =========================================================
@@ -2976,20 +3026,22 @@ app.get("/api/attendance", async (req, res) => {
       `${SBTET_ATTENDANCE_URL}?Pin=${encodeURIComponent(pin)}`;
 
     let result;
+    if (process.env.RENDER) {
+      try {
+        const vResult = await fetchViaVercelProxy(`/api/attendance?pin=${encodeURIComponent(pin)}`);
+        return res.status(vResult.status).json(vResult.data);
+      } catch (proxyErr) {
+        console.warn("Vercel proxy failed, trying direct SBTET...", proxyErr.message);
+      }
+    }
+
     try {
       result = await fetchSBTET(url);
     } catch (directError) {
       console.warn("Direct SBTET fetch failed (possible geo-block), falling back to Vercel India proxy...", directError.message);
       try {
-        const fallbackBase = (process.env.FRONTEND_URL || "https://gptmasabtank.in").replace(/\/+$/, "");
-        const fallbackRes = await fetch(
-          `${fallbackBase}/api/attendance?pin=${encodeURIComponent(pin)}`
-        );
-        if (!fallbackRes.headers.get("content-type")?.includes("application/json")) {
-          throw new Error("Attendance proxy returned a non-JSON response.");
-        }
-        const fallbackData = await fallbackRes.json();
-        return res.status(fallbackRes.status).json(fallbackData);
+        const vResult = await fetchViaVercelProxy(`/api/attendance?pin=${encodeURIComponent(pin)}`);
+        return res.status(vResult.status).json(vResult.data);
       } catch (fallbackError) {
         console.error("Attendance proxy fallback failed:", fallbackError.message);
         throw directError;
@@ -3111,7 +3163,33 @@ app.get("/api/consolidated-result", async (req, res) => {
     const url =
       `${SBTET_CONSOLIDATED_RESULT_URL}${endpoint}` +
       `?Pin=${encodeURIComponent(cleanPin)}`;
-    const result = await fetchSBTET(url);
+
+    if (process.env.RENDER) {
+      try {
+        const vResult = await fetchViaVercelProxy(
+          `/api/consolidated-result?pin=${encodeURIComponent(cleanPin)}&scheme=${encodeURIComponent(cleanScheme)}`
+        );
+        return res.status(vResult.status).json(vResult.data);
+      } catch (proxyErr) {
+        console.warn("Vercel proxy failed for consolidated-result, trying direct SBTET...", proxyErr.message);
+      }
+    }
+
+    let result;
+    try {
+      result = await fetchSBTET(url);
+    } catch (directError) {
+      console.warn("Direct SBTET consolidated result fetch failed, falling back to Vercel India proxy...", directError.message);
+      try {
+        const vResult = await fetchViaVercelProxy(
+          `/api/consolidated-result?pin=${encodeURIComponent(cleanPin)}&scheme=${encodeURIComponent(cleanScheme)}`
+        );
+        return res.status(vResult.status).json(vResult.data);
+      } catch (fbErr) {
+        console.error("Consolidated result proxy fallback failed:", fbErr.message);
+        throw directError;
+      }
+    }
 
     if (!result.ok) {
       return res.status(result.status).json({
@@ -3255,20 +3333,25 @@ app.get("/api/result", async (req, res) => {
         `&SchemeId=${schemeId}` +
         `&SemYearId=${semYearId}`;
 
+      const proxyPath = `/api/result?pin=${encodeURIComponent(cleanPin)}&scheme=${encodeURIComponent(cleanScheme)}&semester=${encodeURIComponent(cleanSemester)}&examType=${encodeURIComponent(cleanExamType)}`;
+
+      if (process.env.RENDER) {
+        try {
+          const vResult = await fetchViaVercelProxy(proxyPath);
+          return res.status(vResult.status).json(vResult.data);
+        } catch (proxyErr) {
+          console.warn("Vercel proxy failed for mid result, trying direct SBTET...", proxyErr.message);
+        }
+      }
+
       let result;
       try {
         result = await fetchSBTET(url);
       } catch (directError) {
         console.warn("Direct SBTET mid result fetch failed, falling back to Vercel India proxy...", directError.message);
         try {
-          const fallbackBase = (process.env.FRONTEND_URL || "https://gptmasabtank.in").replace(/\/+$/, "");
-          const fallbackRes = await fetch(
-            `${fallbackBase}/api/result?pin=${encodeURIComponent(cleanPin)}&scheme=${encodeURIComponent(cleanScheme)}&semester=${encodeURIComponent(cleanSemester)}&examType=${encodeURIComponent(cleanExamType)}`
-          );
-          if (fallbackRes.headers.get("content-type")?.includes("application/json")) {
-            const fallbackData = await fallbackRes.json();
-            return res.status(fallbackRes.status).json(fallbackData);
-          }
+          const vResult = await fetchViaVercelProxy(proxyPath);
+          return res.status(vResult.status).json(vResult.data);
         } catch (fbErr) {
           console.error("Mid result proxy fallback failed:", fbErr.message);
         }
@@ -3326,6 +3409,16 @@ app.get("/api/result", async (req, res) => {
     }
 
     if (cleanExamType === "Semester") {
+      const proxyPath = `/api/result?pin=${encodeURIComponent(cleanPin)}&scheme=${encodeURIComponent(cleanScheme)}&semester=${encodeURIComponent(cleanSemester)}&examType=${encodeURIComponent(cleanExamType)}`;
+
+      if (process.env.RENDER) {
+        try {
+          const vResult = await fetchViaVercelProxy(proxyPath);
+          return res.status(vResult.status).json(vResult.data);
+        } catch (proxyErr) {
+          console.warn("Vercel proxy failed for semester result, trying direct SBTET...", proxyErr.message);
+        }
+      }
       const examMonthYearIds = String(
         process.env.SBTET_EXAM_MONTH_YEAR_IDS || ""
       )
@@ -3393,14 +3486,8 @@ app.get("/api/result", async (req, res) => {
       if (!foundReport) {
         if (lastStatus && lastStatus >= 500) {
           try {
-            const fallbackBase = (process.env.FRONTEND_URL || "https://gptmasabtank.in").replace(/\/+$/, "");
-            const fallbackRes = await fetch(
-              `${fallbackBase}/api/result?pin=${encodeURIComponent(cleanPin)}&scheme=${encodeURIComponent(cleanScheme)}&semester=${encodeURIComponent(cleanSemester)}&examType=${encodeURIComponent(cleanExamType)}`
-            );
-            if (fallbackRes.headers.get("content-type")?.includes("application/json")) {
-              const fallbackData = await fallbackRes.json();
-              return res.status(fallbackRes.status).json(fallbackData);
-            }
+            const vResult = await fetchViaVercelProxy(proxyPath);
+            return res.status(vResult.status).json(vResult.data);
           } catch (fbErr) {
             console.error("Semester result proxy fallback failed:", fbErr.message);
           }
