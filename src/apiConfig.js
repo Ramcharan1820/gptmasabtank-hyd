@@ -55,23 +55,41 @@ export const getAdminAuthHeaders = () => {
 export async function safeFetchJson(endpoint, options = {}) {
   const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
 
+  // Check if this is an SBTET endpoint (result, attendance, consolidated-result)
+  const isSbtet =
+    cleanEndpoint.startsWith("/api/result") ||
+    cleanEndpoint.startsWith("/api/attendance") ||
+    cleanEndpoint.startsWith("/api/consolidated-result");
+
   // Build candidate URLs in order of preference
   const candidateUrls = [];
   const customBase = getEnvVar("VITE_API_BASE_URL", "");
   const isProd = getEnvVar("PROD", false) || getEnvVar("NODE_ENV", "") === "production";
 
-  if (customBase && API_BASE_URL) {
-    candidateUrls.push(`${API_BASE_URL}${cleanEndpoint}`);
+  if (isSbtet) {
+    // In production, ALWAYS try relative endpoint first because Vercel Serverless Functions
+    // execute in Mumbai, India (bom1) and are not subject to SBTET overseas IP geo-blocking.
     candidateUrls.push(cleanEndpoint);
-  } else if (!isProd) {
-    // Local dev: express backend on port 5000 is primary
-    if (API_BASE_URL) candidateUrls.push(`${API_BASE_URL}${cleanEndpoint}`);
-    candidateUrls.push(cleanEndpoint);
-  } else {
-    // Production default: relative first (e.g. Vercel serverless), then API_BASE_URL
-    candidateUrls.push(cleanEndpoint);
-    if (API_BASE_URL) {
+    if (customBase && API_BASE_URL) {
       candidateUrls.push(`${API_BASE_URL}${cleanEndpoint}`);
+    } else if (API_BASE_URL) {
+      candidateUrls.push(`${API_BASE_URL}${cleanEndpoint}`);
+    }
+  } else {
+    // Non-SBTET endpoints (database, admin auth, content, media): backend is primary
+    if (customBase && API_BASE_URL) {
+      candidateUrls.push(`${API_BASE_URL}${cleanEndpoint}`);
+      candidateUrls.push(cleanEndpoint);
+    } else if (!isProd) {
+      // Local dev: express backend on port 5000 is primary
+      if (API_BASE_URL) candidateUrls.push(`${API_BASE_URL}${cleanEndpoint}`);
+      candidateUrls.push(cleanEndpoint);
+    } else {
+      // Production default: relative first (e.g. Vercel serverless), then API_BASE_URL
+      candidateUrls.push(cleanEndpoint);
+      if (API_BASE_URL) {
+        candidateUrls.push(`${API_BASE_URL}${cleanEndpoint}`);
+      }
     }
   }
 
@@ -116,6 +134,14 @@ export async function safeFetchJson(endpoint, options = {}) {
         continue;
       }
 
+      // If server returned 5xx (e.g. 500 timeout from overseas Render), try next candidate URL!
+      if (!response.ok && response.status >= 500) {
+        lastError = new Error(
+          parsedData?.message || `Endpoint ${url} failed with status ${response.status}.`
+        );
+        continue;
+      }
+
       return {
         ok: response.ok,
         status: response.status,
@@ -128,7 +154,7 @@ export async function safeFetchJson(endpoint, options = {}) {
 
   const errorMessage =
     lastError?.message?.includes("HTML document")
-      ? "Unable to fetch result: API returned an invalid response. Please verify backend status."
+      ? "Unable to fetch data: API returned an invalid response. Please verify backend status."
       : lastError?.message || "Failed to connect to API service.";
 
   throw new Error(errorMessage);

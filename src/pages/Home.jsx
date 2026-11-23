@@ -30,7 +30,7 @@ const heroSlides = [
       "Building knowledge, skills and confidence for successful technical careers.",
   },
   {
-    image: "/images/hero-3.jpg",
+    image: "/images/IMG-20261111-WA0053.jpg",
     title: (
       <>
         Learn. Build.

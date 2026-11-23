@@ -328,7 +328,7 @@ function fetchSBTET(url, options = {}) {
       });
 
       req.on("timeout", () => {
-        req.destroy(new Error(`SBTET request timed out for ${url}`));
+        req.destroy(new Error("SBTET request timed out."));
       });
 
       if (options.body) {
@@ -2981,12 +2981,17 @@ app.get("/api/attendance", async (req, res) => {
     } catch (directError) {
       console.warn("Direct SBTET fetch failed (possible geo-block), falling back to Vercel India proxy...", directError.message);
       try {
+        const fallbackBase = (process.env.FRONTEND_URL || "https://gptmasabtank.in").replace(/\/+$/, "");
         const fallbackRes = await fetch(
-          `https://gptmasabtank-hyd.vercel.app/api/attendance?pin=${encodeURIComponent(pin)}`
+          `${fallbackBase}/api/attendance?pin=${encodeURIComponent(pin)}`
         );
+        if (!fallbackRes.headers.get("content-type")?.includes("application/json")) {
+          throw new Error("Attendance proxy returned a non-JSON response.");
+        }
         const fallbackData = await fallbackRes.json();
         return res.status(fallbackRes.status).json(fallbackData);
       } catch (fallbackError) {
+        console.error("Attendance proxy fallback failed:", fallbackError.message);
         throw directError;
       }
     }
@@ -2999,6 +3004,14 @@ app.get("/api/attendance", async (req, res) => {
     }
 
     const report = parseSBTETResponse(result.data);
+
+    if (typeof report === "string" && report.includes("Subquery")) {
+      return res.status(404).json({
+        success: false,
+        message: "Attendance for this student PIN (C24 scheme) has not yet been published on the SBTET portal.",
+      });
+    }
+
     const summary = Array.isArray(report?.Table) ? report.Table[0] : null;
     const dailyAttendance = Array.isArray(report?.Table1)
       ? report.Table1
@@ -3242,7 +3255,25 @@ app.get("/api/result", async (req, res) => {
         `&SchemeId=${schemeId}` +
         `&SemYearId=${semYearId}`;
 
-      const result = await fetchSBTET(url);
+      let result;
+      try {
+        result = await fetchSBTET(url);
+      } catch (directError) {
+        console.warn("Direct SBTET mid result fetch failed, falling back to Vercel India proxy...", directError.message);
+        try {
+          const fallbackBase = (process.env.FRONTEND_URL || "https://gptmasabtank.in").replace(/\/+$/, "");
+          const fallbackRes = await fetch(
+            `${fallbackBase}/api/result?pin=${encodeURIComponent(cleanPin)}&scheme=${encodeURIComponent(cleanScheme)}&semester=${encodeURIComponent(cleanSemester)}&examType=${encodeURIComponent(cleanExamType)}`
+          );
+          if (fallbackRes.headers.get("content-type")?.includes("application/json")) {
+            const fallbackData = await fallbackRes.json();
+            return res.status(fallbackRes.status).json(fallbackData);
+          }
+        } catch (fbErr) {
+          console.error("Mid result proxy fallback failed:", fbErr.message);
+        }
+        throw directError;
+      }
 
       if (!result.ok) {
         return res.status(result.status).json({
@@ -3360,6 +3391,21 @@ app.get("/api/result", async (req, res) => {
       }
 
       if (!foundReport) {
+        if (lastStatus && lastStatus >= 500) {
+          try {
+            const fallbackBase = (process.env.FRONTEND_URL || "https://gptmasabtank.in").replace(/\/+$/, "");
+            const fallbackRes = await fetch(
+              `${fallbackBase}/api/result?pin=${encodeURIComponent(cleanPin)}&scheme=${encodeURIComponent(cleanScheme)}&semester=${encodeURIComponent(cleanSemester)}&examType=${encodeURIComponent(cleanExamType)}`
+            );
+            if (fallbackRes.headers.get("content-type")?.includes("application/json")) {
+              const fallbackData = await fallbackRes.json();
+              return res.status(fallbackRes.status).json(fallbackData);
+            }
+          } catch (fbErr) {
+            console.error("Semester result proxy fallback failed:", fbErr.message);
+          }
+        }
+
         return res.status(lastStatus && lastStatus >= 500 ? lastStatus : 404).json({
           success: false,
           message: `No ${cleanSemester} semester result was found for the selected details.`,

@@ -2,6 +2,7 @@ import https from "https";
 
 export const config = {
   runtime: "nodejs",
+  maxDuration: 60,
 };
 
 function sbtetHeaders() {
@@ -29,13 +30,12 @@ function parseSBTETResponse(data) {
 function fetchSBTET(url) {
   return new Promise((resolve, reject) => {
     try {
-      const parsedUrl = new URL(url);
       const req = https.get(
         url,
         {
           family: 4,
           rejectUnauthorized: false,
-          timeout: 15000,
+          timeout: 45000,
           headers: sbtetHeaders(),
         },
         (res) => {
@@ -62,7 +62,7 @@ function fetchSBTET(url) {
 
       req.on("error", (err) => reject(err));
       req.on("timeout", () => {
-        req.destroy(new Error(`SBTET request timed out for ${url}`));
+        req.destroy(new Error("SBTET attendance request timed out."));
       });
     } catch (err) {
       reject(err);
@@ -113,6 +113,14 @@ export default async function handler(req, res) {
     }
 
     const report = parseSBTETResponse(result.data);
+
+    if (typeof report === "string" && report.includes("Subquery")) {
+      return res.status(404).json({
+        success: false,
+        message: "Attendance for this student PIN (C24 scheme) has not yet been published on the SBTET portal.",
+      });
+    }
+
     const summary = Array.isArray(report?.Table) ? report.Table[0] : null;
     const dailyAttendance = Array.isArray(report?.Table1) ? report.Table1 : null;
 
