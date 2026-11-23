@@ -187,14 +187,39 @@ export default async function handler(req, res) {
       });
     }
 
+    function getSemNumber(item) {
+      if (!item || typeof item !== "object") return 0;
+      if (item.SemId !== undefined && item.SemId !== null && !isNaN(Number(item.SemId))) {
+        return Number(item.SemId);
+      }
+      const raw = String(item.Semester || item.Sem || item.SemYear || item.SemesterName || "");
+      const match = raw.match(/([1-8])/);
+      return match ? Number(match[1]) : 0;
+    }
+
+    const sortedSemesters = [...semesterResults].sort(
+      (a, b) => getSemNumber(a) - getSemNumber(b)
+    );
+
+    const sortedSubjects = [...subjects].sort((a, b) => {
+      const semDiff = getSemNumber(a) - getSemNumber(b);
+      if (semDiff !== 0) return semDiff;
+      const orderA = Number(a.SubjectOrder ?? a.SequenceId ?? 0);
+      const orderB = Number(b.SubjectOrder ?? b.SequenceId ?? 0);
+      if (orderA !== orderB) return orderA - orderB;
+      const codeA = String(a.Subject_Code || a.SubjectCode || a.Course_Code || a.SubCode || "");
+      const codeB = String(b.Subject_Code || b.SubjectCode || b.Course_Code || b.SubCode || "");
+      return codeA.localeCompare(codeB);
+    });
+
     return res.json({
       success: true,
       source: "SBTET",
       data: {
         student,
         summary: summaryTable[0] || {},
-        subjects,
-        semesters: semesterResults,
+        subjects: sortedSubjects,
+        semesters: sortedSemesters,
       },
     });
   } catch (error) {
