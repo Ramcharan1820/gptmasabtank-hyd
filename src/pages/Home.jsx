@@ -11,7 +11,7 @@ const heroSlides = [
       <>
         Government Polytechnic
         <br />
-        College, Masab Tank
+        Masab Tank
       </>
     ),
     description:

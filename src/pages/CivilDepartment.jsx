@@ -19,6 +19,7 @@ import {
 import "./CivilDepartment.css";
 import useDepartmentFaculty from "../hooks/useDepartmentFaculty";
 import FacultyProfileModal from "../components/FacultyProfileModal";
+import ImageWithFallback from "../components/ImageWithFallback";
 
 const initialFaculty = [
   {
@@ -172,31 +173,16 @@ const CivilDepartment = () => {
 
               <div className="civil-hod-image">
 
-                <img
+                <ImageWithFallback
                   src={hodPhotoUrl}
                   alt={activeHod.name || "Head of Department"}
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-
-                    if (e.currentTarget.nextElementSibling) {
-                      e.currentTarget.nextElementSibling.style.display =
-                        "flex";
-                    }
-                  }}
+                  fallback={
+                    <div className="civil-hod-placeholder" style={{ display: "flex" }}>
+                      <UserRound size={70} strokeWidth={1.4} />
+                      <span>HOD</span>
+                    </div>
+                  }
                 />
-
-                <div className="civil-hod-placeholder">
-
-                  <UserRound
-                    size={70}
-                    strokeWidth={1.4}
-                  />
-
-                  <span>
-                    HOD
-                  </span>
-
-                </div>
 
               </div>
 
@@ -720,27 +706,15 @@ const CivilDepartment = () => {
 
                 <div className="civil-faculty-image">
 
-                  <img
+                  <ImageWithFallback
                     src={member.image}
                     alt={member.name}
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-
-                      if (e.currentTarget.nextElementSibling) {
-                        e.currentTarget.nextElementSibling.style.display =
-                          "flex";
-                      }
-                    }}
+                    fallback={
+                      <div className="civil-faculty-placeholder" style={{ display: "flex" }}>
+                        <UserRound size={50} strokeWidth={1.5} />
+                      </div>
+                    }
                   />
-
-                  <div className="civil-faculty-placeholder">
-
-                    <UserRound
-                      size={50}
-                      strokeWidth={1.5}
-                    />
-
-                  </div>
 
                 </div>
 

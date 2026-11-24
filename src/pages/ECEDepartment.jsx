@@ -23,6 +23,7 @@ import {
 import "./ECEDepartment.css";
 import useDepartmentFaculty from "../hooks/useDepartmentFaculty";
 import FacultyProfileModal from "../components/FacultyProfileModal";
+import ImageWithFallback from "../components/ImageWithFallback";
 
 /* =========================================================
    ECE FACULTY
@@ -368,30 +369,16 @@ export default function ECEDepartment() {
 
           <div className="ece-hod-photo">
 
-            <img
+            <ImageWithFallback
               src={activeHod.photo || activeHod.image || "/images/faculty/faculty-placeholder.png"}
               alt={activeHod.name || "Head of Department"}
-              onError={(e) => {
-
-                e.currentTarget.style.display = "none";
-
-                e.currentTarget.parentElement.classList.add(
-                  "ece-image-placeholder"
-                );
-
-              }}
+              fallback={
+                <div className="ece-hod-placeholder" style={{ display: "flex" }}>
+                  <UserRound size={48} />
+                  <span>HOD</span>
+                </div>
+              }
             />
-
-
-            <div className="ece-hod-placeholder">
-
-              <UserRound size={48} />
-
-              <span>
-                HOD
-              </span>
-
-            </div>
 
           </div>
 
@@ -730,30 +717,16 @@ export default function ECEDepartment() {
 
               <div className="ece-faculty-photo">
 
-                <img
+                <ImageWithFallback
                   src={member.image}
                   alt={member.name}
-                  onError={(e) => {
-
-                    e.currentTarget.style.display = "none";
-
-                    e.currentTarget.parentElement.classList.add(
-                      "ece-faculty-image-placeholder"
-                    );
-
-                  }}
+                  fallback={
+                    <div className="ece-faculty-placeholder" style={{ display: "flex" }}>
+                      <UserRound size={38} />
+                      <span>Faculty</span>
+                    </div>
+                  }
                 />
-
-
-                <div className="ece-faculty-placeholder">
-
-                  <UserRound size={38} />
-
-                  <span>
-                    Faculty
-                  </span>
-
-                </div>
 
               </div>
 

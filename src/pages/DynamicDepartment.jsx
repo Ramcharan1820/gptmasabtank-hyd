@@ -22,6 +22,7 @@ import {
 import API_BASE_URL from "../apiConfig";
 import useDepartmentFaculty from "../hooks/useDepartmentFaculty";
 import FacultyProfileModal from "../components/FacultyProfileModal";
+import ImageWithFallback from "../components/ImageWithFallback";
 import "./DynamicDepartment.css";
 
 export default function DynamicDepartment() {
@@ -317,25 +318,16 @@ export default function DynamicDepartment() {
 
             <div className="dynamic-dept-hod-card">
               <div className="dynamic-dept-hod-photo-box">
-                {hodPhotoUrl ? (
-                  <img
-                    src={hodPhotoUrl}
-                    alt={activeHod.name}
-                    className="dynamic-dept-hod-img"
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                      if (e.currentTarget.nextElementSibling) {
-                        e.currentTarget.nextElementSibling.style.display = "flex";
-                      }
-                    }}
-                  />
-                ) : null}
-                <div
-                  className="dynamic-dept-hod-placeholder"
-                  style={{ display: hodPhotoUrl ? "none" : "flex" }}
-                >
-                  <UserRound size={60} />
-                </div>
+                <ImageWithFallback
+                  src={hodPhotoUrl}
+                  alt={activeHod.name}
+                  className="dynamic-dept-hod-img"
+                  fallback={
+                    <div className="dynamic-dept-hod-placeholder">
+                      <UserRound size={60} />
+                    </div>
+                  }
+                />
                 <span className="dynamic-dept-hod-badge">
                   <Award size={14} /> Head of Department
                 </span>
@@ -407,28 +399,15 @@ export default function DynamicDepartment() {
                   key={member.id || member.name}
                 >
                   <div className="dynamic-faculty-photo-wrap">
-                    {member.photo || member.image ? (
-                      <img
-                        src={member.photo || member.image}
-                        alt={member.name}
-                        onError={(e) => {
-                          e.currentTarget.style.display = "none";
-                          if (e.currentTarget.nextElementSibling) {
-                            e.currentTarget.nextElementSibling.style.display =
-                              "flex";
-                          }
-                        }}
-                      />
-                    ) : null}
-                    <div
-                      className="dynamic-faculty-placeholder"
-                      style={{
-                        display:
-                          member.photo || member.image ? "none" : "flex",
-                      }}
-                    >
-                      <UserRound size={36} />
-                    </div>
+                    <ImageWithFallback
+                      src={member.photo || member.image}
+                      alt={member.name}
+                      fallback={
+                        <div className="dynamic-faculty-placeholder">
+                          <UserRound size={36} />
+                        </div>
+                      }
+                    />
                   </div>
 
                   <div className="dynamic-faculty-details">

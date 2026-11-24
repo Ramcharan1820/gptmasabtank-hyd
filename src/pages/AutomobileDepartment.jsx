@@ -23,6 +23,7 @@ import {
 import "./AutomobileDepartment.css";
 import useDepartmentFaculty from "../hooks/useDepartmentFaculty";
 import FacultyProfileModal from "../components/FacultyProfileModal";
+import ImageWithFallback from "../components/ImageWithFallback";
 
 
 /* =========================================================
@@ -366,21 +367,16 @@ export default function AutomobileDepartment() {
 
           <div className="auto-hod-photo">
 
-            <img
+            <ImageWithFallback
               src={hodPhotoUrl}
               alt={activeHod.name || "Head of Department"}
-              onError={(e) => {
-                e.currentTarget.style.display = "none";
-                e.currentTarget.parentElement.classList.add(
-                  "auto-image-placeholder"
-                );
-              }}
+              fallback={
+                <div className="auto-hod-placeholder" style={{ display: "flex" }}>
+                  <UserRound size={48} />
+                  <span>HOD</span>
+                </div>
+              }
             />
-
-            <div className="auto-hod-placeholder">
-              <UserRound size={48} />
-              <span>HOD</span>
-            </div>
 
           </div>
 
@@ -688,30 +684,16 @@ export default function AutomobileDepartment() {
 
               <div className="auto-faculty-photo">
 
-                <img
+                <ImageWithFallback
                   src={member.image}
                   alt={member.name}
-                  onError={(e) => {
-
-                    e.currentTarget.style.display = "none";
-
-                    e.currentTarget.parentElement.classList.add(
-                      "auto-faculty-image-placeholder"
-                    );
-
-                  }}
+                  fallback={
+                    <div className="auto-faculty-placeholder" style={{ display: "flex" }}>
+                      <UserRound size={38} />
+                      <span>Faculty</span>
+                    </div>
+                  }
                 />
-
-
-                <div className="auto-faculty-placeholder">
-
-                  <UserRound size={38} />
-
-                  <span>
-                    Faculty
-                  </span>
-
-                </div>
 
               </div>
 

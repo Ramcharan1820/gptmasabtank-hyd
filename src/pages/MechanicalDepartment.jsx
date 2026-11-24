@@ -22,6 +22,7 @@ import {
 import "./MechanicalDepartment.css";
 import useDepartmentFaculty from "../hooks/useDepartmentFaculty";
 import FacultyProfileModal from "../components/FacultyProfileModal";
+import ImageWithFallback from "../components/ImageWithFallback";
 
 const initialMechanicalFaculty = [
   {
@@ -168,19 +169,16 @@ const MechanicalDepartment = () => {
 
               <div className="mechanical-hod-image">
 
-                <img
+                <ImageWithFallback
                   src={hodPhotoUrl}
                   alt={activeHod.name || "Head of Department"}
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                    e.currentTarget.nextElementSibling.style.display = "flex";
-                  }}
+                  fallback={
+                    <div className="mechanical-hod-placeholder" style={{ display: "flex" }}>
+                      <UserRound size={70} strokeWidth={1.4} />
+                      <span>HOD</span>
+                    </div>
+                  }
                 />
-
-                <div className="mechanical-hod-placeholder">
-                  <UserRound size={70} strokeWidth={1.4} />
-                  <span>HOD</span>
-                </div>
 
               </div>
 
@@ -648,19 +646,15 @@ const MechanicalDepartment = () => {
             {mechanicalFaculty.map((member) => (
               <article className="mechanical-faculty-card" key={member.name}>
                 <div className="mechanical-faculty-photo">
-                  <img
+                  <ImageWithFallback
                     src={member.image}
                     alt={member.name}
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                      if (e.currentTarget.nextSibling) {
-                        e.currentTarget.nextSibling.style.display = "flex";
-                      }
-                    }}
+                    fallback={
+                      <div className="mechanical-faculty-placeholder" style={{ display: "flex" }}>
+                        <UserRound size={42} />
+                      </div>
+                    }
                   />
-                  <div className="mechanical-faculty-placeholder" style={{ display: "none" }}>
-                    <UserRound size={42} />
-                  </div>
                   <span className="mechanical-faculty-badge">
                     {member.designation}
                   </span>

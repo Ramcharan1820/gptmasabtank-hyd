@@ -24,6 +24,7 @@ import {
 import "./PharmacyDepartment.css";
 import useDepartmentFaculty from "../hooks/useDepartmentFaculty";
 import FacultyProfileModal from "../components/FacultyProfileModal";
+import ImageWithFallback from "../components/ImageWithFallback";
 
 const stats = [
   { label: "Established Year", value: "1978", sub: "Decades of Excellence" },
@@ -213,22 +214,16 @@ function PharmacyDepartment() {
           <div className="pharm-hod-card">
             <div className="pharm-hod-photo-wrap">
               <div className="pharm-hod-photo">
-                {hodPhotoUrl ? (
-                  <img
-                    src={hodPhotoUrl}
-                    alt={activeHod.name || "Head of Section"}
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                      if (e.currentTarget.nextElementSibling) {
-                        e.currentTarget.nextElementSibling.style.display = "block";
-                      }
-                    }}
-                  />
-                ) : null}
-                <UserRound
-                  size={64}
-                  className="pharm-hod-icon"
-                  style={{ display: hodPhotoUrl ? "none" : "block" }}
+                <ImageWithFallback
+                  src={hodPhotoUrl}
+                  alt={activeHod.name || "Head of Section"}
+                  fallback={
+                    <UserRound
+                      size={64}
+                      className="pharm-hod-icon"
+                      style={{ display: "block" }}
+                    />
+                  }
                 />
               </div>
               <span className="pharm-hod-badge">
@@ -344,24 +339,15 @@ function PharmacyDepartment() {
             {pharmacyFaculty.map((member, index) => (
               <article className="pharm-faculty-card" key={index}>
                 <div className="pharm-faculty-photo">
-                  {member.photo ? (
-                    <img
-                      src={member.photo}
-                      alt={member.name}
-                      onError={(e) => {
-                        e.currentTarget.style.display = "none";
-                        if (e.currentTarget.nextSibling) {
-                          e.currentTarget.nextSibling.style.display = "flex";
-                        }
-                      }}
-                    />
-                  ) : null}
-                  <div
-                    className="pharm-faculty-placeholder"
-                    style={{ display: member.photo ? "none" : "flex" }}
-                  >
-                    <UserRound size={42} />
-                  </div>
+                  <ImageWithFallback
+                    src={member.photo}
+                    alt={member.name}
+                    fallback={
+                      <div className="pharm-faculty-placeholder" style={{ display: "flex" }}>
+                        <UserRound size={42} />
+                      </div>
+                    }
+                  />
                   <span className="pharm-faculty-badge">{member.designation}</span>
                 </div>
 

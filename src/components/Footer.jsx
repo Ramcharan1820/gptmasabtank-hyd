@@ -47,7 +47,7 @@ function Footer() {
             />
           </div>
 
-          <h3>Government Polytechnic College</h3>
+          <h3>Government Polytechnic Masab Tank</h3>
 
           <p>Masab Tank, Hyderabad</p>
 

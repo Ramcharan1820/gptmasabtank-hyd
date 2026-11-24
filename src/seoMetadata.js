@@ -2,10 +2,10 @@ export const SITE_URL =
   "https://gptmasabtank.in";
 
 export const SITE_NAME =
-  "Government Polytechnic College, Masab Tank";
+  "Government Polytechnic Masab Tank";
 
 export const DEFAULT_TITLE =
-  "Government Polytechnic College, Masab Tank | Hyderabad";
+  "Government Polytechnic Masab Tank, Hyderabad";
 
 export const LOGO_URL =
   `${SITE_URL}/college-logo.jpg`;

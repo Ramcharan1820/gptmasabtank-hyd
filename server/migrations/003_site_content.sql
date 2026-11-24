@@ -52,34 +52,6 @@ WHERE NOT EXISTS (
 );
 
 INSERT INTO site_content (content_type, payload, is_active, sort_order)
-SELECT 'placements', seed_data.payload, 1, seed_data.sort_order
-FROM (
-  SELECT 0 AS sort_order, JSON_OBJECT('kind', 'feature', 'title', 'Career Guidance', 'description', 'Helping students understand career opportunities and prepare for recruitment processes.') AS payload
-  UNION ALL SELECT 1, JSON_OBJECT('kind', 'feature', 'title', 'Training Programs', 'description', 'Supporting technical, aptitude, communication and interview preparation activities.')
-  UNION ALL SELECT 2, JSON_OBJECT('kind', 'feature', 'title', 'Student Development', 'description', 'Encouraging students to improve their professional skills and confidence.')
-  UNION ALL SELECT 3, JSON_OBJECT('kind', 'feature', 'title', 'Industry Interaction', 'description', 'Creating opportunities for students to understand industry expectations and workplace requirements.')
-  UNION ALL SELECT 4, JSON_OBJECT('kind', 'recruiter', 'title', 'TCS')
-  UNION ALL SELECT 5, JSON_OBJECT('kind', 'recruiter', 'title', 'Infosys')
-  UNION ALL SELECT 6, JSON_OBJECT('kind', 'recruiter', 'title', 'Wipro')
-  UNION ALL SELECT 7, JSON_OBJECT('kind', 'recruiter', 'title', 'Tech Mahindra')
-  UNION ALL SELECT 8, JSON_OBJECT('kind', 'recruiter', 'title', 'Cognizant')
-  UNION ALL SELECT 9, JSON_OBJECT('kind', 'recruiter', 'title', 'HCL Technologies')
-  UNION ALL SELECT 10, JSON_OBJECT('kind', 'recruiter', 'title', 'Accenture')
-  UNION ALL SELECT 11, JSON_OBJECT('kind', 'recruiter', 'title', 'Capgemini')
-  UNION ALL SELECT 12, JSON_OBJECT('kind', 'recruiter', 'title', 'Deloitte')
-  UNION ALL SELECT 13, JSON_OBJECT('kind', 'recruiter', 'title', 'IBM')
-  UNION ALL SELECT 14, JSON_OBJECT('kind', 'recruiter', 'title', 'Amazon')
-  UNION ALL SELECT 15, JSON_OBJECT('kind', 'recruiter', 'title', 'Microsoft')
-  UNION ALL SELECT 16, JSON_OBJECT('kind', 'student', 'name', 'Selected Student', 'branch', 'Computer Science & Engineering', 'company', 'Company Name', 'package', 'Placement Details')
-  UNION ALL SELECT 17, JSON_OBJECT('kind', 'student', 'name', 'Selected Student', 'branch', 'Electronics & Communication Engineering', 'company', 'Company Name', 'package', 'Placement Details')
-  UNION ALL SELECT 18, JSON_OBJECT('kind', 'student', 'name', 'Selected Student', 'branch', 'Electrical & Electronics Engineering', 'company', 'Company Name', 'package', 'Placement Details')
-  UNION ALL SELECT 19, JSON_OBJECT('kind', 'student', 'name', 'Selected Student', 'branch', 'Mechanical Engineering', 'company', 'Company Name', 'package', 'Placement Details')
-) AS seed_data
-WHERE NOT EXISTS (
-  SELECT 1 FROM site_content WHERE content_type = 'placements'
-);
-
-INSERT INTO site_content (content_type, payload, is_active, sort_order)
 SELECT 'gallery', seed_data.payload, 1, seed_data.sort_order
 FROM (
   SELECT 0 AS sort_order, JSON_OBJECT('title', 'College Campus', 'category', 'Campus', 'image', '/college-campus-1.jpg') AS payload

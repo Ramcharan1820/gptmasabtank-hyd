@@ -206,7 +206,7 @@ export default function Header({ showNavigation = true }) {
           </div>
 
           <div className="college-text">
-            <h1>Government Polytechnic College</h1>
+            <h1>Government Polytechnic Masab Tank</h1>
             <p>Masab Tank, Hyderabad</p>
           </div>
         </Link>

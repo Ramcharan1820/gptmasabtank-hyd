@@ -21,6 +21,7 @@ import {
 import "./CSEDepartment.css";
 import useDepartmentFaculty from "../hooks/useDepartmentFaculty";
 import FacultyProfileModal from "../components/FacultyProfileModal";
+import ImageWithFallback from "../components/ImageWithFallback";
 
 /* =========================================================
    FACULTY DATA
@@ -392,30 +393,17 @@ export default function CSEDepartment() {
 
           <div className="cse-hod-photo">
 
-            <img
+            <ImageWithFallback
               src={hodPhotoUrl}
+              fallbackSrc="/csehod.png"
               alt={activeHod.name || "Head of Department"}
-              onError={(e) => {
-                if (e.currentTarget.src !== window.location.origin + "/csehod.png") {
-                  e.currentTarget.src = "/csehod.png";
-                  return;
-                }
-                e.currentTarget.style.display = "none";
-                e.currentTarget.parentElement.classList.add(
-                  "cse-image-placeholder"
-                );
-              }}
+              fallback={
+                <div className="hod-placeholder-content" style={{ display: "flex" }}>
+                  <UserRound size={48} />
+                  <span>HOD</span>
+                </div>
+              }
             />
-
-            <div className="hod-placeholder-content">
-
-              <UserRound size={48} />
-
-              <span>
-                HOD
-              </span>
-
-            </div>
 
           </div>
 
@@ -642,25 +630,15 @@ export default function CSEDepartment() {
 
               <div className="faculty-photo">
 
-                <img
+                <ImageWithFallback
                   src={member.image}
                   alt={member.name}
-                  onError={(e) => {
-
-                    e.currentTarget.style.display = "none";
-
-                    e.currentTarget.parentElement.classList.add(
-                      "faculty-image-placeholder"
-                    );
-
-                  }}
+                  fallback={
+                    <div className="faculty-placeholder" style={{ display: "flex" }}>
+                      <UserRound size={38} />
+                    </div>
+                  }
                 />
-
-                <div className="faculty-placeholder">
-
-                  <UserRound size={38} />
-
-                </div>
 
               </div>
 

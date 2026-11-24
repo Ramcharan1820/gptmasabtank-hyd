@@ -1401,8 +1401,9 @@ function AdminDashboard() {
 
     const categoryFilterOptions = [
       ...new Set(
-        rawItems
-          .map((item) =>
+        [
+          ...(activeSection === "Placements" ? ["feature", "recruiter", "student"] : []),
+          ...rawItems.map((item) =>
             activeSection === "Faculty"
               ? item.department
               : activeSection === "Gallery"
@@ -1410,8 +1411,8 @@ function AdminDashboard() {
                 : activeSection === "Placements"
                   ? item.kind
                   : null
-          )
-          .filter(Boolean)
+          ),
+        ].filter(Boolean)
       ),
     ];
 
@@ -1652,7 +1653,11 @@ function AdminDashboard() {
             )}
           </div>
           {items.length === 0 ? (
-            <p className="admin-empty">No {activeSection.toLowerCase()} content yet. Add the first item to publish it.</p>
+            <p className="admin-empty">
+              {activeSection === "Placements" && managedCategoryFilter === "recruiter"
+                ? "No curated recruiters yet. Add a recruiter to publish an additional directory entry."
+                : `No ${activeSection.toLowerCase()} content yet. Add the first item to publish it.`}
+            </p>
           ) : (
             <div className="admin-managed-list">
               {items.map((item) => {

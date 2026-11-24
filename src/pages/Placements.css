@@ -8,6 +8,15 @@
   margin: auto;
 }
 
+.placements-empty {
+  margin: 0;
+  padding: 18px;
+  border: 1px dashed var(--maroon-border, #f0cfd2);
+  border-radius: 12px;
+  color: #716e79;
+  text-align: center;
+}
+
 /* =========================
    HERO
 ========================= */

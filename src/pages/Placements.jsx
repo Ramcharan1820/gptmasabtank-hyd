@@ -11,25 +11,6 @@ import {
 import "./Placements.css";
 import { safeFetchJson } from "../apiConfig";
 
-const defaultFeatures = [
-  {
-    title: "Career Guidance",
-    description: "Helping students understand career opportunities and prepare for recruitment processes.",
-  },
-  {
-    title: "Training Programs",
-    description: "Supporting technical, aptitude, communication and interview preparation activities.",
-  },
-  {
-    title: "Student Development",
-    description: "Encouraging students to improve their professional skills and confidence.",
-  },
-  {
-    title: "Industry Interaction",
-    description: "Creating opportunities for students to understand industry expectations and workplace requirements.",
-  },
-];
-
 const placementPlaceholderValues = new Set([
   "selected student",
   "company name",
@@ -142,7 +123,7 @@ function Placements() {
     ).values(),
   ];
 
-  const displayedFeatures = featureItems.length > 0 ? featureItems : defaultFeatures;
+  const displayedFeatures = featureItems;
   const displayedStudents = realDatabasePlacements.length > 0
     ? realDatabasePlacements
     : realStudentItems;
@@ -204,20 +185,24 @@ function Placements() {
             </p>
           </div>
 
-          <div className="placement-features">
-            {displayedFeatures.map((feature, index) => {
-              const Icon = featureIcons[index % featureIcons.length];
-              return (
-                <article key={feature.id || feature.title || index}>
-                  <div className="placement-feature-icon">
-                    <Icon size={24} />
-                  </div>
-                  <h3>{feature.title}</h3>
-                  <p>{feature.description}</p>
-                </article>
-              );
-            })}
-          </div>
+          {displayedFeatures.length > 0 ? (
+            <div className="placement-features">
+              {displayedFeatures.map((feature, index) => {
+                const Icon = featureIcons[index % featureIcons.length];
+                return (
+                  <article key={feature.id || feature.title || index}>
+                    <div className="placement-feature-icon">
+                      <Icon size={24} />
+                    </div>
+                    <h3>{feature.title}</h3>
+                    <p>{feature.description}</p>
+                  </article>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="placements-empty">Placement training details will be published here.</p>
+          )}
         </div>
       </section>
 
