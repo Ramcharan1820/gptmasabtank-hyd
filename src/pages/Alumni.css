@@ -178,7 +178,7 @@
   cursor: pointer;
 }
 
-.alumni-hero-btn-primary {
+.alumni-page .alumni-hero-btn-primary {
   background: linear-gradient(135deg, #e5be49, #c59b27);
   color: #460204;
   border: 1px solid #ffd875;
@@ -191,7 +191,7 @@
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
 }
 
-.alumni-hero-btn-secondary {
+.alumni-page .alumni-hero-btn-secondary {
   background: rgba(255, 255, 255, 0.12);
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.28);
@@ -552,12 +552,13 @@
   line-height: 1.6;
 }
 
-.alumni-sidebar-button {
+.alumni-page .alumni-sidebar-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   width: 100%;
+  min-height: 44px;
   padding: 10px 14px;
   background: #ffffff;
   border-radius: 7px;
@@ -567,11 +568,36 @@
   transition: all 0.2s ease;
 }
 
-.alumni-sidebar-button:hover {
+.alumni-page .alumni-sidebar-button:hover {
   background: #fff9e6;
   color: #460204;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.alumni-page .alumni-sidebar-button:focus-visible {
+  outline: 3px solid #ffd875;
+  outline-offset: 3px;
+}
+
+.alumni-page .alumni-sidebar-link {
+  color: #475569;
+}
+
+.alumni-page .alumni-mobile-chip {
+  color: #475569;
+}
+
+.alumni-page .alumni-mobile-chip.active {
+  color: #ffffff;
+}
+
+.alumni-page .alumni-bottom-cta-primary {
+  color: #460204;
+}
+
+.alumni-page .alumni-bottom-cta-secondary {
+  color: #ffffff;
 }
 
 /* HELPLINE BOX IN SIDEBAR */
