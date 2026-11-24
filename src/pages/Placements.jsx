@@ -1,31 +1,15 @@
-import React, { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   BriefcaseBusiness,
   GraduationCap,
   Users,
   Building2,
-  ArrowRight,
   RefreshCw,
   AlertCircle
 } from "lucide-react";
 
 import "./Placements.css";
-import API_BASE_URL from "../apiConfig";
-
-const defaultRecruiters = [
-  "TCS",
-  "Infosys",
-  "Wipro",
-  "Tech Mahindra",
-  "Cognizant",
-  "HCL Technologies",
-  "Accenture",
-  "Capgemini",
-  "Deloitte",
-  "IBM",
-  "Amazon",
-  "Microsoft",
-];
+import { safeFetchJson } from "../apiConfig";
 
 const defaultFeatures = [
   {
@@ -46,84 +30,122 @@ const defaultFeatures = [
   },
 ];
 
-const defaultStudents = [
-  {
-    name: "K. Sai Teja",
-    branch: "Computer Science & Engineering",
-    company: "TCS (Tata Consultancy Services)",
-    package: "₹ 3.8 LPA",
-  },
-  {
-    name: "Mohammed Farhan",
-    branch: "Mechanical Engineering",
-    company: "Tata Motors Limited",
-    package: "₹ 3.4 LPA",
-  },
-  {
-    name: "V. Harish Kumar",
-    branch: "Civil Engineering",
-    company: "L&T Construction",
-    package: "₹ 3.6 LPA",
-  },
-  {
-    name: "S. Anusha",
-    branch: "Electronics & Communication Engg",
-    company: "Tech Mahindra",
-    package: "₹ 3.5 LPA",
-  },
-  {
-    name: "P. Rohith Reddy",
-    branch: "Electrical & Electronics Engg",
-    company: "Schneider Electric",
-    package: "₹ 3.6 LPA",
-  },
-  {
-    name: "B. Manasa",
-    branch: "Pharmacy",
-    company: "Dr. Reddy's Laboratories",
-    package: "₹ 3.2 LPA",
-  },
-];
+const placementPlaceholderValues = new Set([
+  "selected student",
+  "company name",
+  "placement details",
+]);
+
+const isRealPlacement = (student) => {
+  const name = String(student.name || "").trim().toLowerCase();
+  const details = [name, student.company, student.package, student.description]
+    .map((value) => String(value || "").trim().toLowerCase());
+
+  return Boolean(name) && !details.some((value) => placementPlaceholderValues.has(value));
+};
 
 function Placements() {
   const [managedPlacements, setManagedPlacements] = useState([]);
+  const [databasePlacements, setDatabasePlacements] = useState([]);
+  const [placementsApiUnavailable, setPlacementsApiUnavailable] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchPlacements = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const response = await fetch(`${API_BASE_URL}/api/content/placements`);
-      const result = await response.json();
-
-      if (!response.ok || !result.success) {
-        throw new Error(result.message || "Unable to load placement content.");
+  const loadPlacements = useCallback(async () => {
+    const loadData = async (endpoint, allowNotFound = false) => {
+      let response;
+      try {
+        response = await safeFetchJson(endpoint);
+      } catch (error) {
+        const isUnavailableRoute =
+          error.message.includes("API returned an invalid response") ||
+          error.message.includes("returned an HTML document") ||
+          error.message.includes("Route not found");
+        if (allowNotFound && isUnavailableRoute) {
+          console.warn("Placement records endpoint is not available; using published placement content.");
+          return { data: [], recruiters: [], unavailable: true };
+        }
+        throw error;
       }
 
-      setManagedPlacements(Array.isArray(result.data) ? result.data : []);
-    } catch (err) {
-      console.error("Placement content API error:", err);
-      setError(err.message || "Failed to load placement content.");
-    } finally {
-      setLoading(false);
+      if (!response.ok && allowNotFound && response.status === 404) {
+        console.warn("Placement records endpoint is not available; using published placement content.");
+        return { data: [], recruiters: [], unavailable: true };
+      }
+      if (!response.ok || !response.data.success || !Array.isArray(response.data.data)) {
+        throw new Error(response.data.message || `Unable to load ${endpoint}.`);
+      }
+      return { data: response.data.data, unavailable: false };
+    };
+
+    return Promise.allSettled([
+      loadData("/api/content/placements"),
+      loadData("/api/placements", true),
+    ]);
+  }, []);
+
+  const applyPlacementResults = useCallback(([contentResult, placementsResult]) => {
+    const errors = [];
+    if (contentResult.status === "fulfilled") {
+      setManagedPlacements(contentResult.value.data);
+    } else {
+      console.error("Placement content API error:", contentResult.reason);
+      errors.push(contentResult.reason.message || "Unable to load placement content.");
     }
-  };
+
+    if (placementsResult.status === "fulfilled") {
+      setDatabasePlacements(placementsResult.value.data);
+      setPlacementsApiUnavailable(placementsResult.value.unavailable);
+    } else {
+      console.error("Placement records API error:", placementsResult.reason);
+      errors.push(placementsResult.reason.message || "Unable to load placement records.");
+      setPlacementsApiUnavailable(false);
+    }
+
+    setError(errors.length > 0 ? errors.join(" ") : null);
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
-    fetchPlacements();
-  }, []);
+    let active = true;
+    loadPlacements().then((results) => {
+      if (active) applyPlacementResults(results);
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [applyPlacementResults, loadPlacements]);
+
+  const retryPlacements = useCallback(() => {
+    setLoading(true);
+    setError(null);
+    loadPlacements().then(applyPlacementResults);
+  }, [applyPlacementResults, loadPlacements]);
 
   const featureItems = managedPlacements.filter((item) => item.kind === "feature");
   const recruiterItems = managedPlacements.filter((item) => item.kind === "recruiter");
   const studentItems = managedPlacements.filter((item) => item.kind === "student");
+  const realDatabasePlacements = databasePlacements.filter(isRealPlacement);
+  const realStudentItems = studentItems.filter(isRealPlacement);
+  const recruiterNames = [
+    ...databasePlacements.map((student) => student.company),
+    ...recruiterItems.map((item) => item.title || item.company),
+  ]
+    .filter((name) => typeof name === "string" && name.trim())
+    .map((name) => name.trim());
+  const displayedRecruiters = [
+    ...new Map(
+      recruiterNames
+        .filter((name) => !placementPlaceholderValues.has(name.toLowerCase()))
+        .map((name) => [name.toLowerCase(), name])
+    ).values(),
+  ];
 
   const displayedFeatures = featureItems.length > 0 ? featureItems : defaultFeatures;
-  const displayedRecruiters = recruiterItems.length > 0
-    ? recruiterItems.map((item) => item.title || item.company)
-    : defaultRecruiters;
-  const displayedStudents = studentItems.length > 0 ? studentItems : defaultStudents;
+  const displayedStudents = realDatabasePlacements.length > 0
+    ? realDatabasePlacements
+    : realStudentItems;
 
   const featureIcons = [BriefcaseBusiness, GraduationCap, Users, Building2];
 
@@ -212,14 +234,16 @@ function Placements() {
           </div>
 
           <div className="recruiters-grid">
-            {displayedRecruiters.map((company, index) => (
-              <div className="recruiter-card" key={index}>
-                <div className="recruiter-logo">
-                  {typeof company === "string" ? company.charAt(0) : "R"}
+            {displayedRecruiters.length > 0 ? (
+              displayedRecruiters.map((company) => (
+                <div className="recruiter-card" key={company}>
+                  <div className="recruiter-logo">{company.charAt(0)}</div>
+                  <span>{company}</span>
                 </div>
-                <span>{company}</span>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p className="recruiters-empty">No recruiters are listed in the database yet.</p>
+            )}
           </div>
         </div>
       </section>
@@ -246,15 +270,18 @@ function Placements() {
           {!loading && error && (
             <div className="students-empty">
               <AlertCircle size={40} style={{ color: "#9c1c20" }} />
-              <h3>Unable to Load Placement Records</h3>
-              <p>{error}</p>
-              <button onClick={fetchPlacements} className="placements-retry-btn">
+              <h3>Unable to Refresh Placement Records</h3>
+              <p>{error} Showing the placement information available on this page.</p>
+              <button
+                onClick={retryPlacements}
+                className="placements-retry-btn"
+              >
                 Retry
               </button>
             </div>
           )}
 
-          {!loading && !error && displayedStudents.length > 0 && (
+          {!loading && displayedStudents.length > 0 && (
             <div className="students-grid">
               {displayedStudents.map((student, index) => (
                 <article
@@ -301,6 +328,24 @@ function Placements() {
                   </div>
                 </article>
               ))}
+            </div>
+          )}
+
+          {!loading && !error && displayedStudents.length === 0 && (
+            <div className="students-empty">
+              <p>
+                {placementsApiUnavailable
+                  ? "The database placement endpoint is not available yet. Redeploy the backend to load placement records."
+                  : "No real student placement records were found in the database."}
+              </p>
+              {placementsApiUnavailable && (
+                <button
+                  onClick={retryPlacements}
+                  className="placements-retry-btn"
+                >
+                  Retry
+                </button>
+              )}
             </div>
           )}
         </div>

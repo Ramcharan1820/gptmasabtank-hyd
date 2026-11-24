@@ -1,0 +1,312 @@
+.hs-department-page {
+  min-height: 100vh;
+  background: #f5f7fb;
+  color: #263238;
+}
+
+.hs-container {
+  width: min(1120px, calc(100% - 40px));
+  margin: 0 auto;
+}
+
+.hs-department-hero {
+  min-height: 330px !important;
+  padding: 48px 0 !important;
+  background: var(--hero-maroon-gradient) !important;
+  border-bottom: 4px solid var(--gold-primary);
+}
+
+.hs-hero-content {
+  color: #fff;
+}
+
+.hs-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 36px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.hs-back-link:hover {
+  color: #ffda70;
+}
+
+.hs-eyebrow,
+.hs-section-label {
+  display: block;
+  color: #a05a00;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.hs-eyebrow {
+  margin-bottom: 10px;
+  color: #ffd95a;
+}
+
+.hs-hero-content h1 {
+  margin: 0;
+  font-size: clamp(36px, 5vw, 56px);
+  line-height: 1.12;
+}
+
+.hs-hero-content > p {
+  margin: 14px 0 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.hs-content {
+  padding: 42px 0 70px;
+}
+
+.hs-section {
+  margin-bottom: 25px;
+  padding: 30px;
+  border: 1px solid #e3e7ef;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 8px 25px rgba(31, 41, 55, 0.05);
+}
+
+.hs-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.hs-section-icon,
+.hs-faculty-icon {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  color: #176044;
+  background: #faecec;
+}
+
+.hs-section-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 13px;
+}
+
+.hs-section-heading h2,
+.hs-mission-card h2 {
+  margin: 4px 0 0;
+  color: #202938;
+  font-size: 26px;
+  line-height: 1.25;
+}
+
+.hs-hod-card {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.8fr) 1.5fr;
+  gap: 28px;
+  padding: 25px;
+  border: 1px solid #e8ebf0;
+  border-radius: 15px;
+  background: #fbfcfd;
+}
+
+.hs-role {
+  display: inline-block;
+  padding: 7px 11px;
+  border-radius: 20px;
+  color: #176044;
+  background: #e7f2eb;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+}
+
+.hs-hod-intro h3 {
+  margin: 18px 0 8px;
+  color: #176044;
+  font-size: 25px;
+}
+
+.hs-hod-intro p,
+.hs-hod-details p,
+.hs-about-copy p,
+.hs-vision-card p {
+  margin: 0;
+  color: #596579;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.hs-hod-details {
+  display: grid;
+  gap: 20px;
+}
+
+.hs-hod-details article {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.hs-hod-details article > svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: #176044;
+}
+
+.hs-hod-details h4 {
+  margin: 0 0 7px;
+  color: #293241;
+  font-size: 15px;
+}
+
+.hs-hod-details p + p {
+  margin-top: 8px;
+}
+
+.hs-about-copy p + p {
+  margin-top: 14px;
+}
+
+.hs-vision-mission {
+  display: grid;
+  grid-template-columns: 0.85fr 1.4fr;
+  gap: 25px;
+  margin-bottom: 25px;
+}
+
+.hs-vision-card {
+  padding: 30px;
+  border: 1px solid #ebd0d2;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #faecec, #fff7e8);
+}
+
+.hs-vision-card h2 {
+  margin: 14px 0 12px;
+  color: #263238;
+  font-size: 23px;
+  line-height: 1.35;
+}
+
+.hs-mission-card {
+  margin: 0;
+}
+
+.hs-mission-card ul,
+.hs-faculty-card ul {
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hs-mission-card ul {
+  display: grid;
+  gap: 14px;
+}
+
+.hs-mission-card li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #596579;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.hs-mission-card li svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: #176044;
+}
+
+.hs-mission-card li strong {
+  color: #293241;
+}
+
+.hs-faculty-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.hs-faculty-card {
+  padding: 21px;
+  border: 1px solid #e3e7ef;
+  border-radius: 15px;
+  background: #fff;
+}
+
+.hs-faculty-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+}
+
+.hs-faculty-card h3 {
+  margin: 14px 0 4px;
+  color: #293241;
+  font-size: 17px;
+}
+
+.hs-faculty-designation {
+  color: #a05a00;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.hs-faculty-card ul {
+  display: grid;
+  gap: 8px;
+  color: #596579;
+  font-size: 14px;
+}
+
+@media (max-width: 760px) {
+  .hs-content {
+    padding-top: 28px;
+  }
+
+  .hs-hod-card,
+  .hs-vision-mission {
+    grid-template-columns: 1fr;
+  }
+
+  .hs-faculty-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .hs-container {
+    width: calc(100% - 24px);
+  }
+
+  .hs-department-hero {
+    min-height: 300px !important;
+  }
+
+  .hs-back-link {
+    margin-bottom: 28px;
+  }
+
+  .hs-section,
+  .hs-hod-card,
+  .hs-vision-card {
+    padding: 21px 17px;
+  }
+
+  .hs-section-heading h2 {
+    font-size: 22px;
+  }
+
+  .hs-faculty-grid {
+    grid-template-columns: 1fr;
+  }
+}

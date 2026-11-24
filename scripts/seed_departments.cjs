@@ -67,6 +67,15 @@ const initialDepartments = [
     image: '',
     is_active: 1,
   },
+  {
+    department_name: 'Humanities and Sciences',
+    department_code: 'HUM',
+    description: 'Foundational teaching in mathematics, physics, chemistry and English, with practical laboratory learning for diploma-level engineering students.',
+    hod_name: 'Dr. G. Narender Reddy',
+    intake: 0,
+    image: '',
+    is_active: 1,
+  },
 ];
 
 async function seedDepartments() {

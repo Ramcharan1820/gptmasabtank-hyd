@@ -39,7 +39,7 @@ const internalServices = [
     title: "Curriculum & Syllabus",
     text: "Access official SBTET curriculum, branch-wise diploma syllabus schemes (C-24, C-21, C-18), and subject course structures.",
     icon: BookOpen,
-    url: "https://www.sbtet.telangana.gov.in/",
+    url: "https://www.sbtet.telangana.gov.in/index.html#!/index/ViewSyllabus",
     linkText: "Explore SBTET Curriculum",
     badge: "Syllabus & Scheme",
     isExternal: true,
@@ -63,10 +63,10 @@ const externalServices = [
     linkText: "Visit SBTET Portal",
   },
   {
-    title: "Hall Tickets & Fee Payment",
+    title: "Download Hall Ticket",
     text: "Download regular/backlog examination hall tickets and pay semester examination fees online.",
     icon: FileCheck2,
-    url: "https://www.sbtet.telangana.gov.in/",
+    url: "https://www.sbtet.telangana.gov.in/index.html#!/index/DiplomaHallticket",
     linkText: "Exam Fee & Hall Ticket",
   },
   {

@@ -2700,6 +2700,35 @@ app.delete("/api/admin/events/:id", requireAdmin, async (req, res) => {
 // MANAGED WEBSITE CONTENT
 // =========================================================
 
+app.get("/api/placements", async (req, res) => {
+  try {
+    const [rows] = await db.execute(
+      `SELECT id, branch, student_name, company_name, package_offered
+       FROM placements
+       ORDER BY created_at DESC, id DESC`
+    );
+
+    return res.json({
+      success: true,
+      data: rows.map((row) => ({
+        id: row.id,
+        kind: "student",
+        branch: row.branch,
+        name: row.student_name,
+        company: row.company_name,
+        package: row.package_offered,
+      })),
+    });
+  } catch (error) {
+    console.error("Get placements error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch placement records.",
+    });
+  }
+});
+
 const managedContentTypes = new Set([
   "faculty",
   "placements",

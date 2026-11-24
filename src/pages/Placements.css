@@ -225,6 +225,13 @@
   gap: 16px;
 }
 
+.recruiters-empty {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #716e79;
+  text-align: center;
+}
+
 .recruiter-card {
   min-height: 120px;
   display: flex;

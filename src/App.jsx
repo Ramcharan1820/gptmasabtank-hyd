@@ -44,6 +44,7 @@ import CivilDepartment from "./pages/CivilDepartment";
 import AutomobileDepartment from "./pages/AutomobileDepartment";
 import PharmacyDepartment from "./pages/PharmacyDepartment";
 import DynamicDepartment from "./pages/DynamicDepartment";
+import HumanitiesSciencesDepartment from "./pages/HumanitiesSciencesDepartment";
 
 function App() {
   const location = useLocation();
@@ -140,6 +141,11 @@ function App() {
         <Route
           path="/departments/pharmacy"
           element={<PharmacyDepartment />}
+        />
+
+        <Route
+          path="/departments/humanities-and-sciences"
+          element={<HumanitiesSciencesDepartment />}
         />
 
         {/* Dynamic & Newly Created Departments */}

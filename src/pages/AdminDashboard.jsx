@@ -299,6 +299,7 @@ function AdminDashboard() {
     Gallery: [],
     Contact: [],
   });
+  const [placementRecruiters, setPlacementRecruiters] = useState([]);
 
   const [search, setSearch] = useState("");
   const [eventCategoryFilter, setEventCategoryFilter] = useState("All");
@@ -758,12 +759,17 @@ function AdminDashboard() {
         departmentResult,
         alumniResult,
         categoriesResult,
+        placementRecordsResult,
       ] = await Promise.all([
         apiRequest("/notices"),
         apiRequest("/admin/events"),
         apiRequest("/departments"),
         apiRequest("/alumni"),
         apiRequest("/admin/categories").catch(() => ({ data: [] })),
+        apiRequest("/placements").catch((placementError) => {
+          console.warn("Unable to load placement recruiters:", placementError.message);
+          return { data: [] };
+        }),
       ]);
 
       setNotices(noticeResult.data || []);
@@ -771,6 +777,15 @@ function AdminDashboard() {
       setDepartments(departmentResult.departments || []);
       setAlumni(alumniResult.data || []);
       setCategories(categoriesResult.data || []);
+      setPlacementRecruiters(
+        Array.isArray(placementRecordsResult.data)
+          ? [...new Set(
+              placementRecordsResult.data
+                .map((item) => String(item.company || "").trim())
+                .filter(Boolean)
+            )].sort((a, b) => a.localeCompare(b))
+          : []
+      );
 
       const managedSections = ["Faculty", "Placements", "Gallery", "Contact"];
       const managedResults = await Promise.all(
@@ -1270,7 +1285,14 @@ function AdminDashboard() {
   }, [activeSection, activeGalleryCategories]);
 
   const startManagedCreate = () => {
-    setManagedForm(emptyManagedForm(activeSection));
+    const form = emptyManagedForm(activeSection);
+    if (
+      activeSection === "Placements" &&
+      ["feature", "recruiter", "student"].includes(managedCategoryFilter)
+    ) {
+      form.kind = managedCategoryFilter;
+    }
+    setManagedForm(form);
     setManagedSortOrder("0");
     setEditingId(null);
     setShowManagedForm(true);
@@ -1403,21 +1425,47 @@ function AdminDashboard() {
             return true;
           });
     const canCreate = activeSection !== "Contact" || items.length === 0;
+    const createLabel = activeSection === "Placements"
+      ? {
+          feature: "Add Placement Feature",
+          recruiter: "Add Recruiter",
+          student: "Add Student Placement",
+          All: "Add Placement Item",
+        }[managedCategoryFilter] || "Add Placement Item"
+      : ({
+          Faculty: "Add Faculty Member",
+          Gallery: "Add Gallery Image",
+          Contact: "Add Contact Details",
+        }[activeSection]);
 
     return (
       <>
         {sectionHeader(
-          `${activeSection} Management`,
+          activeSection === "Placements" && managedCategoryFilter === "recruiter"
+            ? "Recruiter Management"
+            : `${activeSection} Management`,
           `Create, update, publish, and organize ${activeSection.toLowerCase()} on the public website.`,
-          canCreate
-            ? ({
-                Faculty: "Add Faculty Member",
-                Placements: "Add Placement Item",
-                Gallery: "Add Gallery Image",
-                Contact: "Add Contact Details",
-              }[activeSection])
-            : null,
+          canCreate ? createLabel : null,
           startManagedCreate
+        )}
+
+        {activeSection === "Placements" && (
+          <div className="admin-content-hint admin-placement-recruiter-hint">
+            <strong>Recruiters from placement records ({placementRecruiters.length})</strong>
+            <p>
+              These unique employer names are read from placement records and shown on the public page.
+              Use the Recruiter item-type filter below to add, edit, publish, or remove curated recruiter directory entries.
+            </p>
+            {placementRecruiters.length > 0 ? (
+              <div className="admin-placement-recruiter-list">
+                {placementRecruiters.map((name) => (
+                  <span key={name}>{name}</span>
+                ))}
+              </div>
+            ) : (
+              <p>No employer names were found in the placement records table.</p>
+            )}
+          </div>
         )}
 
         {activeSection === "Contact" && items.length === 0 && (
@@ -1434,7 +1482,9 @@ function AdminDashboard() {
           >
             <div className="admin-form-title">
               <h3>
-                {editingId ? `Edit ${activeSection}` : `Add ${activeSection}`}
+                {editingId
+                  ? `Edit ${activeSection === "Placements" && managedForm.kind === "recruiter" ? "Recruiter" : activeSection}`
+                  : `Add ${activeSection === "Placements" && managedForm.kind === "recruiter" ? "Recruiter" : activeSection}`}
                 {editingId && (
                   <span className="admin-editing-tag">Editing ID #{editingId}</span>
                 )}
@@ -1485,7 +1535,14 @@ function AdminDashboard() {
                     ].filter(Boolean).join(" ")}
                     key={field.name}
                   >
-                    {field.label}{field.required && (!field.studentOnly || managedForm.kind === "student") ? " *" : ""}
+                    {activeSection === "Placements" && managedForm.kind === "recruiter"
+                      ? field.name === "title"
+                        ? "Recruiter name"
+                        : field.name === "description"
+                          ? "Company overview"
+                          : field.label
+                      : field.label}
+                    {field.required && (!field.studentOnly || managedForm.kind === "student") ? " *" : ""}
                     {field.type === "textarea" ? (
                       <textarea
                         rows="3"

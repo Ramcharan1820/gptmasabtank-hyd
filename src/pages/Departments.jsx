@@ -8,6 +8,7 @@ import {
   Building2,
   Car,
   Pill,
+  BookOpen,
   ArrowRight,
 } from "lucide-react";
 
@@ -64,6 +65,13 @@ const departments = [
     icon: Pill,
     link: "/departments/pharmacy",
   },
+  {
+    code: "HUM",
+    title: "Humanities and Sciences",
+    text: "Foundational teaching in mathematics, physics, chemistry and English, with practical laboratory learning.",
+    icon: BookOpen,
+    link: "/departments/humanities-and-sciences",
+  },
 ];
 
 function Departments() {
@@ -83,8 +91,31 @@ function Departments() {
         })
         .then((records) => {
           if (active && Array.isArray(records) && records.length > 0) {
+            const activeRecords = records.filter(
+              (department) =>
+                department.is_active !== false &&
+                Number(department.is_active) !== 0
+            );
+            const hasHumanitiesAndSciences = activeRecords.some((department) => {
+              const code = String(
+                department.department_code || department.code || ""
+              ).toUpperCase().replace(/[^A-Z0-9]/g, "");
+              const name = String(
+                department.department_name || department.title || ""
+              ).toLowerCase().replace(/[^a-z0-9]/g, "");
+              return (
+                code === "HUM" ||
+                name === "humanitiesandsciences" ||
+                name === "humanitiessciences"
+              );
+            });
             setDepartmentRecords(
-              records.filter((department) => department.is_active !== false && Number(department.is_active) !== 0)
+              [
+                ...activeRecords,
+                ...(!hasHumanitiesAndSciences
+                  ? [departments[departments.length - 1]]
+                  : []),
+              ]
             );
           }
         })
@@ -131,13 +162,22 @@ function Departments() {
   const displayDepartments = departmentRecords.map((department) => {
     const code = department.department_code || department.code;
     const normalizedCode = String(code || "").toUpperCase();
+    const normalizedName = String(
+      department.department_name || department.title || ""
+    ).toLowerCase().replace(/[^a-z0-9]/g, "");
+    const isHumanitiesAndSciences =
+      normalizedCode.replace(/[^A-Z0-9]/g, "") === "HUM" ||
+      normalizedName === "humanitiesandsciences" ||
+      normalizedName === "humanitiessciences";
     return {
       code,
       title: department.department_name || department.title,
       text: department.description || department.text || "Explore the academic department, facilities and course information.",
       icon: iconByCode[normalizedCode] || Building2,
       link:
-        pathByCode[normalizedCode] ||
+        (isHumanitiesAndSciences
+          ? "/departments/humanities-and-sciences"
+          : pathByCode[normalizedCode]) ||
         `/departments/${encodeURIComponent(String(code).toLowerCase().trim())}`,
       image: department.image,
       hodName: department.hod_name,

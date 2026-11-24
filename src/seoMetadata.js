@@ -73,6 +73,12 @@ export const PUBLIC_PAGES = {
       "Learn about the Pharmacy department's D.Pharm information, pharmaceutical science, drug formulation, laboratory training and healthcare learning.",
   },
 
+  "/departments/humanities-and-sciences": {
+    title: "Humanities and Sciences | Government Polytechnic College",
+    description:
+      "Meet the Humanities and Sciences department at Government Polytechnic College, Masab Tank, and learn about its faculty, foundation subjects, vision and mission.",
+  },
+
   "/faculty": {
     title: "Faculty & Academic Mentors | Government Polytechnic College",
     description:
