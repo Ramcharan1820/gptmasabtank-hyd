@@ -188,11 +188,7 @@ export default function AdminRegister() {
   // Google OAuth Initiation
   const handleGoogleOAuth = () => {
     const returnUrl = encodeURIComponent(window.location.origin);
-    const oauthBase =
-      window.location.hostname === "gptmasabtank.in"
-        ? ""
-        : API_BASE_URL;
-    window.location.href = `${oauthBase}/api/auth/google?intent=admin_register&return_to=${returnUrl}`;
+    window.location.href = `${API_BASE_URL}/api/auth/google?intent=admin_register&return_to=${returnUrl}`;
   };
 
   // Handle Registration Form Submit

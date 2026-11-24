@@ -4040,12 +4040,18 @@ function createState() {
 // GOOGLE LOGIN
 // =========================================================
 
+function getGoogleRedirectUri(returnOrigin = "") {
+  if (returnOrigin === "https://gptmasabtank.in") {
+    return "https://gptmasabtank.in/api/auth/google/callback";
+  }
+
+  return process.env.GOOGLE_REDIRECT_URI;
+}
+
 app.get("/api/auth/google", (req, res) => {
   try {
     const clientId = process.env.GOOGLE_CLIENT_ID;
-    const redirectUri = process.env.GOOGLE_REDIRECT_URI;
-
-    if (!clientId || !redirectUri) {
+    if (!clientId) {
       return res.status(500).send(
         "Google OAuth configuration is missing."
       );
@@ -4058,6 +4064,13 @@ app.get("/api/auth/google", (req, res) => {
         const parsed = new URL(returnTo);
         returnOrigin = parsed.origin;
       } catch (_) { }
+    }
+
+    const redirectUri = getGoogleRedirectUri(returnOrigin);
+    if (!redirectUri) {
+      return res.status(500).send(
+        "Google OAuth configuration is missing."
+      );
     }
 
     const intent = (req.query.intent || "alumni").trim();
@@ -4156,7 +4169,7 @@ app.get("/api/auth/google/callback", async (req, res) => {
 
     const clientId = process.env.GOOGLE_CLIENT_ID;
     const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-    const redirectUri = process.env.GOOGLE_REDIRECT_URI;
+    const redirectUri = getGoogleRedirectUri(returnOrigin);
 
     if (!clientId || !clientSecret || !redirectUri) {
       return res.status(500).send(

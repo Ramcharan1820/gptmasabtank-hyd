@@ -42,11 +42,7 @@ function AdminLogin() {
 
   const handleGoogleLogin = () => {
     const returnUrl = encodeURIComponent(window.location.origin);
-    const oauthBase =
-      window.location.hostname === "gptmasabtank.in"
-        ? ""
-        : API_URL;
-    window.location.href = `${oauthBase}/api/auth/google?intent=admin_login&return_to=${returnUrl}`;
+    window.location.href = `${API_URL}/api/auth/google?intent=admin_login&return_to=${returnUrl}`;
   };
 
   const handleSubmit = async (event) => {

@@ -12,7 +12,13 @@ const getEnvVar = (key, fallback = "") => {
   return fallback;
 };
 
-export const API_BASE_URL = (getEnvVar("VITE_API_BASE_URL", "http://localhost:5000")).replace(/\/+$/, "");
+const configuredApiBase = getEnvVar("VITE_API_BASE_URL", "");
+const defaultApiBase =
+  typeof window !== "undefined" && window.location.hostname === "gptmasabtank.in"
+    ? window.location.origin
+    : "http://localhost:5000";
+
+export const API_BASE_URL = (configuredApiBase || defaultApiBase).replace(/\/+$/, "");
 
 export const getApiUrl = (endpoint = "") => {
   const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
