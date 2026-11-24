@@ -7,6 +7,9 @@ export const SITE_NAME =
 export const SITE_ALTERNATE_NAME =
   "Government Polytechnic Masab Tank";
 
+export const WEB_SITE_NAME =
+  "Govt Polytechnic Masab Tank, Hyderabad";
+
 export const DEFAULT_TITLE =
   "Government Polytechnic College, Masab Tank | Hyderabad";
 
@@ -229,7 +232,7 @@ function homepageStructuredData() {
       "@type": "WebSite",
       "@id": `${SITE_URL}/#website`,
       url: SITE_URL,
-      name: SITE_NAME,
+      name: WEB_SITE_NAME,
       alternateName: SITE_ALTERNATE_NAME,
       publisher: {
         "@id": `${SITE_URL}/#organization`,
