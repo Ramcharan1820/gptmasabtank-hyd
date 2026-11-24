@@ -4041,10 +4041,6 @@ function createState() {
 // =========================================================
 
 function getGoogleRedirectUri(returnOrigin = "") {
-  if (returnOrigin === "https://gptmasabtank.in") {
-    return "https://gptmasabtank.in/api/auth/google/callback";
-  }
-
   return process.env.GOOGLE_REDIRECT_URI;
 }
 
@@ -4172,8 +4168,14 @@ app.get("/api/auth/google/callback", async (req, res) => {
     const redirectUri = getGoogleRedirectUri(returnOrigin);
 
     if (!clientId || !clientSecret || !redirectUri) {
+      const missingVariables = [
+        !clientId ? "GOOGLE_CLIENT_ID" : "",
+        !clientSecret ? "GOOGLE_CLIENT_SECRET" : "",
+        !redirectUri ? "GOOGLE_REDIRECT_URI" : "",
+      ].filter(Boolean);
+
       return res.status(500).send(
-        "Google OAuth configuration is missing."
+        `Google OAuth configuration is missing: ${missingVariables.join(", ")}`
       );
     }
 

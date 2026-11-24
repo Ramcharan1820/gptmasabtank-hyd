@@ -2,10 +2,13 @@ export const SITE_URL =
   "https://gptmasabtank.in";
 
 export const SITE_NAME =
+  "Government Polytechnic College, Masab Tank";
+
+export const SITE_ALTERNATE_NAME =
   "Government Polytechnic Masab Tank";
 
 export const DEFAULT_TITLE =
-  "Government Polytechnic Masab Tank, Hyderabad";
+  "Government Polytechnic College, Masab Tank | Hyderabad";
 
 export const LOGO_URL =
   `${SITE_URL}/college-logo.jpg`;
@@ -210,6 +213,7 @@ function homepageStructuredData() {
       "@type": "EducationalOrganization",
       "@id": `${SITE_URL}/#organization`,
       name: SITE_NAME,
+      alternateName: SITE_ALTERNATE_NAME,
       url: SITE_URL,
       description: DEFAULT_DESCRIPTION,
       logo: LOGO_URL,
@@ -226,6 +230,7 @@ function homepageStructuredData() {
       "@id": `${SITE_URL}/#website`,
       url: SITE_URL,
       name: SITE_NAME,
+      alternateName: SITE_ALTERNATE_NAME,
       publisher: {
         "@id": `${SITE_URL}/#organization`,
       },
