@@ -25,6 +25,22 @@ const isRealPlacement = (student) => {
   return Boolean(name) && !details.some((value) => placementPlaceholderValues.has(value));
 };
 
+const packageValueInLpa = (value) => {
+  const packageText = String(value || "").toLowerCase();
+  const amountMatch = packageText.match(/(?:₹|rs\.?\s*)?([\d,]+(?:\.\d+)?)/i);
+  if (!amountMatch) return null;
+
+  const amount = Number(amountMatch[1].replace(/,/g, ""));
+  if (!Number.isFinite(amount)) return null;
+  if (/\b(?:lpa|lakhs?)\b/.test(packageText)) return amount;
+  if (/\b(?:month|monthly)\b/.test(packageText)) return (amount * 12) / 100000;
+  if (/\b(?:year|yearly|annual|annum)\b|p\.?a\.?/.test(packageText)) {
+    return amount / 100000;
+  }
+
+  return null;
+};
+
 function Placements() {
   const [managedPlacements, setManagedPlacements] = useState([]);
   const [databasePlacements, setDatabasePlacements] = useState([]);
@@ -127,6 +143,28 @@ function Placements() {
   const displayedStudents = realDatabasePlacements.length > 0
     ? realDatabasePlacements
     : realStudentItems;
+  const placementBranches = new Set(
+    displayedStudents
+      .map((student) => String(student.branch || "").trim().toLowerCase())
+      .filter(Boolean)
+  );
+  const packageValues = displayedStudents
+    .map((student) => packageValueInLpa(student.package || student.description))
+    .filter((value) => value !== null);
+  const highestPackageLpa = packageValues.length > 0
+    ? Math.max(...packageValues)
+    : null;
+  const placementStats = [
+    { value: displayedStudents.length, label: "Students with Recorded Placements" },
+    { value: displayedRecruiters.length, label: "Recruiters Listed" },
+    {
+      value: highestPackageLpa === null
+        ? "—"
+        : `₹ ${new Intl.NumberFormat("en-IN", { maximumFractionDigits: 1 }).format(highestPackageLpa)} LPA`,
+      label: "Highest Recorded Package",
+    },
+    { value: placementBranches.size, label: "Departments with Placements" },
+  ];
 
   const featureIcons = [BriefcaseBusiness, GraduationCap, Users, Building2];
 
@@ -152,22 +190,12 @@ function Placements() {
       <section className="placement-metrics-section">
         <div className="placements-container">
           <div className="placement-stats-grid">
-            <div className="placement-stat-card">
-              <strong>85%+</strong>
-              <span>Placement &amp; Higher Studies Transition</span>
-            </div>
-            <div className="placement-stat-card">
-              <strong>50+</strong>
-              <span>Visiting Core &amp; IT Recruiters</span>
-            </div>
-            <div className="placement-stat-card">
-              <strong>₹ 4.8 LPA</strong>
-              <span>Highest Package Offered</span>
-            </div>
-            <div className="placement-stat-card">
-              <strong>200+</strong>
-              <span>Placed Students in Recent Batches</span>
-            </div>
+            {placementStats.map((stat) => (
+              <div className="placement-stat-card" key={stat.label}>
+                <strong>{loading ? "—" : stat.value}</strong>
+                <span>{stat.label}</span>
+              </div>
+            ))}
           </div>
         </div>
       </section>

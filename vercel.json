@@ -13,6 +13,14 @@
   },
   "rewrites": [
     {
+      "source": "/api/auth/google",
+      "destination": "https://gpthyd-website.onrender.com/api/auth/google"
+    },
+    {
+      "source": "/api/auth/google/callback",
+      "destination": "https://gpthyd-website.onrender.com/api/auth/google/callback"
+    },
+    {
       "source": "/((?!api/|assets/|images/|.*\\..*).*)",
       "destination": "/index.html"
     }

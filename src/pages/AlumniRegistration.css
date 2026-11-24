@@ -448,6 +448,15 @@
   font-size: 13px;
 }
 
+.registration-email-warning {
+  margin-bottom: 20px !important;
+  padding: 12px 16px;
+  border: 1px solid #f1d7a8;
+  border-radius: 8px;
+  background: #fff9ec;
+  color: #795b20 !important;
+}
+
 .success-back-button {
   display: inline-flex;
   align-items: center;

@@ -796,6 +796,17 @@ app.post("/api/admin/forgot-password", async (req, res) => {
     });
   } catch (error) {
     console.error("Admin password reset request error:", error.message);
+    if (
+      error.code === "ER_NO_SUCH_TABLE" ||
+      error.code === "ER_BAD_FIELD_ERROR"
+    ) {
+      return res.status(503).json({
+        success: false,
+        message:
+          "Password reset database schema is missing or outdated. Apply migration 008_admin_password_reset.sql to the API database.",
+      });
+    }
+
     return res.status(500).json({
       success: false,
       message: "Unable to process the password reset request.",
@@ -1864,6 +1875,79 @@ app.post("/api/alumni/register", async (req, res) => {
     ];
 
     const [result] = await db.execute(sql, values);
+    const brevoConfig = getBrevoEmailConfig();
+    let confirmationEmailSent = false;
+
+    if (!brevoConfig) {
+      console.error(
+        "Alumni registration confirmation email is not configured."
+      );
+    } else {
+      const registrationId = result.insertId;
+      const safeName = escapeHtml(cleanFullName);
+      const safeDepartment = escapeHtml(normalizedDepartment);
+      const safeStatus = escapeHtml(cleanStatus);
+      const subject =
+        "Welcome to the Government Polytechnic Masab Tank Alumni Network";
+      const textContent = [
+        `Hello ${cleanFullName},`,
+        "",
+        "Your registration has been received and saved successfully. You are now registered with the Government Polytechnic College, Masab Tank Alumni Network.",
+        "",
+        `Registration ID: ${registrationId}`,
+        `Department: ${normalizedDepartment}`,
+        `Alumni status: ${cleanStatus}`,
+        `Year of graduation: ${year}`,
+        "",
+        "We look forward to keeping you connected with your college and fellow alumni.",
+        "",
+        "Government Polytechnic College, Masab Tank",
+        "Alumni Network",
+      ].join("\n");
+      const htmlContent = `
+        <div style="margin:0;padding:32px 12px;background:#f3f5f8;font-family:Arial,Helvetica,sans-serif;color:#263449;">
+          <div style="max-width:620px;margin:0 auto;overflow:hidden;border:1px solid #e1e6ed;border-radius:14px;background:#ffffff;">
+            <div style="padding:30px 36px;background:#800000;color:#ffffff;">
+              <p style="margin:0 0 10px;font-size:12px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:#f4dada;">Alumni Network</p>
+              <h1 style="margin:0;font-size:25px;line-height:1.35;">Registration confirmed</h1>
+              <p style="margin:8px 0 0;font-size:14px;line-height:1.6;color:#f8eaea;">Government Polytechnic College, Masab Tank</p>
+            </div>
+            <div style="padding:32px 36px;">
+              <p style="margin:0 0 16px;font-size:16px;line-height:1.7;">Hello ${safeName},</p>
+              <p style="margin:0 0 24px;font-size:15px;line-height:1.8;color:#526174;">Your registration has been received and saved successfully. You are now part of the Government Polytechnic College, Masab Tank Alumni Network.</p>
+              <div style="padding:20px 22px;border:1px solid #e7ebf0;border-radius:10px;background:#f8fafc;">
+                <p style="margin:0 0 14px;font-size:13px;font-weight:bold;color:#800000;text-transform:uppercase;letter-spacing:1px;">Registration details</p>
+                <table role="presentation" style="width:100%;border-collapse:collapse;font-size:14px;line-height:1.6;">
+                  <tr><td style="padding:7px 12px 7px 0;color:#718096;">Registration ID</td><td style="padding:7px 0;font-weight:bold;color:#263449;">${registrationId}</td></tr>
+                  <tr><td style="padding:7px 12px 7px 0;color:#718096;">Department</td><td style="padding:7px 0;color:#263449;">${safeDepartment}</td></tr>
+                  <tr><td style="padding:7px 12px 7px 0;color:#718096;">Alumni status</td><td style="padding:7px 0;color:#263449;">${safeStatus}</td></tr>
+                  <tr><td style="padding:7px 12px 7px 0;color:#718096;">Year of graduation</td><td style="padding:7px 0;color:#263449;">${year}</td></tr>
+                </table>
+              </div>
+              <p style="margin:24px 0 0;font-size:14px;line-height:1.8;color:#526174;">We look forward to keeping you connected with your college and fellow alumni.</p>
+            </div>
+            <div style="padding:18px 36px;border-top:1px solid #e9edf2;background:#fbfcfd;">
+              <p style="margin:0;font-size:12px;line-height:1.7;color:#788598;">Government Polytechnic College, Masab Tank<br>Alumni Network</p>
+            </div>
+          </div>
+        </div>
+      `;
+
+      try {
+        await sendBrevoEmail(brevoConfig, {
+          to: cleanEmail,
+          subject,
+          textContent,
+          htmlContent,
+        });
+        confirmationEmailSent = true;
+      } catch (emailError) {
+        console.error(
+          "Alumni registration confirmation email delivery failed:",
+          emailError.message
+        );
+      }
+    }
 
     return res.status(201).json({
       success: true,
@@ -1876,6 +1960,7 @@ app.post("/api/alumni/register", async (req, res) => {
         graduationYear: year,
         email: cleanEmail,
         authenticationMethod: cleanAuthMethod,
+        confirmationEmailSent,
       },
     });
   } catch (error) {

@@ -66,6 +66,7 @@ function AlumniRegistration() {
   const [submitted, setSubmitted] = useState(false);
   const [registrationError, setRegistrationError] = useState("");
   const [registrationId, setRegistrationId] = useState(null);
+  const [confirmationEmailSent, setConfirmationEmailSent] = useState(false);
 
   useEffect(() => {
     setFormData((previousData) => ({
@@ -168,6 +169,9 @@ function AlumniRegistration() {
 
       // Your backend returns the ID inside result.data.id.
       setRegistrationId(result.data?.id ?? null);
+      setConfirmationEmailSent(
+        result.data?.confirmationEmailSent === true
+      );
       setSubmitted(true);
     } catch (error) {
       console.error("Alumni registration error:", error);
@@ -206,6 +210,19 @@ function AlumniRegistration() {
               Your registration has been saved successfully
               to the college database.
             </p>
+
+            {confirmationEmailSent ? (
+              <p>
+                A confirmation email has been sent to{" "}
+                <strong>{formData.email}</strong>.
+              </p>
+            ) : (
+              <p className="registration-email-warning" role="status">
+                Your registration is saved, but we could not send a
+                confirmation email right now. Please contact the college
+                if you need confirmation.
+              </p>
+            )}
 
             {registrationId !== null && (
               <p>
