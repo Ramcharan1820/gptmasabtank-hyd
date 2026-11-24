@@ -3,6 +3,7 @@ import { Routes, Route, useLocation } from "react-router-dom";
 
 /*admin login*/
 import AdminLogin from "./pages/AdminLogin";
+import AdminForgotPassword from "./pages/AdminForgotPassword";
 import AdminRegister from "./pages/AdminRegister";
 import AdminDashboard from "./pages/AdminDashboard";
 
@@ -51,7 +52,9 @@ function App() {
   const isAdminRoute = location.pathname.startsWith("/admin");
   const isAdminLoginRoute = location.pathname === "/admin/login";
   const isAdminRegisterRoute = location.pathname === "/admin/register";
-  const isAdminAuthRoute = isAdminLoginRoute || isAdminRegisterRoute;
+  const isAdminForgotPasswordRoute = location.pathname === "/admin/forgot-password";
+  const isAdminAuthRoute =
+    isAdminLoginRoute || isAdminRegisterRoute || isAdminForgotPasswordRoute;
   const isAdminDashboardRoute = location.pathname === "/admin/dashboard";
   const isAdminMediaRoute = location.pathname === "/admin/media";
 
@@ -95,6 +98,7 @@ function App() {
 
         {/* Admin Pages */}
         <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/forgot-password" element={<AdminForgotPassword />} />
         <Route path="/admin/register" element={<AdminRegister />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/media" element={<AdminEventMedia />} />

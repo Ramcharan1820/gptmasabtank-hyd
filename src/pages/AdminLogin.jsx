@@ -239,6 +239,10 @@ function AdminLogin() {
             </div>
           </div>
 
+          <div className="admin-login-forgot">
+            <Link to="/admin/forgot-password">Forgot your password?</Link>
+          </div>
+
           {/* Error Message */}
           {error && !isPending && (
             <div className="admin-login-error" role="alert">

@@ -6,6 +6,7 @@ const path = require("path");
 const session = require("express-session");
 const MySQLStore = require("express-mysql-session")(session);
 const bcrypt = require("bcryptjs");
+const nodemailer = require("nodemailer");
 
 // =========================================================
 // ENVIRONMENT CONFIGURATION
@@ -18,6 +19,9 @@ dotenv.config({
 const db = require("./db");
 const app = express();
 const PORT = Number(process.env.PORT) || 5000;
+const PASSWORD_RESET_TTL_MINUTES = 30;
+const PASSWORD_RESET_GENERIC_MESSAGE =
+  "If an active admin account matches that email, reset instructions will be sent.";
 
 process.on("unhandledRejection", (reason) => {
   console.error("Unhandled Rejection:", reason?.message || reason);
@@ -201,6 +205,49 @@ function requireSuperAdmin(req, res, next) {
   }
 
   return next();
+}
+
+function hashResetValue(value) {
+  return crypto
+    .createHmac("sha256", process.env.SESSION_SECRET)
+    .update(value)
+    .digest("hex");
+}
+
+function getPasswordResetMailer() {
+  const host = process.env.MAIL_HOST;
+  const from = process.env.MAIL_FROM;
+  const port = Number(process.env.MAIL_PORT || 587);
+  const user = process.env.MAIL_USER;
+  const pass = process.env.MAIL_PASSWORD;
+
+  if (!host || !from || !Number.isInteger(port) || port < 1 || port > 65535) {
+    return null;
+  }
+
+  if (Boolean(user) !== Boolean(pass)) {
+    return null;
+  }
+
+  return {
+    from,
+    transporter: nodemailer.createTransport({
+      host,
+      port,
+      secure: process.env.MAIL_SECURE === "true",
+      ...(user ? { auth: { user, pass } } : {}),
+    }),
+  };
+}
+
+function escapeHtml(value) {
+  return String(value || "").replace(/[&<>"']/g, (character) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+  })[character]);
 }
 
 app.use(
@@ -586,6 +633,251 @@ app.post("/api/admin/login", async (req, res) => {
       success: false,
       message: "Unable to process administrator login.",
     });
+  }
+});
+
+// =========================================================
+// ADMIN PASSWORD RESET
+// =========================================================
+
+app.post("/api/admin/forgot-password", async (req, res) => {
+  const mailer = getPasswordResetMailer();
+  if (!mailer) {
+    return res.status(503).json({
+      success: false,
+      message: "Password reset email is not configured. Please contact the system administrator.",
+    });
+  }
+
+  const submittedEmail =
+    typeof req.body?.email === "string" ? req.body.email.trim().toLowerCase() : "";
+  const emailKey = hashResetValue(submittedEmail.slice(0, 255));
+  const requestIp = req.ip || req.socket?.remoteAddress || "unknown";
+  const ipKey = hashResetValue(requestIp);
+
+  try {
+    const [ipRequests] = await db.execute(
+      `SELECT COUNT(*) AS count
+       FROM admin_password_reset_requests
+       WHERE request_ip_hash = ?
+         AND request_type = 'request'
+         AND created_at >= DATE_SUB(UTC_TIMESTAMP(), INTERVAL 15 MINUTE)`,
+      [ipKey]
+    );
+    const [emailRequests] = await db.execute(
+      `SELECT COUNT(*) AS count
+       FROM admin_password_reset_requests
+       WHERE request_email_hash = ?
+         AND request_type = 'request'
+         AND created_at >= DATE_SUB(UTC_TIMESTAMP(), INTERVAL 15 MINUTE)`,
+      [emailKey]
+    );
+
+    if (Number(ipRequests[0]?.count) >= 10 || Number(emailRequests[0]?.count) >= 3) {
+      return res.status(429).json({
+        success: false,
+        message: "Too many reset requests. Please wait before trying again.",
+      });
+    }
+
+    await db.execute(
+      `INSERT INTO admin_password_reset_requests
+        (request_ip_hash, request_email_hash, request_type)
+       VALUES (?, ?, 'request')`,
+      [ipKey, emailKey]
+    );
+    await db.execute(
+      `DELETE FROM admin_password_reset_requests
+       WHERE created_at < DATE_SUB(UTC_TIMESTAMP(), INTERVAL 24 HOUR)`
+    );
+
+    const emailIsValid =
+      submittedEmail.length <= 255 &&
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(submittedEmail);
+    if (!emailIsValid) {
+      return res.status(200).json({
+        success: true,
+        message: PASSWORD_RESET_GENERIC_MESSAGE,
+      });
+    }
+
+    const [admins] = await db.execute(
+      `SELECT id, name, email
+       FROM admins
+       WHERE LOWER(email) = ?
+         AND role IN ('admin', 'superadmin')
+         AND status = 'approved'
+         AND is_active = 1
+         AND password_hash IS NOT NULL
+       LIMIT 1`,
+      [submittedEmail]
+    );
+
+    if (admins.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: PASSWORD_RESET_GENERIC_MESSAGE,
+      });
+    }
+
+    const admin = admins[0];
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const tokenHash = crypto.createHash("sha256").update(resetToken).digest("hex");
+    await db.execute(
+      `INSERT INTO admin_password_reset_tokens (admin_id, token_hash, expires_at)
+       VALUES (?, ?, DATE_ADD(UTC_TIMESTAMP(), INTERVAL ${PASSWORD_RESET_TTL_MINUTES} MINUTE))`,
+      [admin.id, tokenHash]
+    );
+    const [tokenRows] = await db.execute(
+      "SELECT id FROM admin_password_reset_tokens WHERE token_hash = ? LIMIT 1",
+      [tokenHash]
+    );
+
+    const frontendUrl = (process.env.FRONTEND_URL || "http://localhost:5173")
+      .replace(/\/+$/, "");
+    const resetUrl = `${frontendUrl}/admin/forgot-password?token=${encodeURIComponent(resetToken)}`;
+    const safeName = escapeHtml(admin.name || "Administrator");
+
+    try {
+      await mailer.transporter.sendMail({
+        from: mailer.from,
+        to: admin.email,
+        subject: "Reset your college administrator password",
+        text: `Hello ${admin.name || "Administrator"},\n\nUse this secure link to reset your administrator password. It expires in ${PASSWORD_RESET_TTL_MINUTES} minutes:\n${resetUrl}\n\nIf you did not request this, you can ignore this email.`,
+        html: `<p>Hello ${safeName},</p><p>Use this secure link to reset your administrator password. It expires in ${PASSWORD_RESET_TTL_MINUTES} minutes:</p><p><a href="${resetUrl}">Reset administrator password</a></p><p>If you did not request this, you can ignore this email.</p>`,
+      });
+    } catch (mailError) {
+      await db.execute(
+        "DELETE FROM admin_password_reset_tokens WHERE token_hash = ?",
+        [tokenHash]
+      );
+      console.error("Admin password reset email delivery failed:", mailError.message);
+      return res.status(503).json({
+        success: false,
+        message: "Reset email could not be sent right now. Please try again later.",
+      });
+    }
+
+    if (tokenRows.length > 0) {
+      await db.execute(
+        `UPDATE admin_password_reset_tokens
+         SET used_at = UTC_TIMESTAMP()
+         WHERE admin_id = ? AND id <> ? AND used_at IS NULL`,
+        [admin.id, tokenRows[0].id]
+      );
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: PASSWORD_RESET_GENERIC_MESSAGE,
+    });
+  } catch (error) {
+    console.error("Admin password reset request error:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Unable to process the password reset request.",
+    });
+  }
+});
+
+app.post("/api/admin/reset-password", async (req, res) => {
+  const { token, password } = req.body || {};
+  if (
+    typeof token !== "string" ||
+    !/^[a-f0-9]{64}$/i.test(token) ||
+    typeof password !== "string" ||
+    password.length < 12 ||
+    Buffer.byteLength(password, "utf8") > 72
+  ) {
+    return res.status(400).json({
+      success: false,
+      message: "Use a valid reset link and a password of at least 12 characters (maximum 72 UTF-8 bytes).",
+    });
+  }
+
+  const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+  const connection = await db.getConnection();
+
+  try {
+    const requestIp = req.ip || req.socket?.remoteAddress || "unknown";
+    const ipKey = hashResetValue(requestIp);
+    const attemptKey = hashResetValue(tokenHash);
+    const [resetAttempts] = await connection.execute(
+      `SELECT COUNT(*) AS count
+       FROM admin_password_reset_requests
+       WHERE request_ip_hash = ?
+         AND request_type = 'completion'
+         AND created_at >= DATE_SUB(UTC_TIMESTAMP(), INTERVAL 15 MINUTE)`,
+      [ipKey]
+    );
+
+    if (Number(resetAttempts[0]?.count) >= 20) {
+      return res.status(429).json({
+        success: false,
+        message: "Too many reset attempts. Please wait before trying again.",
+      });
+    }
+
+    await connection.execute(
+      `INSERT INTO admin_password_reset_requests
+        (request_ip_hash, request_email_hash, request_type)
+       VALUES (?, ?, 'completion')`,
+      [ipKey, attemptKey]
+    );
+    await connection.beginTransaction();
+    const [tokens] = await connection.execute(
+      `SELECT id, admin_id
+       FROM admin_password_reset_tokens
+       WHERE token_hash = ?
+         AND used_at IS NULL
+         AND expires_at > UTC_TIMESTAMP()
+       LIMIT 1
+       FOR UPDATE`,
+      [tokenHash]
+    );
+
+    if (tokens.length === 0) {
+      await connection.rollback();
+      return res.status(400).json({
+        success: false,
+        message: "This reset link is invalid or has expired. Request a new one.",
+      });
+    }
+
+    const adminId = tokens[0].admin_id;
+    const passwordHash = await bcrypt.hash(password, 12);
+    const [updatedAdmin] = await connection.execute(
+      "UPDATE admins SET password_hash = ? WHERE id = ? AND is_active = 1",
+      [passwordHash, adminId]
+    );
+    if (updatedAdmin.affectedRows !== 1) {
+      await connection.rollback();
+      return res.status(400).json({
+        success: false,
+        message: "This reset link is invalid or has expired. Request a new one.",
+      });
+    }
+    await connection.execute(
+      `UPDATE admin_password_reset_tokens
+       SET used_at = UTC_TIMESTAMP()
+       WHERE admin_id = ? AND used_at IS NULL`,
+      [adminId]
+    );
+    await connection.commit();
+
+    return res.status(200).json({
+      success: true,
+      message: "Your password has been updated. Sign in with your new password.",
+    });
+  } catch (error) {
+    await connection.rollback();
+    console.error("Admin password reset completion error:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Unable to update the password right now.",
+    });
+  } finally {
+    connection.release();
   }
 });
 
