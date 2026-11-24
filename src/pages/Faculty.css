@@ -823,8 +823,23 @@
     align-items: stretch;
   }
 
+  .faculty-department-dropdown-wrap {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .faculty-department-select {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .department-filters {
+    display: none;
+  }
+
   .faculty-search {
     width: 100%;
+    min-width: 0;
     box-sizing: border-box;
   }
 
@@ -857,12 +872,7 @@
   }
 
   .department-filters {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .department-filter:first-child {
-    grid-column: 1 / -1;
+    display: none;
   }
 
   .faculty-hero {

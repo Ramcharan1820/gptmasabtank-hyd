@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   BriefcaseBusiness,
   GraduationCap,
@@ -14,6 +14,7 @@ import {
 import "./Faculty.css";
 import API_BASE_URL from "../apiConfig";
 import { principalData as defaultPrincipal, facultyList as defaultFacultyList } from "../data/facultyData";
+import ImageWithFallback from "../components/ImageWithFallback";
 
 export default function Faculty() {
   const [facultyList, setFacultyList] = useState([]);
@@ -125,13 +126,10 @@ export default function Faculty() {
 
             <div className="faculty-principal-spotlight">
               <div className="principal-image-wrap">
-                <img
+                <ImageWithFallback
                   src={principal.photo || "/principal.jpg"}
                   alt={principal.name || "Principal"}
-                  onError={(e) => {
-                    e.currentTarget.onerror = null;
-                    e.currentTarget.src = "/principal.jpg";
-                  }}
+                  fallbackSrc="/principal.jpg"
                 />
                 <span className="principal-badge">
                   <Award size={14} /> Principal
@@ -303,25 +301,16 @@ export default function Faculty() {
                 <article className="faculty-card" key={faculty.id || faculty.faculty_code || faculty.name}>
                   {/* PHOTO */}
                   <div className="faculty-photo">
-                    {faculty.photo ? (
-                      <img
-                        src={faculty.photo}
-                        alt={faculty.name}
-                        onError={(e) => {
-                          e.currentTarget.style.display = "none";
-                          if (e.currentTarget.nextSibling) {
-                            e.currentTarget.nextSibling.style.display = "flex";
-                          }
-                        }}
-                      />
-                    ) : null}
-                    <div
-                      className="faculty-photo-placeholder"
-                      style={{ display: faculty.photo ? "none" : "flex" }}
-                    >
-                      <UserRound size={56} />
-                      <span>{faculty.name}</span>
-                    </div>
+                    <ImageWithFallback
+                      src={faculty.photo}
+                      alt={faculty.name}
+                      fallback={
+                        <div className="faculty-photo-placeholder">
+                          <UserRound size={56} />
+                          <span>{faculty.name}</span>
+                        </div>
+                      }
+                    />
                     {faculty.department && (
                       <div className="faculty-department-badge">
                         {faculty.department}

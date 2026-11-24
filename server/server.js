@@ -6,7 +6,6 @@ const path = require("path");
 const session = require("express-session");
 const MySQLStore = require("express-mysql-session")(session);
 const bcrypt = require("bcryptjs");
-const nodemailer = require("nodemailer");
 
 // =========================================================
 // ENVIRONMENT CONFIGURATION
@@ -214,30 +213,55 @@ function hashResetValue(value) {
     .digest("hex");
 }
 
-function getPasswordResetMailer() {
-  const host = process.env.MAIL_HOST;
-  const from = process.env.MAIL_FROM;
-  const port = Number(process.env.MAIL_PORT || 587);
-  const user = process.env.MAIL_USER;
-  const pass = process.env.MAIL_PASSWORD;
+function getBrevoEmailConfig() {
+  const apiKey = process.env.BREVO_API_KEY;
+  const senderEmail = process.env.BREVO_SENDER_EMAIL;
+  const senderName =
+    process.env.BREVO_SENDER_NAME || "Government Polytechnic College";
 
-  if (!host || !from || !Number.isInteger(port) || port < 1 || port > 65535) {
+  if (
+    !apiKey ||
+    !senderEmail ||
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(senderEmail)
+  ) {
     return null;
   }
 
-  if (Boolean(user) !== Boolean(pass)) {
-    return null;
-  }
+  return { apiKey, senderEmail, senderName };
+}
 
-  return {
-    from,
-    transporter: nodemailer.createTransport({
-      host,
-      port,
-      secure: process.env.MAIL_SECURE === "true",
-      ...(user ? { auth: { user, pass } } : {}),
-    }),
-  };
+async function sendBrevoEmail(config, { to, subject, textContent, htmlContent }) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
+
+  try {
+    const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "api-key": config.apiKey,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        sender: {
+          name: config.senderName,
+          email: config.senderEmail,
+        },
+        to: [{ email: to }],
+        subject,
+        textContent,
+        htmlContent,
+      }),
+      signal: controller.signal,
+    });
+
+    await response.text();
+    if (!response.ok) {
+      throw new Error(`Brevo email API returned HTTP ${response.status}.`);
+    }
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 function escapeHtml(value) {
@@ -641,11 +665,11 @@ app.post("/api/admin/login", async (req, res) => {
 // =========================================================
 
 app.post("/api/admin/forgot-password", async (req, res) => {
-  const mailer = getPasswordResetMailer();
-  if (!mailer) {
+  const brevoConfig = getBrevoEmailConfig();
+  if (!brevoConfig) {
     return res.status(503).json({
       success: false,
-      message: "Password reset email is not configured. Please contact the system administrator.",
+      message: "Brevo email is not configured. Please contact the system administrator.",
     });
   }
 
@@ -739,12 +763,11 @@ app.post("/api/admin/forgot-password", async (req, res) => {
     const safeName = escapeHtml(admin.name || "Administrator");
 
     try {
-      await mailer.transporter.sendMail({
-        from: mailer.from,
+      await sendBrevoEmail(brevoConfig, {
         to: admin.email,
         subject: "Reset your college administrator password",
-        text: `Hello ${admin.name || "Administrator"},\n\nUse this secure link to reset your administrator password. It expires in ${PASSWORD_RESET_TTL_MINUTES} minutes:\n${resetUrl}\n\nIf you did not request this, you can ignore this email.`,
-        html: `<p>Hello ${safeName},</p><p>Use this secure link to reset your administrator password. It expires in ${PASSWORD_RESET_TTL_MINUTES} minutes:</p><p><a href="${resetUrl}">Reset administrator password</a></p><p>If you did not request this, you can ignore this email.</p>`,
+        textContent: `Hello ${admin.name || "Administrator"},\n\nUse this secure link to reset your administrator password. It expires in ${PASSWORD_RESET_TTL_MINUTES} minutes:\n${resetUrl}\n\nIf you did not request this, you can ignore this email.`,
+        htmlContent: `<p>Hello ${safeName},</p><p>Use this secure link to reset your administrator password. It expires in ${PASSWORD_RESET_TTL_MINUTES} minutes:</p><p><a href="${resetUrl}">Reset administrator password</a></p><p>If you did not request this, you can ignore this email.</p>`,
       });
     } catch (mailError) {
       await db.execute(

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import {
   X,
   UserRound,
@@ -12,6 +12,7 @@ import {
   BadgeCheck,
 } from "lucide-react";
 import "./FacultyProfileModal.css";
+import ImageWithFallback from "./ImageWithFallback";
 
 export default function FacultyProfileModal({ faculty, onClose }) {
   useEffect(() => {
@@ -64,25 +65,16 @@ export default function FacultyProfileModal({ faculty, onClose }) {
 
         <div className="faculty-modal-header">
           <div className="faculty-modal-photo-wrap">
-            {photoUrl ? (
-              <img
-                src={photoUrl}
-                alt={faculty.name}
-                className="faculty-modal-photo"
-                onError={(e) => {
-                  e.currentTarget.style.display = "none";
-                  if (e.currentTarget.nextElementSibling) {
-                    e.currentTarget.nextElementSibling.style.display = "flex";
-                  }
-                }}
-              />
-            ) : null}
-            <div
-              className="faculty-modal-photo-placeholder"
-              style={{ display: photoUrl ? "none" : "flex" }}
-            >
-              <UserRound size={48} />
-            </div>
+            <ImageWithFallback
+              src={photoUrl}
+              alt={faculty.name}
+              className="faculty-modal-photo"
+              fallback={
+                <div className="faculty-modal-photo-placeholder">
+                  <UserRound size={48} />
+                </div>
+              }
+            />
             <span className="faculty-modal-badge">
               <BadgeCheck size={14} /> Verified Faculty
             </span>
