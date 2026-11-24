@@ -60,6 +60,7 @@ export default function Home() {
 
   // Notices
   const [notices, setNotices] = useState([]);
+  const [noticeError, setNoticeError] = useState(false);
   const [currentNotice, setCurrentNotice] = useState(0);
   const [noticePaused, setNoticePaused] = useState(false);
 
@@ -80,31 +81,8 @@ export default function Home() {
   }, []);
 
   /* =========================================
-     FETCH NOTICES FROM MYSQL WITH FALLBACK
+     FETCH NOTICES FROM MYSQL
   ========================================= */
-
-  const fallbackNotices = [
-    {
-      id: "f1",
-      title: "SBTET Diploma Examination Notification",
-      description: "Regular and backlog examination schedule for C18, C21, C24 and C26 schemes announced. Check details in the Student Portal.",
-    },
-    {
-      id: "f2",
-      title: "Mandatory 75% Biometric Attendance",
-      description: "Minimum 75% aggregate attendance is mandatory for semester end examination hall ticket generation.",
-    },
-    {
-      id: "f3",
-      title: "TS ePass Scholarship Desk Active",
-      description: "Post-Matric scholarship renewal and fresh registrations are open. Submit verified documents at the scholarship desk.",
-    },
-    {
-      id: "f4",
-      title: "Campus Recruitment Drives 2026",
-      description: "Major IT and core engineering companies are conducting campus recruitment interviews for final year diploma students.",
-    },
-  ];
 
   useEffect(() => {
     const fetchNotices = async () => {
@@ -112,17 +90,21 @@ export default function Home() {
         const response = await fetch(
           `${API_BASE_URL}/api/notices`
         );
+        if (!response.ok) {
+          throw new Error(`Notices request failed with status ${response.status}.`);
+        }
 
         const data = await response.json();
-
-        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
-          setNotices(data.data);
-        } else {
-          setNotices(fallbackNotices);
+        if (!data.success || !Array.isArray(data.data)) {
+          throw new Error("The notices service returned an invalid response.");
         }
+
+        setNoticeError(false);
+        setNotices(data.data);
       } catch (error) {
-        console.warn("Using verified fallback notices:", error.message);
-        setNotices(fallbackNotices);
+        console.error("Failed to fetch notices:", error);
+        setNoticeError(true);
+        setNotices([]);
       }
     };
 
@@ -216,7 +198,11 @@ export default function Home() {
         {/* NEWS CONTENT */}
         <div className="flash-news-content">
 
-          {notices.length === 0 ? (
+          {noticeError ? (
+            <div className="flash-news-empty">
+              Notices are temporarily unavailable
+            </div>
+          ) : notices.length === 0 ? (
             <div className="flash-news-empty">
               No latest notices available
             </div>
