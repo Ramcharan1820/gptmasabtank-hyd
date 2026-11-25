@@ -231,7 +231,7 @@ export default function AutomobileDepartment() {
             <Car size={24} />
           </div>
 
-          <strong>AE</strong>
+          <strong>AU</strong>
 
           <span>
             Automobile Engineering

@@ -283,6 +283,7 @@ function AdminDashboard() {
   const [activeSection, setActiveSection] = useState("Dashboard");
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [mobileSectionMenuOpen, setMobileSectionMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -3862,43 +3863,63 @@ function AdminDashboard() {
   return (
     <div className="admin-dashboard">
       <div className="admin-dashboard-shell">
-        <div className="admin-section-tabs">
-          {adminSectionTabs.map((item) => (
-            <button
-              key={item}
-              type="button"
-              className={
-                activeSection === item
-                  ? "admin-section-tab active"
-                  : "admin-section-tab"
-              }
-              onClick={() => {
-                setActiveSection(item);
-                setSearch("");
-                setError("");
-                setSuccess("");
-                setShowManagedForm(false);
-              }}
-            >
-              {item}
-              {item === "Admin Approvals" && pendingAdminCount > 0 && (
-                <span
-                  style={{
-                    marginLeft: "6px",
-                    background: "#f59e0b",
-                    color: "#ffffff",
-                    borderRadius: "999px",
-                    padding: "1px 6px",
-                    fontSize: "10.5px",
-                    fontWeight: "800",
-                  }}
-                >
-                  {pendingAdminCount}
+        <nav
+          className={`admin-section-tabs ${mobileSectionMenuOpen ? "mobile-open" : ""}`}
+          aria-label="Admin dashboard sections"
+        >
+          <button
+            type="button"
+            className="admin-mobile-section-toggle"
+            aria-expanded={mobileSectionMenuOpen}
+            aria-controls="admin-section-tab-list"
+            onClick={() => setMobileSectionMenuOpen((open) => !open)}
+          >
+            <span className="admin-mobile-section-toggle-icon">
+              {mobileSectionMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            </span>
+            <span className="admin-mobile-section-toggle-label">
+              <span>ADMIN SECTIONS</span>
+              <strong>{activeSection}</strong>
+            </span>
+            <ChevronDown
+              size={18}
+              className={mobileSectionMenuOpen ? "rotated" : ""}
+            />
+          </button>
+
+          <div className="admin-section-tab-list" id="admin-section-tab-list">
+            {adminSectionTabs.map((item) => (
+              <button
+                key={item}
+                type="button"
+                aria-pressed={activeSection === item}
+                className={
+                  activeSection === item
+                    ? "admin-section-tab active"
+                    : "admin-section-tab"
+                }
+                onClick={() => {
+                  setActiveSection(item);
+                  setMobileSectionMenuOpen(false);
+                  setSearch("");
+                  setError("");
+                  setSuccess("");
+                  setShowManagedForm(false);
+                }}
+              >
+                <span className="admin-section-tab-icon" aria-hidden="true">
+                  {getCategoryIconHelper(item)}
                 </span>
-              )}
-            </button>
-          ))}
-        </div>
+                <span>{item}</span>
+                {item === "Admin Approvals" && pendingAdminCount > 0 && (
+                  <span className="admin-section-tab-count">
+                    {pendingAdminCount}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        </nav>
 
         <main className="admin-main-panel">
           <header className="admin-topbar">

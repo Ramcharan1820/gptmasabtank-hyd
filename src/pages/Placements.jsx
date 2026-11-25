@@ -47,6 +47,7 @@ function Placements() {
   const [placementsApiUnavailable, setPlacementsApiUnavailable] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedBranch, setSelectedBranch] = useState("all");
 
   const loadPlacements = useCallback(async () => {
     const loadData = async (endpoint, allowNotFound = false) => {
@@ -143,6 +144,25 @@ function Placements() {
   const displayedStudents = realDatabasePlacements.length > 0
     ? realDatabasePlacements
     : realStudentItems;
+  const branchLabel = (student) => {
+    const branch = String(student.branch || "").trim();
+    return branch || "Other Branch";
+  };
+  const branchGroups = new Map();
+  displayedStudents.forEach((student) => {
+    const label = branchLabel(student);
+    const key = label.toLowerCase();
+    if (!branchGroups.has(key)) {
+      branchGroups.set(key, { key, label, students: [] });
+    }
+    branchGroups.get(key).students.push(student);
+  });
+  const groupedBranches = [...branchGroups.values()].sort((a, b) =>
+    a.label.localeCompare(b.label)
+  );
+  const visibleBranchGroups = selectedBranch === "all"
+    ? groupedBranches
+    : groupedBranches.filter((branch) => branch.key === selectedBranch);
   const placementBranches = new Set(
     displayedStudents
       .map((student) => String(student.branch || "").trim().toLowerCase())
@@ -295,51 +315,91 @@ function Placements() {
           )}
 
           {!loading && displayedStudents.length > 0 && (
-            <div className="students-grid">
-              {displayedStudents.map((student, index) => (
-                <article
-                  className="student-placement-card"
-                  key={student.id || index}
+            <div className="branch-placement-browser">
+              <div className="branch-filter-bar" aria-label="Filter students by branch">
+                <button
+                  type="button"
+                  className={`branch-filter-button ${selectedBranch === "all" ? "active" : ""}`}
+                  onClick={() => setSelectedBranch("all")}
                 >
-                  <div className="student-photo">
-                    {student.photo ? (
-                      <img
-                        src={student.photo}
-                        alt={student.name}
-                        onError={(e) => {
-                          e.currentTarget.style.display = "none";
-                          if (e.currentTarget.nextSibling) {
-                            e.currentTarget.nextSibling.style.display = "block";
-                          }
-                        }}
-                      />
-                    ) : null}
-                    <div
-                      style={{
-                        display: student.photo ? "none" : "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: "100%",
-                        height: "100%",
-                      }}
-                    >
-                      <Users size={38} />
+                  All Branches
+                  <span>{displayedStudents.length}</span>
+                </button>
+                {groupedBranches.map((branch) => (
+                  <button
+                    type="button"
+                    key={branch.key}
+                    className={`branch-filter-button ${selectedBranch === branch.key ? "active" : ""}`}
+                    onClick={() => setSelectedBranch(branch.key)}
+                  >
+                    {branch.label}
+                    <span>{branch.students.length}</span>
+                  </button>
+                ))}
+              </div>
+
+              {visibleBranchGroups.map((branch) => (
+                <section className="branch-placement-group" key={branch.key}>
+                  <div className="branch-group-header">
+                    <div>
+                      <span>BRANCH</span>
+                      <h3>{branch.label}</h3>
+                    </div>
+                    <div className="branch-student-count">
+                      {branch.students.length} {branch.students.length === 1 ? "Student" : "Students"}
                     </div>
                   </div>
 
-                  <div className="student-info">
-                    <span className="student-label">SELECTED STUDENT</span>
-                    <h3>{student.name}</h3>
-                    <p>{student.branch}</p>
-                    <div className="student-company">
-                      <Building2 size={16} />
-                      <span>{student.company}</span>
-                    </div>
-                    <div className="student-package">
-                      {student.package || student.description}
-                    </div>
+                  <div className="students-grid">
+                    {branch.students.map((student, index) => (
+                      <article
+                        className="student-placement-card"
+                        key={student.id || `${branch.key}-${index}`}
+                      >
+                        <div className="student-photo">
+                          {student.photo ? (
+                            <img
+                              src={student.photo}
+                              alt={student.name}
+                              onError={(e) => {
+                                e.currentTarget.style.display = "none";
+                                if (e.currentTarget.nextSibling) {
+                                  e.currentTarget.nextSibling.style.display = "block";
+                                }
+                              }}
+                            />
+                          ) : null}
+                          <div
+                            style={{
+                              display: student.photo ? "none" : "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              width: "100%",
+                              height: "100%",
+                            }}
+                          >
+                            <Users size={38} />
+                          </div>
+                        </div>
+
+                        <div className="student-info">
+                          <span className="student-label">SELECTED STUDENT</span>
+                          <h3>{student.name}</h3>
+                          <p>{branchLabel(student)}</p>
+                          <div className="student-company">
+                            <Building2 size={16} />
+                            <span>{student.company || "Company to be updated"}</span>
+                          </div>
+                          {(student.package || student.description) && (
+                            <div className="student-package">
+                              {student.package || student.description}
+                            </div>
+                          )}
+                        </div>
+                      </article>
+                    ))}
                   </div>
-                </article>
+                </section>
               ))}
             </div>
           )}

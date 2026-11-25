@@ -27,17 +27,32 @@
 }
 
 .admin-section-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  overflow: hidden;
   background: linear-gradient(90deg, #800000 0%, #620509 100%);
-  border-radius: 0 0 14px 14px;
-  padding: 10px 16px;
+  border-radius: 14px;
   box-shadow: 0 10px 22px rgba(10, 121, 209, 0.18);
   margin-bottom: 22px;
 }
 
+.admin-section-tab-list {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+  padding: 10px;
+}
+
+.admin-mobile-section-toggle {
+  display: none;
+}
+
 .admin-section-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 0;
+  width: 100%;
+  min-height: 42px;
   border: none;
   background: transparent;
   color: rgba(255, 255, 255, 0.92);
@@ -49,10 +64,35 @@
   transition: 0.2s ease;
 }
 
+.admin-section-tab-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-section-tab-count {
+  display: inline-flex;
+  min-width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0 5px;
+  background: #f59e0b;
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 800;
+}
+
 .admin-section-tab:hover,
 .admin-section-tab.active {
   background: rgba(255, 255, 255, 0.14);
   color: #fff;
+}
+
+.admin-section-tab:focus-visible {
+  outline: 2px solid #f6d778;
+  outline-offset: 2px;
 }
 
 .admin-main-panel {
@@ -1489,6 +1529,10 @@
 ========================================== */
 
 @media (max-width: 1100px) {
+  .admin-section-tab-list {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
   .admin-home-header {
     grid-template-columns: 1fr;
     justify-items: center;
@@ -1518,6 +1562,115 @@
 }
 
 @media (max-width: 768px) {
+  .admin-dashboard {
+    padding: 14px 0 28px;
+  }
+
+  .admin-dashboard-shell {
+    padding: 0 14px;
+  }
+
+  .admin-section-tab {
+    padding: 0 10px;
+    font-size: 12px;
+  }
+
+  .admin-section-tabs {
+    margin-bottom: 14px;
+    border-radius: 12px;
+  }
+
+  .admin-mobile-section-toggle {
+    width: 100%;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 14px;
+    border: 0;
+    background: transparent;
+    color: #fff;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .admin-mobile-section-toggle-icon {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .admin-mobile-section-toggle-label {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .admin-mobile-section-toggle-label > span {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+  }
+
+  .admin-mobile-section-toggle-label strong {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .admin-mobile-section-toggle > svg {
+    flex: 0 0 auto;
+    transition: transform 0.2s ease;
+  }
+
+  .admin-mobile-section-toggle > svg.rotated {
+    transform: rotate(180deg);
+  }
+
+  .admin-section-tab-list {
+    display: none;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    padding: 0 10px 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+  }
+
+  .admin-section-tabs.mobile-open .admin-section-tab-list {
+    display: grid;
+  }
+
+  .admin-section-tab:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+
+  .admin-section-tab {
+    justify-content: flex-start;
+    min-height: 46px;
+    padding: 0 10px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.05);
+    font-size: 11px;
+    text-align: left;
+  }
+
+  .admin-section-tab.active {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .admin-section-tab-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
   .admin-browser-bar {
     padding: 0 10px;
   }
@@ -1660,6 +1813,21 @@
 }
 
 @media (max-width: 480px) {
+  .admin-dashboard-shell {
+    padding: 0 10px;
+  }
+
+  .admin-section-tab-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-section-tab {
+    gap: 7px;
+    min-height: 44px;
+    padding: 0 8px;
+    font-size: 10.5px;
+  }
+
   .admin-stats-grid {
     grid-template-columns: 1fr 1fr;
   }

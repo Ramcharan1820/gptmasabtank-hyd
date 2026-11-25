@@ -30,7 +30,9 @@ export default function useDepartmentFaculty(departmentCode, initialFallback = [
         if (result.success && Array.isArray(result.data)) {
           const target = (departmentCode || "").toLowerCase().trim();
           const normalizedTarget =
-            target === "humanities" ||
+            ["au", "ae", "auto", "automobile"].includes(target)
+              ? "automobile"
+              : target === "humanities" ||
             target === "humanities and sciences" ||
             target === "humanities-and-sciences" ||
             target === "general" ||
@@ -53,7 +55,7 @@ export default function useDepartmentFaculty(departmentCode, initialFallback = [
             if (normalizedTarget === "eee" && (d.includes("electrical") || d.includes("eee"))) return true;
             if (normalizedTarget === "civil" && d.includes("civil")) return true;
             if (normalizedTarget === "mechanical" && (d.includes("mech") || d.includes("mechanical"))) return true;
-            if (normalizedTarget === "automobile" && (d.includes("auto") || d.includes("automobile"))) return true;
+            if (normalizedTarget === "automobile" && (d === "au" || d === "ae" || d.includes("auto") || d.includes("automobile"))) return true;
             if (normalizedTarget === "pharmacy" && (d.includes("pharm") || d.includes("pharmacy"))) return true;
             return false;
           };

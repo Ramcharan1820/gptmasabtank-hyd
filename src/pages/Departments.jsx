@@ -52,7 +52,7 @@ const departments = [
     link: "/departments/civil",
   },
   {
-    code: "AE",
+    code: "AU",
     title: "Automobile Engineering",
     text: "Engine technology, auto electronics, vehicle dynamics, servicing and electric vehicle systems.",
     icon: Car,
@@ -141,6 +141,10 @@ function Departments() {
     MECH: Settings,
     CE: Building2,
     CIVIL: Building2,
+    General: BookOpen,
+    GENERAL: BookOpen,
+    HUM: BookOpen,
+    AU: Car,
     AE: Car,
     AUTO: Car,
     "D.PHARM": Pill,
@@ -154,14 +158,15 @@ function Departments() {
     MECH: "/departments/mechanical",
     CE: "/departments/civil",
     CIVIL: "/departments/civil",
+    AU: "/departments/automobile",
     AE: "/departments/automobile",
     AUTO: "/departments/automobile",
     "D.PHARM": "/departments/pharmacy",
     PHARMACY: "/departments/pharmacy",
   };
   const displayDepartments = departmentRecords.map((department) => {
-    const code = department.department_code || department.code;
-    const normalizedCode = String(code || "").toUpperCase();
+    const rawCode = department.department_code || department.code;
+    const normalizedCode = String(rawCode || "").toUpperCase();
     const normalizedName = String(
       department.department_name || department.title || ""
     ).toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -169,16 +174,23 @@ function Departments() {
       normalizedCode.replace(/[^A-Z0-9]/g, "") === "HUM" ||
       normalizedName === "humanitiesandsciences" ||
       normalizedName === "humanitiessciences";
+    const code =
+      isHumanitiesAndSciences
+        ? "General"
+        : ["AE", "AU", "AUTO", "AUTOMOBILE"].includes(normalizedCode) ||
+            normalizedName.includes("automobile")
+          ? "AU"
+          : rawCode;
     return {
       code,
       title: department.department_name || department.title,
       text: department.description || department.text || "Explore the academic department, facilities and course information.",
-      icon: iconByCode[normalizedCode] || Building2,
+      icon: iconByCode[normalizedCode] || iconByCode[code] || Building2,
       link:
         (isHumanitiesAndSciences
           ? "/departments/humanities-and-sciences"
           : pathByCode[normalizedCode]) ||
-        `/departments/${encodeURIComponent(String(code).toLowerCase().trim())}`,
+        `/departments/${encodeURIComponent(String(rawCode).toLowerCase().trim())}`,
       image: department.image,
       hodName: department.hod_name,
       intake: department.intake,

@@ -3,20 +3,15 @@ import { useParams, Link } from "react-router-dom";
 import {
   Building2,
   ChevronRight,
-  GraduationCap,
   Users,
   Award,
-  BookOpen,
   CalendarDays,
   UserRound,
   Eye,
   Mail,
-  ShieldCheck,
   CheckCircle2,
   ArrowRight,
-  Briefcase,
-  Layers,
-  Sparkles,
+  Wrench,
 } from "lucide-react";
 
 import API_BASE_URL from "../apiConfig";
@@ -33,8 +28,14 @@ export default function DynamicDepartment() {
   const [selectedFaculty, setSelectedFaculty] = useState(null);
 
   const normalizedCode = (deptCode || "").toUpperCase().trim();
-  const { faculty: deptFaculty, loading: facultyLoading } = useDepartmentFaculty(
-    normalizedCode,
+  const normalizedDepartmentName = String(department?.department_name || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+  const facultyDepartmentKey = normalizedDepartmentName.includes("humanities")
+    ? "General"
+    : normalizedCode;
+  const { faculty: deptFaculty } = useDepartmentFaculty(
+    facultyDepartmentKey,
     []
   );
 
@@ -110,6 +111,15 @@ export default function DynamicDepartment() {
     );
   }
 
+  const departmentCode =
+    normalizedDepartmentName.includes("humanities")
+      ? "General"
+      : ["AE", "AU", "AUTO", "AUTOMOBILE"].includes(
+          String(department.department_code || "").toUpperCase().trim()
+        ) || /automobile/i.test(department.department_name || "")
+        ? "AU"
+        : department.department_code;
+
   const isHod = (member) => {
     if (!member || !member.designation) return false;
     const desig = member.designation.toLowerCase();
@@ -129,14 +139,24 @@ export default function DynamicDepartment() {
           designation: "Head of Department (HOD)",
           department: department.department_name,
           photo: department.image || "",
-          qualification: "Master of Technology / Post Graduate Degree",
-          experience: "Senior Technical Education Faculty",
-          message: `Welcome to the Department of ${department.department_name}. We are dedicated to providing state-of-the-art technical education, hands-on laboratory rigor, and strong industry orientation.`,
+          qualification: normalizedDepartmentName.includes("humanities")
+            ? "M.Sc. (Organic Chemistry), Osmania University; Ph.D. (Chemistry), Jawaharlal Nehru Technological University Hyderabad."
+            : "",
+          experience: normalizedDepartmentName.includes("humanities")
+            ? "Appointed as a Lecturer in the Department of Humanities and Sciences on 6 March 1991. He has extensive teaching experience in Government Polytechnic colleges, teaching Chemistry and guiding students in science education. He has contributed to the development of students in basic sciences and continues to strengthen foundation subjects for engineering students as Head of the Department."
+            : "",
         }
       : null);
 
   const hodPhotoUrl =
     activeHod?.photo || activeHod?.image || department.image || "";
+  const hasHodDetails = Boolean(
+    activeHod?.experience ||
+      activeHod?.qualification ||
+      activeHod?.specialization ||
+      activeHod?.email ||
+      activeHod?.message
+  );
 
   return (
     <main className="dynamic-dept-page">
@@ -144,28 +164,21 @@ export default function DynamicDepartment() {
       <section className="site-hero dynamic-dept-hero">
         <div className="dynamic-dept-hero-inner">
           <div className="dynamic-dept-hero-content">
-            <div className="dynamic-dept-badges-row">
-              <span className="dynamic-dept-badge">
-                <ShieldCheck size={14} /> SBTET & AICTE Approved
-              </span>
-              <span className="dynamic-dept-code-pill">
-                Code: {department.department_code}
-              </span>
-            </div>
-
+            <span className="dynamic-dept-hero-label">
+              ACADEMIC DEPARTMENT | CODE: {departmentCode}
+            </span>
             <h1>Department of {department.department_name}</h1>
             <p className="dynamic-dept-hero-subtitle">
               Government Polytechnic College, Masab Tank, Hyderabad
             </p>
-
-            <div className="dynamic-dept-breadcrumb">
-              <Link to="/">Home</Link>
-              <ChevronRight size={14} />
-              <Link to="/departments">Departments</Link>
-              <ChevronRight size={14} />
-              <span className="active">{department.department_code}</span>
-            </div>
           </div>
+          <nav className="dynamic-dept-breadcrumb" aria-label="Breadcrumb">
+            <Link to="/">Home</Link>
+            <ChevronRight size={14} />
+            <Link to="/departments">Departments</Link>
+            <ChevronRight size={14} />
+            <span className="active">{departmentCode}</span>
+          </nav>
         </div>
       </section>
 
@@ -174,41 +187,41 @@ export default function DynamicDepartment() {
         <div className="dynamic-dept-container dynamic-dept-stats-grid">
           <div className="dynamic-dept-stat-card">
             <div className="stat-icon-wrap">
-              <GraduationCap size={24} />
-            </div>
-            <div className="stat-info">
-              <strong>{department.intake || "60"} Seats</strong>
-              <span>Annual Intake</span>
-            </div>
-          </div>
-
-          <div className="dynamic-dept-stat-card">
-            <div className="stat-icon-wrap">
               <Users size={24} />
             </div>
             <div className="stat-info">
-              <strong>{deptFaculty.length || "Active"} Faculty</strong>
-              <span>Faculty Strength</span>
+              <strong>{deptFaculty.length}</strong>
+              <span>Faculty Members</span>
             </div>
           </div>
 
           <div className="dynamic-dept-stat-card">
             <div className="stat-icon-wrap">
-              <CalendarDays size={24} />
+              <Building2 size={24} />
             </div>
             <div className="stat-info">
-              <strong>3 Years</strong>
-              <span>Diploma Curriculum</span>
+              <strong>{departmentCode}</strong>
+              <span>{department.department_name}</span>
             </div>
           </div>
 
           <div className="dynamic-dept-stat-card">
             <div className="stat-icon-wrap">
-              <Sparkles size={24} />
+              <Wrench size={24} />
             </div>
             <div className="stat-info">
-              <strong>Govt. Polytechnic</strong>
-              <span>Masab Tank Campus</span>
+              <strong>Practical</strong>
+              <span>Technical Training</span>
+            </div>
+          </div>
+
+          <div className="dynamic-dept-stat-card">
+            <div className="stat-icon-wrap">
+              <Award size={24} />
+            </div>
+            <div className="stat-info">
+              <strong>Diploma</strong>
+              <span>Engineering Programme</span>
             </div>
           </div>
         </div>
@@ -273,7 +286,7 @@ export default function DynamicDepartment() {
                 <ul>
                   <li>
                     <span>Department Code</span>
-                    <strong>{department.department_code}</strong>
+                    <strong>{departmentCode}</strong>
                   </li>
                   <li>
                     <span>Affiliation</span>
@@ -306,75 +319,86 @@ export default function DynamicDepartment() {
       </section>
 
       {/* HEAD OF DEPARTMENT (HOD) SECTION */}
-      {activeHod && (
-        <section className="dynamic-dept-section dynamic-dept-hod-section">
-          <div className="dynamic-dept-container">
-            <div className="dynamic-dept-section-header">
-              <span className="dynamic-dept-section-tag">
-                DEPARTMENT LEADERSHIP
-              </span>
-              <h2>Head of the Department</h2>
+      <section className="dynamic-dept-section dynamic-dept-hod-section">
+        <div className="dynamic-dept-container">
+          <div className="dynamic-dept-section-header">
+            <span className="dynamic-dept-section-tag">
+              DEPARTMENT LEADERSHIP
+            </span>
+            <h2>Head of the Department</h2>
+          </div>
+
+          <div className="dynamic-dept-hod-card">
+            <div className="dynamic-dept-hod-photo-box">
+              <ImageWithFallback
+                src={hodPhotoUrl}
+                alt={activeHod?.name || "Head of Department"}
+                className="dynamic-dept-hod-img"
+                fallback={
+                  <div className="dynamic-dept-hod-placeholder">
+                    <UserRound size={48} />
+                    <span>HOD</span>
+                  </div>
+                }
+              />
             </div>
 
-            <div className="dynamic-dept-hod-card">
-              <div className="dynamic-dept-hod-photo-box">
-                <ImageWithFallback
-                  src={hodPhotoUrl}
-                  alt={activeHod.name}
-                  className="dynamic-dept-hod-img"
-                  fallback={
-                    <div className="dynamic-dept-hod-placeholder">
-                      <UserRound size={60} />
-                    </div>
-                  }
-                />
-                <span className="dynamic-dept-hod-badge">
-                  <Award size={14} /> Head of Department
-                </span>
-              </div>
+            <div className="dynamic-dept-hod-details">
+              <span className="dynamic-dept-hod-label">
+                HEAD OF DEPARTMENT
+              </span>
+              <h3>{activeHod?.name || "Details to be updated"}</h3>
+              <p className="hod-title">
+                {activeHod
+                  ? `${activeHod.designation || "Head of Department"} — ${department.department_name}`
+                  : `Department of ${department.department_name}`}
+              </p>
 
-              <div className="dynamic-dept-hod-details">
-                <span className="hod-role-tag">HEAD OF SECTION</span>
-                <h3>{activeHod.name}</h3>
-                <p className="hod-title">
-                  {activeHod.designation || "Head of Department"} &mdash;{" "}
-                  {department.department_name}
+              {activeHod && hasHodDetails ? (
+                <>
+                  <div className="dynamic-dept-hod-info">
+                    {activeHod.experience && (
+                      <p>
+                        <strong>Experience:</strong> {activeHod.experience}
+                      </p>
+                    )}
+                    {activeHod.qualification && (
+                      <p>
+                        <strong>Qualifications:</strong> {activeHod.qualification}
+                      </p>
+                    )}
+                    {activeHod.specialization && (
+                      <p>
+                        <strong>Specialization:</strong> {activeHod.specialization}
+                      </p>
+                    )}
+                    {activeHod.email && (
+                      <p>
+                        <strong>Official Email:</strong>{" "}
+                        <a href={`mailto:${activeHod.email}`}>
+                          {activeHod.email}
+                        </a>
+                      </p>
+                    )}
+                  </div>
+
+                  {activeHod.message && (
+                    <blockquote className="dynamic-dept-hod-quote">
+                      "{activeHod.message}"
+                    </blockquote>
+                  )}
+                </>
+              ) : (
+                <p className="dynamic-dept-hod-empty">
+                  {activeHod
+                    ? "HOD profile details have not been added yet."
+                    : "HOD information will be published here when it is available."}
                 </p>
-
-                <div className="dynamic-dept-hod-meta-grid">
-                  {activeHod.qualification && (
-                    <div className="hod-meta-pill">
-                      <GraduationCap size={16} />
-                      <span>{activeHod.qualification}</span>
-                    </div>
-                  )}
-                  {activeHod.experience && (
-                    <div className="hod-meta-pill">
-                      <Briefcase size={16} />
-                      <span>{activeHod.experience}</span>
-                    </div>
-                  )}
-                  {activeHod.email && (
-                    <a
-                      href={`mailto:${activeHod.email}`}
-                      className="hod-meta-pill hod-email-link"
-                    >
-                      <Mail size={16} />
-                      <span>{activeHod.email}</span>
-                    </a>
-                  )}
-                </div>
-
-                {activeHod.message && (
-                  <blockquote className="dynamic-dept-hod-quote">
-                    "{activeHod.message}"
-                  </blockquote>
-                )}
-              </div>
+              )}
             </div>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
 
       {/* TEACHING FACULTY SECTION */}
       <section className="dynamic-dept-section dynamic-dept-faculty-section">
@@ -462,7 +486,7 @@ export default function DynamicDepartment() {
               </p>
               <Link
                 to={`/faculty?department=${encodeURIComponent(
-                  department.department_code
+                  departmentCode
                 )}`}
                 className="dynamic-view-faculty-link"
               >

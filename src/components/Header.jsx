@@ -49,7 +49,7 @@ const defaultDepartmentLinks = [
   { code: "EEE", name: "Electrical & Electronics Engineering", path: "/departments/eee", icon: Zap },
   { code: "ME", name: "Mechanical Engineering", path: "/departments/mechanical", icon: Cog },
   { code: "CE", name: "Civil Engineering", path: "/departments/civil", icon: HardHat },
-  { code: "AE", name: "Automobile Engineering", path: "/departments/automobile", icon: Car },
+  { code: "AU", name: "Automobile Engineering", path: "/departments/automobile", icon: Car },
   { code: "PHARMACY", name: "Pharmacy", path: "/departments/pharmacy", icon: Pill },
 ];
 
@@ -79,6 +79,7 @@ function resolveDepartmentPath(code) {
     MECHANICAL: "/departments/mechanical",
     CE: "/departments/civil",
     CIVIL: "/departments/civil",
+    AU: "/departments/automobile",
     AE: "/departments/automobile",
     AUTO: "/departments/automobile",
     AUTOMOBILE: "/departments/automobile",
@@ -108,8 +109,15 @@ export default function Header({ showNavigation = true }) {
 
         if (activeDepts.length > 0) {
           const mapped = activeDepts.map((d) => {
-            const code = d.department_code || d.code || "";
-            const name = d.department_name || d.name || code;
+            const rawCode = d.department_code || d.code || "";
+            const name = d.department_name || d.name || rawCode;
+            const code =
+              ["AE", "AU", "AUTO", "AUTOMOBILE"].includes(
+                String(rawCode).toUpperCase().trim()
+              ) ||
+              String(name).toLowerCase().includes("automobile")
+                ? "AU"
+                : rawCode;
             return {
               code,
               name,
