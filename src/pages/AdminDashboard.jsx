@@ -1369,6 +1369,10 @@ function AdminDashboard() {
       setSuccess(
         `${activeSection} ${editingId ? "updated" : "created"} successfully.`
       );
+      if (activeSection === "Faculty") {
+        window.dispatchEvent(new Event("faculty-updated"));
+        window.localStorage.setItem("faculty-updated", String(Date.now()));
+      }
       setShowManagedForm(false);
       setEditingId(null);
       await fetchAllData();
@@ -1390,6 +1394,10 @@ function AdminDashboard() {
         { method: "DELETE" }
       );
       setSuccess(`${activeSection} item deleted successfully.`);
+      if (activeSection === "Faculty") {
+        window.dispatchEvent(new Event("faculty-updated"));
+        window.localStorage.setItem("faculty-updated", String(Date.now()));
+      }
       await fetchAllData();
     } catch (error) {
       setError(error.message || `Unable to delete ${activeSection.toLowerCase()} content.`);

@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import "./HumanitiesSciencesDepartment.css";
+import useDepartmentFaculty from "../hooks/useDepartmentFaculty";
 
 const facultyGroups = [
   {
@@ -44,6 +45,15 @@ const missions = [
 ];
 
 function HumanitiesSciencesDepartment() {
+  const { faculty: departmentFaculty } = useDepartmentFaculty("General", []);
+  const liveFaculty = departmentFaculty.filter(
+    (member) => !member.is_leadership
+  );
+  const activeHod = departmentFaculty.find((member) => {
+    const designation = String(member.designation || "").toLowerCase();
+    return member.is_leadership || designation.includes("hod") || designation.includes("head");
+  });
+
   return (
     <main className="hs-department-page">
       <section className="site-hero hs-department-hero">
@@ -67,14 +77,13 @@ function HumanitiesSciencesDepartment() {
               <h2 id="hs-hod">Head of the Department</h2>
             </div>
           </div>
-
           <div className="hs-hod-card">
             <div className="hs-hod-intro">
               <span className="hs-role">HEAD OF THE DEPARTMENT</span>
-              <h3>Dr. G. Narender Reddy</h3>
+              <h3>{activeHod?.name || "Dr. G. Narender Reddy"}</h3>
               <p>
-                Head of the Department – Humanities and Sciences, Department of
-                Technical Education
+                {activeHod?.designation ||
+                  "Head of the Department – Humanities and Sciences, Department of Technical Education"}
               </p>
             </div>
 
@@ -172,7 +181,17 @@ function HumanitiesSciencesDepartment() {
             </div>
           </div>
           <div className="hs-faculty-grid">
-            {facultyGroups.map(({ subject, icon: Icon, lecturers }) => (
+            {(liveFaculty.length > 0 ? liveFaculty : []).map((member) => (
+              <article className="hs-faculty-card" key={member.id || member.name}>
+                <span className="hs-faculty-icon"><GraduationCap size={21} /></span>
+                <h3>{member.name}</h3>
+                <span className="hs-faculty-designation">
+                  {member.designation || "Lecturer"}
+                </span>
+                {member.specialization && <p>{member.specialization}</p>}
+              </article>
+            ))}
+            {liveFaculty.length === 0 && facultyGroups.map(({ subject, icon: Icon, lecturers }) => (
               <article className="hs-faculty-card" key={subject}>
                 <span className="hs-faculty-icon"><Icon size={21} /></span>
                 <h3>{subject}</h3>
@@ -182,12 +201,6 @@ function HumanitiesSciencesDepartment() {
                 </ul>
               </article>
             ))}
-            <article className="hs-faculty-card hs-librarian-card">
-              <span className="hs-faculty-icon"><BookOpen size={21} /></span>
-              <h3>Library</h3>
-              <span className="hs-faculty-designation">Librarian</span>
-              <ul><li>Gurrala Goutham Reddy</li></ul>
-            </article>
           </div>
         </section>
       </div>

@@ -90,6 +90,13 @@ export default function Faculty() {
 
   useEffect(() => {
     fetchFaculty();
+    window.addEventListener("faculty-updated", fetchFaculty);
+    window.addEventListener("storage", fetchFaculty);
+
+    return () => {
+      window.removeEventListener("faculty-updated", fetchFaculty);
+      window.removeEventListener("storage", fetchFaculty);
+    };
   }, []);
 
   // Separate institutional leadership (e.g. Principal) if present in database
