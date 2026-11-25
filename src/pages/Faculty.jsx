@@ -16,6 +16,37 @@ import API_BASE_URL from "../apiConfig";
 import { principalData as defaultPrincipal, facultyList as defaultFacultyList } from "../data/facultyData";
 import ImageWithFallback from "../components/ImageWithFallback";
 
+const normalizeFacultyDepartment = (faculty) => ({
+  ...faculty,
+  department:
+    typeof faculty.department === "string" &&
+    faculty.department.trim().toLowerCase() === "general"
+      ? "Humanities and Sciences"
+      : faculty.department,
+});
+
+const getDesignationPriority = (designation) => {
+  const normalizedDesignation =
+    typeof designation === "string" ? designation.trim().toLowerCase() : "";
+
+  if (normalizedDesignation.includes("hod") || normalizedDesignation.includes("head of")) {
+    return 0;
+  }
+  if (
+    normalizedDesignation.includes("senior lecturer") ||
+    /^sl\s*\//.test(normalizedDesignation)
+  ) {
+    return 1;
+  }
+  if (
+    normalizedDesignation.includes("lectur") ||
+    /^l\s*\//.test(normalizedDesignation)
+  ) {
+    return 2;
+  }
+  return 3;
+};
+
 export default function Faculty() {
   const [facultyList, setFacultyList] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,7 +63,7 @@ export default function Faculty() {
       photo: defaultPrincipal.image || "/principal.jpg",
     },
     ...defaultFacultyList.map((f) => ({
-      ...f,
+      ...normalizeFacultyDepartment(f),
       photo: f.image || "/images/faculty/faculty-placeholder.png",
       is_leadership: false,
     })),
@@ -45,7 +76,7 @@ export default function Faculty() {
       const response = await fetch(`${API_BASE_URL}/api/content/faculty`);
       const result = await response.json();
       if (response.ok && result.success && Array.isArray(result.data) && result.data.length > 0) {
-        setFacultyList(result.data);
+        setFacultyList(result.data.map(normalizeFacultyDepartment));
       } else {
         setFacultyList(buildFallbackFaculty());
       }
@@ -78,23 +109,29 @@ export default function Faculty() {
     ...new Set(facultyMembers.map((faculty) => faculty.department).filter(Boolean)),
   ];
 
-  const filteredFaculty = facultyMembers.filter((faculty) => {
-    const matchesDepartment =
-      selectedDepartment === "All Departments" ||
-      faculty.department === selectedDepartment;
+  const filteredFaculty = facultyMembers
+    .filter((faculty) => {
+      const matchesDepartment =
+        selectedDepartment === "All Departments" ||
+        faculty.department === selectedDepartment;
 
-    const searchValue = searchTerm.toLowerCase();
+      const searchValue = searchTerm.toLowerCase();
 
-    const matchesSearch =
-      (faculty.name || "").toLowerCase().includes(searchValue) ||
-      (faculty.department || "").toLowerCase().includes(searchValue) ||
-      (faculty.designation || "").toLowerCase().includes(searchValue) ||
-      (faculty.specialization || "").toLowerCase().includes(searchValue) ||
-      (faculty.qualification || "").toLowerCase().includes(searchValue) ||
-      String(faculty.faculty_code || faculty.id || "").toLowerCase().includes(searchValue);
+      const matchesSearch =
+        (faculty.name || "").toLowerCase().includes(searchValue) ||
+        (faculty.department || "").toLowerCase().includes(searchValue) ||
+        (faculty.designation || "").toLowerCase().includes(searchValue) ||
+        (faculty.specialization || "").toLowerCase().includes(searchValue) ||
+        (faculty.qualification || "").toLowerCase().includes(searchValue) ||
+        String(faculty.faculty_code || faculty.id || "").toLowerCase().includes(searchValue);
 
-    return matchesDepartment && matchesSearch;
-  });
+      return matchesDepartment && matchesSearch;
+    })
+    .sort(
+      (first, second) =>
+        getDesignationPriority(first.designation) -
+        getDesignationPriority(second.designation)
+    );
 
   return (
     <main className="faculty-page">
